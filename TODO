@@ -1,0 +1,32 @@
+TODO:
+      
+  Implement in DocViewer.
+    
+  Create a documentation page (including installation of dependencies).
+  
+  Release a gem.
+  
+  Blog about it.
+    
+
+DONE:
+
+  Pick a better name: docsplit docs-apart docsplit (it's docsplit)
+
+  Do transparent conversion of non-pdfs.
+
+  Implement in DocumentCloud.
+
+  Write unit tests.
+
+  Comment everything.
+
+  Image extraction with widths and image formats.
+
+  Pick a project name: pdfr / rpdf / PDEffed / jpdfwrap (it's docsplit)
+
+  Basic burst.
+  
+  Basic text extraction.
+  
+  Basic image extraction.
