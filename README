@@ -1,3 +1,22 @@
-==  
+==
+         __                      ___ __ 
+    ____/ /___  ______________  / (_) /_
+   / __  / __ \/ ___/ ___/ __ \/ / / __/
+  / /_/ / /_/ / /__(__  ) /_/ / / / /_  
+  \____/\____/\___/____/ .___/_/_/\__/  
+                      /_/
     
-  PDF Pieces is a ....
+  Docsplit is a command-line utility and Ruby client for splitting apart
+  documents into their component parts: pages as plain UTF-8 text for 
+  search indexing, images or thumbnails in any format, single-page PDFs,
+  and document metadata (title, author, number of pages...)
+  
+  Installation:
+  gem install docsplit
+  
+  For documentation, usage, and examples, see:
+  http://documentcloud.github.com/docsplit/
+  
+  To suggest a feature or report a bug:
+  http://github.com/documentcloud/docsplit/issues/
+
