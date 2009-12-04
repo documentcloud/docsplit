@@ -5,11 +5,11 @@
   / /_/ / /_/ / /__(__  ) /_/ / / / /_  
   \____/\____/\___/____/ .___/_/_/\__/  
                       /_/
-    
-  Docsplit is a command-line utility and Ruby client for splitting apart
-  documents into their component parts: pages as plain UTF-8 text for 
-  search indexing, images or thumbnails in any format, single-page PDFs,
-  and document metadata (title, author, number of pages...)
+                      
+  Docsplit is a command-line utility and Ruby library for splitting apart
+  documents into their component parts: searchable UTF-8 plain text, page 
+  images or thumbnails in any format, PDFs, single pages, and document 
+  metadata (title, author, number of pages...)
   
   Installation:
   gem install docsplit

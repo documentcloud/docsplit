@@ -89,10 +89,10 @@
 
     <p>
       <a href="http://github.com/documentcloud/docsplit/">Docsplit</a>
-      is a command-line utility and Ruby client for splitting apart
-      documents into their component parts: UTF-8 <b>plain text</b> for
-      search indexing, <b>images</b> or thumbnails in any format, <b>PDFs</b>,
-      single <b>pages</b>, and document <b>metadata</b> (title, author, number of pages...)
+      is a command-line utility and Ruby library for splitting apart
+      documents into their component parts: searchable UTF-8 <b>plain text</b>, 
+      page <b>images</b> or thumbnails in any format, <b>PDFs</b>, single <b>pages</b>, 
+      and document <b>metadata</b> (title, author, number of pages...)
     </p>
 
     <p>
@@ -121,10 +121,10 @@
         or use a package manager:
 <pre>
 aptitude install graphicsmagick      # On Linux
-port install graphicsmagick          # On OSX</pre>
+port install graphicsmagick          # On Mac OS</pre>
       </li>
       <li>
-        Install <a href="http://www.openoffice.org/">OpenOffice</a>. On Linux, you can use the package manager:<br />
+        Install <a href="http://www.openoffice.org/">OpenOffice</a>. On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
         <tt>aptitude install openoffice.org openoffice.org-java-common</tt><br />
         On the Mac, download and install <a href="http://download.openoffice.org/index.html">the latest release</a>.
       </li>
@@ -141,9 +141,9 @@ port install graphicsmagick          # On OSX</pre>
 
     <p>
       The Docsplit gem includes both the <tt>docsplit</tt> command-line utility
-      as well as a Ruby API. The available commands and options are identical.
+      as well as a Ruby API. The available commands and options are identical in both.<br />
       <tt>--output</tt> or <tt>-o</tt> can be passed to any command in order to
-      store the generated files in a location of your choosing.
+      store the generated files in a directory of your choosing.
     </p>
 
     <p>
@@ -156,6 +156,7 @@ port install graphicsmagick          # On OSX</pre>
       image resolution, and <tt>--format</tt> or <tt>-f</tt> will select the format of the final images.
     </p>
 <pre>
+docsplit images example.pdf
 docsplit images docs/*.pdf --size 700x,50x50 --format gif --pages 3,10-15,42</pre>
 <pre>
 Docsplit.extract_images('example.doc', :size => '1000x', :format => [:png, :jpg])</pre>
@@ -184,7 +185,8 @@ Docsplit.extract_text(docs, :output => 'storage/text')</pre>
 <pre>
 docsplit pages path/to/doc.pdf --pages 1-10</pre>
 <pre>
-Docsplit.extract_pages('path/to/presentation.ppt')</pre>
+Docsplit.extract_pages('path/to/presentation.ppt')
+Docsplit.extract_pages('doc.pdf', :pages => 1..10)</pre>
 
     <p class="break">
       <b class="header">pdf</b>
@@ -233,9 +235,9 @@ Docsplit.extract_length('path/to/stooges.pdf')
     <p>
       Because documents need to be in PDF format before any metadata, text, 
       or images are extracted, it's faster to use <tt>docsplit pdf</tt>
-      to convert it into a PDF before you start, if you're planning to run more 
-      than one extraction. Otherwise Docsplit will write out a temporary PDF before
-      continuing with the extraction.
+      to convert it up front, if you're planning to run more than one extraction. 
+      Otherwise Docsplit will write out the PDF to a temporary file before 
+      proceeding with each command.
     </p>
 
     <h2 id="changes">Change Log</h2>
