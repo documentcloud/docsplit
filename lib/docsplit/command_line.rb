@@ -94,7 +94,12 @@ Options:
         end
       end
       @option_parser.banner = BANNER
-      @option_parser.parse!(ARGV)
+      begin
+        @option_parser.parse!(ARGV)
+      rescue OptionParser::InvalidOption => e
+        puts e.message
+        exit(1)
+      end
     end
 
   end

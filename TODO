@@ -1,4 +1,6 @@
 TODO:
+
+  Fix repeated image extraction in the same directory numbering.
       
   Implement in DocViewer.
       
