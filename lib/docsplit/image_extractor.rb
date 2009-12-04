@@ -21,7 +21,7 @@ module Docsplit
       subfolder = @sizes.length > 1 ? size.to_s : ''
       directory = File.join(@output, subfolder)
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
-      out_file  = File.join(directory, "#{basename}_%d.#{format}")
+      out_file  = File.join(directory, "#{basename}_%05d.#{format}")
       cmd = "gm convert #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
       result = `#{cmd}`.chomp
       raise ExtractionFailed, result if $? != 0
@@ -77,8 +77,8 @@ module Docsplit
     # incrementing page images, starting at 0. Renumber them with their correct
     # page numbers.
     def renumber_images(template, format)
-      suffixer = /_(\d+)\.#{format}\Z/
-      images = Dir[template.sub('%d', '*')].map do |path|
+      suffixer = /_0+(\d+)\.#{format}\Z/
+      images = Dir[template.sub('%05d', '0*')].map do |path|
         index = path[suffixer, 1].to_i
         {:path => path, :index => index, :page_number => index + 1}
       end

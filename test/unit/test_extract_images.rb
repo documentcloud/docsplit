@@ -34,4 +34,11 @@ class ExtractImagesTest < Test::Unit::TestCase
     end
   end
 
+  def test_repeated_extraction_in_the_same_directory
+    Docsplit.extract_images('test/fixtures/obama_arts.pdf', :size => "250x", :output => OUTPUT)
+    assert Dir["#{OUTPUT}/*"] == ['test/output/obama_arts_1.png', 'test/output/obama_arts_2.png']
+    Docsplit.extract_images('test/fixtures/obama_arts.pdf', :size => "250x", :output => OUTPUT)
+    assert Dir["#{OUTPUT}/*"] == ['test/output/obama_arts_1.png', 'test/output/obama_arts_2.png']
+  end
+
 end
