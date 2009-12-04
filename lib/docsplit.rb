@@ -1,5 +1,5 @@
-# The DocSplit module delegates to the Java PDF extractors.
-module DocSplit
+# The Docsplit module delegates to the Java PDF extractors.
+module Docsplit
 
   VERSION       = '0.1.0' # Keep in sync with gemspec.
 
@@ -73,6 +73,6 @@ end
 
 require 'tmpdir'
 require 'fileutils'
-require "#{DocSplit::ROOT}/lib/docsplit/image_extractor"
-require "#{DocSplit::ROOT}/lib/docsplit/argument_parser"
-require "#{DocSplit::ROOT}/lib/docsplit/transparent_pdfs"
+require "#{Docsplit::ROOT}/lib/docsplit/image_extractor"
+require "#{Docsplit::ROOT}/lib/docsplit/argument_parser"
+require "#{Docsplit::ROOT}/lib/docsplit/transparent_pdfs"

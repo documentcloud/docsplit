@@ -1,0 +1,260 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Doc&#9889;split</title>
+  <style>
+    body {
+      font-size: 16px;
+      line-height: 24px;
+      background: #fff0fa;
+      color: #9f1720;
+      font-family: Arial;
+      font-family: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif;
+    }
+    div.container {
+      width: 720px;
+      margin: 50px 0 50px 50px;
+    }
+    p, li {
+      margin: 16px 0 16px 0;
+      width: 550px;
+    }
+      p.break {
+        margin-top: 35px;
+      }
+    a, a:visited {
+      padding: 0 2px;
+      text-decoration: none;
+      background: #ffc3d3;
+      color: #9f1720;
+    }
+    a:active, a:hover {
+      color: #000;
+      background: #f3b3c3;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 40px;
+    }
+    b.header {
+      font-size: 18px;
+    }
+    span.alias {
+      font-size: 14px;
+      font-style: italic;
+      margin-left: 20px;
+    }
+    table {
+      margin: 16px 0; padding: 0;
+    }
+      tr, td {
+        margin: 0; padding: 0;
+      }
+        td {
+          padding: 9px 15px 9px 0;
+        }
+          td.definition {
+            line-height: 18px;
+            font-size: 14px;
+          }
+    code, pre, tt {
+      font-family: Monaco, Consolas, "Lucida Console", monospace;
+      font-size: 12px;
+      line-height: 18px;
+      color: #da304d;
+    }
+      code {
+        margin-left: 20px;
+      }
+      pre {
+        font-size: 12px;
+        padding: 2px 0 2px 12px;
+        border-left: 6px solid #da304d;
+        margin: 0px 0 10px;
+      }
+        li pre {
+          padding: 0;
+          border-left: 0;
+          margin: 6px 0 6px 0;
+        }
+    #diagram {
+      margin: 20px 0 0 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <h1>Doc<sub style="font-size:150%;">&#9889;</sub>split</h1>
+
+    <p>
+      <a href="http://github.com/documentcloud/docsplit/">Docsplit</a>
+      is a command-line utility and Ruby client for splitting apart
+      documents into their component parts: UTF-8 <b>plain text</b> for
+      search indexing, <b>images</b> or thumbnails in any format, <b>PDFs</b>,
+      single <b>pages</b>, and document <b>metadata</b> (title, author, number of pages...)
+    </p>
+
+    <p>
+      <i>Docsplit is an open-source component of <a href="http://documentcloud.org/">DocumentCloud</a>.</i>
+    </p>
+
+    <p>
+      <a href="#installation">Installation &amp; Dependencies</a> |
+      <a href="#usage">Usage</a> |
+      <a href="#internals">Internals</a> |
+      <a href="#changes">Change Log</a>
+    </p>
+
+    <h2 id="installation">Installation &amp; Dependencies</h2>
+
+    <ol>
+      <li>
+        Grab the gem:<br />
+        <tt>gem install docsplit</tt>
+      </li>
+      <li>
+        Install <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>.
+        Its &lsquo;<b>gm</b>&rsquo; command is used to generate images.<br />
+        Either compile it from
+        <a href="http://sourceforge.net/projects/graphicsmagick/files/">source</a>,
+        or use a package manager:
+<pre>
+aptitude install graphicsmagick      # On Linux
+port install graphicsmagick          # On OSX</pre>
+      </li>
+      <li>
+        Install <a href="http://www.openoffice.org/">OpenOffice</a>. On Linux, you can use the package manager:<br />
+        <tt>aptitude install openoffice.org openoffice.org-java-common</tt><br />
+        On the Mac, download and install <a href="http://download.openoffice.org/index.html">the latest release</a>.
+      </li>
+      <li>
+        When you're ready to convert non-PDF documents, you'll need to launch
+        OpenOffice in <b>headless server</b> mode:<br />
+        <pre>soffice -headless -accept="socket,host=127.0.0.1,port=8100;urp;" -nofirststartwizard</pre>
+        On the Mac you'll find the &ldquo;<b>soffice</b>&rdquo; command here:
+        <tt>/Applications/OpenOffice.org.app/Contents/MacOS/soffice.bin</tt>
+      </li>
+    </ol>
+
+    <h2 id="usage">Usage</h2>
+
+    <p>
+      The Docsplit gem includes both the <tt>docsplit</tt> command-line utility
+      as well as a Ruby API. The available commands and options are identical.
+      <tt>--output</tt> or <tt>-o</tt> can be passed to any command in order to
+      store the generated files in a location of your choosing.
+    </p>
+
+    <p>
+      <b class="header">images</b><code>--size --format --pages </code>
+      <span class="alias">Ruby: <b>extract_images</b></span>
+      <br />
+      Generates an image for each page in the document at the specified resolution
+      and format. Pass <tt>--pages</tt> or <tt>-p</tt> to choose the specific pages to
+      image. Passing<br /> <tt>--size</tt> or <tt>-s</tt> will specify the desired
+      image resolution, and <tt>--format</tt> or <tt>-f</tt> will select the format of the final images.
+    </p>
+<pre>
+docsplit images docs/*.pdf --size 700x,50x50 --format gif --pages 3,10-15,42</pre>
+<pre>
+Docsplit.extract_images('example.doc', :size => '1000x', :format => [:png, :jpg])</pre>
+
+    <p class="break">
+      <b class="header">text</b><code>--pages</code>
+      <span class="alias">Ruby: <b>extract_text</b></span>
+      <br />
+      Extract the complete <b>UTF-8</b>-encoded plain text of a document to a 
+      single file. If you'd like to extract the text for each page separately, 
+      pass <tt>--pages all</tt>.
+    </p>
+<pre>
+docsplit text path/to/doc.pdf --pages all</pre>
+<pre>
+docs = Dir['storage/originals/*.doc']
+Docsplit.extract_text(docs, :output => 'storage/text')</pre>
+
+    <p class="break">
+      <b class="header">pages</b><code>--pages</code>
+      <span class="alias">Ruby: <b>extract_text</b></span>
+      <br />
+      Burst apart a document into single-page PDFs. Use <tt>--pages</tt> to
+      specify the individual pages (or ranges of pages) you'd like to generate.
+    </p>
+<pre>
+docsplit pages path/to/doc.pdf --pages 1-10</pre>
+<pre>
+Docsplit.extract_pages('path/to/presentation.ppt')</pre>
+
+    <p class="break">
+      <b class="header">pdf</b>
+      <span class="alias">Ruby: <b>extract_pdf</b></span>
+      <br />
+      Convert documents into PDFs. Any type of document that OpenOffice can read
+      may be converted. These include the Microsoft Office formats: <b>doc</b>, <b>docx</b>, <b>ppt</b>,
+      <b>xls</b> and so on, as well as <b>html</b>, <b>odf</b>, <b>rtf</b>, <b>swf</b>, <b>svg</b>, and <b>wpd</b>.
+      The first time that you convert a new file type, OpenOffice will lazy-load
+      the code that processes it &mdash; subsequent conversions will be much faster.
+    </p>
+<pre>
+docsplit pdf documentation/*.html</pre>
+<pre>
+Docsplit.extract_pdf('expense_report.xls')</pre>
+
+    <p class="break">
+      <b class="header">author, date, creator, keywords, producer, subject, title, length</b><br />
+      <small><i>Ruby: <b>extract_...</b></i></small>
+      <br />
+      Retrieve a piece of metadata about the document. The <tt>docsplit</tt>
+      utility will print to <b>stdout</b>, the Ruby API will return the value.
+    </p>
+<pre>
+docsplit title path/to/stooges.pdf
+=&gt; Disorder in the Court</pre>
+<pre>
+Docsplit.extract_length('path/to/stooges.pdf')
+=&gt; 36</pre>
+
+
+    <h2 id="internals">Internals</h2>
+
+    <p>
+      Under the hood, Docsplit is a thin wrapper around the excellent 
+      <a href="http://pdfbox.apache.org/">PDFBox</a>, 
+      <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>, and
+      <a href="http://artofsolving.com/opensource/jodconverter">JODConverter</a>
+      libraries. PDFBox is used to extract text and metadata from PDF documents, 
+      as well as to split them apart into pages. GraphicsMagick is used to generate
+      the page images (internally, it's rendering them with 
+      <a href="http://pages.cs.wisc.edu/~ghost/doc/GPL/index.htm">GhostScript</a>).
+      JODConverter communicates with OpenOffice to perform the PDF conversions.
+    </p>
+    
+    <p>
+      Because documents need to be in PDF format before any metadata, text, 
+      or images are extracted, it's faster to use <tt>docsplit pdf</tt>
+      to convert it into a PDF before you start, if you're planning to run more 
+      than one extraction. Otherwise Docsplit will write out a temporary PDF before
+      continuing with the extraction.
+    </p>
+
+    <h2 id="changes">Change Log</h2>
+
+    <p>
+      <b class="header">0.1.0</b><br />
+      Initial Docsplit release.
+    </p>
+
+    <p>
+      <br />
+      <a href="http://documentcloud.org/" title="A DocumentCloud Project" style="background:none;">
+        <img src="http://jashkenas.s3.amazonaws.com/images/a_documentcloud_project.png" alt="A DocumentCloud Project" style="position:relative;left:-10px;" />
+      </a>
+    </p>
+
+    </div>
+
+  </div>
+
+</body>
+</html>

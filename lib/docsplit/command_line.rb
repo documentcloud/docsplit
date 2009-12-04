@@ -1,7 +1,7 @@
 require 'optparse'
 require File.expand_path(File.dirname(__FILE__) + '/../docsplit')
 
-module DocSplit
+module Docsplit
 
   # A single command-line utility to separate a PDF into all its component parts.
   class CommandLine
@@ -37,17 +37,17 @@ Options:
       run
     end
 
-    # Delegate to the DocSplit Ruby API to perform all extractions.
+    # Delegate to the Docsplit Ruby API to perform all extractions.
     def run
       begin
         case @command
-        when :images  then DocSplit.extract_images(ARGV, @options)
-        when :pages   then DocSplit.extract_pages(ARGV, @options)
-        when :text    then DocSplit.extract_text(ARGV, @options)
-        when :pdf     then DocSplit.extract_pdf(ARGV, @options)
+        when :images  then Docsplit.extract_images(ARGV, @options)
+        when :pages   then Docsplit.extract_pages(ARGV, @options)
+        when :text    then Docsplit.extract_text(ARGV, @options)
+        when :pdf     then Docsplit.extract_pdf(ARGV, @options)
         else
           if METADATA_KEYS.include?(@command)
-            value = DocSplit.send("extract_#{@command}", ARGV, @options)
+            value = Docsplit.send("extract_#{@command}", ARGV, @options)
             puts value unless value.nil?
           else
             usage
@@ -86,7 +86,7 @@ Options:
           @options[:format] = t.split(',')
         end
         opts.on_tail('-v', '--version', 'display docsplit version') do
-          puts "docsplit version #{DocSplit::VERSION}"
+          puts "docsplit version #{Docsplit::VERSION}"
           exit
         end
         opts.on_tail('-h', '--help', 'display this help message') do

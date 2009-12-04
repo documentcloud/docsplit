@@ -1,4 +1,4 @@
-module DocSplit
+module Docsplit
 
   # Include a method to transparently convert non-PDF arguments to temporary
   # PDFs. Allows us to pretend to natively support docs, rtf, ppt, and so on.

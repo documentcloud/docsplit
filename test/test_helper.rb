@@ -2,7 +2,7 @@ require 'lib/docsplit'
 require 'fileutils'
 
 class Test::Unit::TestCase
-  include DocSplit
+  include Docsplit
 
   OUTPUT = 'test/output'
 

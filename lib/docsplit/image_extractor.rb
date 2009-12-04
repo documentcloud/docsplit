@@ -1,4 +1,4 @@
-module DocSplit
+module Docsplit
 
   # Delegates to GraphicsMagick in order to convert PDF documents into
   # nicely sized images.

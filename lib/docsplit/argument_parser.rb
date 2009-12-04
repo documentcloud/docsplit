@@ -1,4 +1,4 @@
-module DocSplit
+module Docsplit
 
   module ArgumentParser
 

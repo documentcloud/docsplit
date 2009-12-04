@@ -1,15 +1,15 @@
 TODO:
       
   Implement in DocViewer.
-    
-  Create a documentation page (including installation of dependencies).
-  
+      
   Release a gem.
   
   Blog about it.
     
 
 DONE:
+
+  Create a documentation page (including installation of dependencies).
 
   Pick a better name: docsplit docs-apart docsplit (it's docsplit)
 

@@ -2,4 +2,4 @@
 
 require "#{File.dirname(__FILE__)}/../lib/docsplit/command_line.rb"
 
-DocSplit::CommandLine.new
+Docsplit::CommandLine.new
