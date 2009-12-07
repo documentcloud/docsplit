@@ -18,6 +18,7 @@ end
 desc 'Build all Java command-line clients'
 task :build => :clean do
   sh "javac -cp vendor/'*' -d build -Xlint -Xlint:-path lib/docsplit/*.java"
+  sh "sudo chmod -R 755 build"
 end
 
 namespace :gem do
