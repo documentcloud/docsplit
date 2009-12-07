@@ -15,16 +15,11 @@ Gem::Specification.new do |s|
   s.authors           = ['Jeremy Ashkenas']
   s.email             = 'jeremy@documentcloud.org'
   s.rubyforge_project = 'docsplit'
+  s.has_rdoc          = false
 
   s.require_paths     = ['lib']
   s.executables       = ['docsplit']
 
-  s.has_rdoc          = false
-  s.extra_rdoc_files  = ['README']
-  s.rdoc_options      << '--title'    << 'PDF Pieces' <<
-                         '--exclude'  << 'test' <<
-                         '--main'     << 'README' <<
-                         '--all'
-
-  s.files = Dir['build/**/*', 'lib/**/*', 'bin/*', 'vendor/**/*', 'docsplit.gemspec', 'LICENSE', 'README']
+  s.files = Dir['build/**/*', 'lib/**/*', 'bin/*', 'vendor/**/*',
+                'docsplit.gemspec', 'LICENSE', 'README']
 end

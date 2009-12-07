@@ -1,13 +1,13 @@
 TODO:
       
   Implement in DocViewer.
-      
-  Release a gem.
-  
+        
   Blog about it.
     
 
 DONE:
+
+  Release a gem.
 
   Fix repeated image extraction in the same directory numbering.
 
