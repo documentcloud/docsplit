@@ -9,7 +9,7 @@ module Docsplit
     def ensure_pdfs(docs)
       [docs].flatten.map do |doc|
         ext = File.extname(doc)
-        if ext == '.pdf'
+        if ext.downcase == '.pdf'
           doc
         else
           @tempdir ||= File.join(Dir.tmpdir, 'docsplit')

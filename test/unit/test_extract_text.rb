@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'tmpdir'
 
 class ExtractTextTest < Test::Unit::TestCase
 
@@ -40,6 +41,15 @@ end
   def test_page_only_extraction
     Docsplit.extract_text('test/fixtures/obama_arts.pdf', :pages => 2..2, :output => OUTPUT)
     assert Dir["#{OUTPUT}/*.txt"] == ["#{OUTPUT}/obama_arts_2.txt"]
+  end
+
+  def test_capitalized_pdf_extraction
+    Dir["#{OUTPUT}/*.txt"].each {|previous| FileUtils.rm(previous) }
+    Dir.mktmpdir do |dir|
+      FileUtils.cp('test/fixtures/obama_arts.pdf', "#{dir}/OBAMA_ARTS.PDF")
+      Docsplit.extract_text("#{dir}/OBAMA_ARTS.PDF", :pages => 2..2, :output => OUTPUT)
+    end
+    assert Dir["#{OUTPUT}/*.txt"] == ["#{OUTPUT}/OBAMA_ARTS_2.txt"]
   end
 
   def test_password_protected
