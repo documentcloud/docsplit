@@ -22,7 +22,7 @@ module Docsplit
       directory = File.join(@output, subfolder)
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
       out_file  = File.join(directory, "#{basename}_%05d.#{format}")
-      cmd = "gm convert #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
+      cmd = "gm convert +adjoin #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
       result = `#{cmd}`.chomp
       raise ExtractionFailed, result if $? != 0
       renumber_images(out_file, format)
