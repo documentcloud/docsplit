@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name      = 'docsplit'
-  s.version   = '0.1.2'         # Keep version in sync with jammit.rb
-  s.date      = '2010-3-19'
+  s.version   = '0.1.3'         # Keep version in sync with jammit.rb
+  s.date      = '2010-4-27'
 
   s.homepage    = "http://documentcloud.github.com/docsplit/"
   s.summary     = "Break Apart Documents into Images, Text, Pages and PDFs"

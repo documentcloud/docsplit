@@ -67,7 +67,7 @@ module Docsplit
       @pages.split(',').map { |range|
         if range.include?('-')
           range = range.split('-')
-          Range.new(range.first, range.last).to_a.map {|n| n.to_i }
+          Range.new(range.first.to_i, range.last.to_i).to_a.map {|n| n.to_i }
         else
           range.to_i
         end
