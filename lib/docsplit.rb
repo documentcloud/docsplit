@@ -1,7 +1,7 @@
 # The Docsplit module delegates to the Java PDF extractors.
 module Docsplit
 
-  VERSION       = '0.1.3' # Keep in sync with gemspec.
+  VERSION       = '0.2.0' # Keep in sync with gemspec.
 
   ROOT          = File.expand_path(File.dirname(__FILE__) + '/..')
 

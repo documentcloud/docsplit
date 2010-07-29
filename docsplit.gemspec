@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name      = 'docsplit'
-  s.version   = '0.1.3'         # Keep version in sync with jammit.rb
-  s.date      = '2010-4-27'
+  s.version   = '0.2.0'         # Keep version in sync with docsplit.rb
+  s.date      = '2010-7-29'
 
   s.homepage    = "http://documentcloud.github.com/docsplit/"
   s.summary     = "Break Apart Documents into Images, Text, Pages and PDFs"
@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
     metadata (title, author, number of pages...)
   EOS
 
-  s.authors           = ['Jeremy Ashkenas']
+  s.authors           = ['Jeremy Ashkenas', 'Samuel Clay']
   s.email             = 'jeremy@documentcloud.org'
   s.rubyforge_project = 'docsplit'
   s.has_rdoc          = false
