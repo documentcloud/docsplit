@@ -26,7 +26,7 @@ module Docsplit
   # Use the ExtractText Java class to write out all embedded text.
   def self.extract_text(pdfs, opts={})
     pdfs = ensure_pdfs(pdfs)
-    run "org.documentcloud.ExtractText", pdfs, opts
+    TextExtractor.new.extract(pdfs, opts)
   end
 
   # Use the ExtractImages Java class to rasterize a PDF into each page's image.
@@ -76,3 +76,4 @@ require 'fileutils'
 require "#{Docsplit::ROOT}/lib/docsplit/image_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/argument_parser"
 require "#{Docsplit::ROOT}/lib/docsplit/transparent_pdfs"
+require "#{Docsplit::ROOT}/lib/docsplit/text_extractor"

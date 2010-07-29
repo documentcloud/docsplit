@@ -4,33 +4,20 @@ require 'tmpdir'
 class ExtractTextTest < Test::Unit::TestCase
 
   FULL_TEXT = <<-EOTEXT
-Gem::Specification.new do |s|
-  s.name      = 'pdf-pieces'
-  s.version   = '0.1.0'         # Keep version in sync with jammit.rb
-  s.date      = '2009-11-29'
-  s.homepage    = "http://documentcloud.github.com/pdf-pieces/"
-  s.summary     = ""
-  s.description = <<-EOS
-  EOS
-  s.authors           = ['Jeremy Ashkenas']
-  s.email             = 'jeremy@documentcloud.org'
-  s.rubyforge_project = 'pdf-pieces'
-  s.require_paths     = ['lib']
-  s.executables       = ['pdf-pieces']
-  s.has_rdoc          = true
-  s.extra_rdoc_files  = ['README']
-  s.rdoc_options      << '--title'    << 'PDF Pieces' <<
-                         '--exclude'  << 'test' <<
-                         '--main'     << 'README' <<
-                         '--all'
-  s.files = Dir['build/*', 'lib/**/*', 'bin/*', 'vendor/*',
-'pdf-pieces.gemspec', 'LICENSE', 'README']
-end
-  EOTEXT
+Gem::Specification.new do |s| s.name = 'pdf-pieces' s.version = '0.1.0' s.date = '2009-11-29'
+
+# Keep version in sync with jammit.rb
+
+s.homepage = "http://documentcloud.github.com/pdf-pieces/" s.summary = "" s.description = <<-EOS EOS s.authors = ['Jeremy Ashkenas'] s.email = 'jeremy@documentcloud.org' s.rubyforge_project = 'pdf-pieces' s.require_paths s.executables s.has_rdoc s.extra_rdoc_files s.rdoc_options = ['lib'] = ['pdf-pieces'] = true = ['README'] << '--title' '--exclude' '--main' '--all'
+
+<< 'PDF Pieces' << << 'test' << << 'README' <<
+
+s.files = Dir['build/*', 'lib/**/*', 'bin/*', 'vendor/*', 'pdf-pieces.gemspec', 'LICENSE', 'README'] end
+EOTEXT
 
   def test_full_text_extraction
     Docsplit.extract_text('test/fixtures/encrypted.pdf', :output => OUTPUT)
-    assert FULL_TEXT == File.read("#{OUTPUT}/encrypted.txt")
+    assert FULL_TEXT.strip == File.read("#{OUTPUT}/encrypted.txt").strip
   end
 
   def test_paged_extraction
@@ -52,6 +39,11 @@ end
     assert Dir["#{OUTPUT}/*.txt"] == ["#{OUTPUT}/OBAMA_ARTS_2.txt"]
   end
 
+  def test_unicode_extraction
+    Docsplit.extract_text('test/fixtures/unicode.pdf', :pages => 'all', :output => OUTPUT)
+    assert Dir["#{OUTPUT}/*.txt"].length == 3
+  end
+  
   def test_password_protected
     assert_raises(ExtractionFailed) do
       Docsplit.extract_text('test/fixtures/completely_encrypted.pdf')
