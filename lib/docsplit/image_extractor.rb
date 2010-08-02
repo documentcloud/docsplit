@@ -4,26 +4,37 @@ module Docsplit
   # nicely sized images.
   class ImageExtractor
 
-    DENSITY_ARG = "-density 150"
-    MEMORY_ARGS = "-limit memory 128MiB -limit map 256MiB"
-    DEFAULT_FORMAT = :png
+    DENSITY_ARG     = "-density 150"
+    MEMORY_ARGS     = "-limit memory 128MiB -limit map 256MiB"
+    DEFAULT_FORMAT  = :png
 
     # Extract a list of PDFs as rasterized page images, according to the
     # configuration in options.
     def extract(pdfs, options)
       @pdfs = [pdfs].flatten
       extract_options(options)
-      @pdfs.each {|p| @sizes.each {|s| @formats.each {|f| convert(p, s, f) }}}
+      @pdfs.each do |pdf|
+        previous = nil
+        @sizes.each_with_index do |size, i|
+          @formats.each {|format| convert(pdf, size, format, previous) }
+          previous = size if @resize
+        end
+      end
     end
 
     # Convert a single PDF into page images at the specified size and format.
-    def convert(pdf, size, format)
+    def convert(pdf, size, format, previous=nil)
       basename  = File.basename(pdf, File.extname(pdf))
-      subfolder = @sizes.length > 1 ? size.to_s : ''
-      directory = File.join(@output, subfolder)
+      directory = directory_for(size)
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
       out_file  = File.join(directory, "#{basename}_%05d.#{format}")
-      cmd = "OMP_NUM_THREADS=2 gm convert +adjoin #{MEMORY_ARGS} #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
+      common    = "#{MEMORY_ARGS} #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)}"
+      if previous
+        FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
+        cmd = "OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5 \"#{directory}/*.#{format}\" 2>&1"
+      else
+        cmd = "OMP_NUM_THREADS=2 gm convert +adjoin #{common} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
+      end
       result = `#{cmd}`.chomp
       raise ExtractionFailed, result if $? != 0
       renumber_images(out_file, format)
@@ -39,11 +50,17 @@ module Docsplit
       @formats = [options[:format] || DEFAULT_FORMAT].flatten
       @sizes   = [options[:size]].flatten.compact
       @sizes   = [nil] if @sizes.empty?
+      @resize  = !!options[:resize]
+    end
+
+    def directory_for(size)
+      return @output if @sizes.length == 1
+      File.join(@output, size)
     end
 
     # Generate the resize argument.
     def resize_arg(size)
-      size.nil? ? '' : "-thumbnail #{size}"
+      size.nil? ? '' : "-resize #{size}"
     end
 
     # Generate the appropriate quality argument for the image format.

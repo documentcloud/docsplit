@@ -85,6 +85,9 @@ Options:
         opts.on('-f', '--format [FORMAT]', 'set image format (pdf, jpg, gif...)') do |t|
           @options[:format] = t.split(',')
         end
+        opts.on('-r', '--resize', 'speed up by resizing from each previous image') do |r|
+          @options[:resize] = true
+        end
         opts.on_tail('-v', '--version', 'display docsplit version') do
           puts "docsplit version #{Docsplit::VERSION}"
           exit
