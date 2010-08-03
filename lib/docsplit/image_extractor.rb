@@ -17,7 +17,7 @@ module Docsplit
         previous = nil
         @sizes.each_with_index do |size, i|
           @formats.each {|format| convert(pdf, size, format, previous) }
-          previous = size if @resize
+          previous = size if @rolling
         end
       end
     end
@@ -50,7 +50,7 @@ module Docsplit
       @formats = [options[:format] || DEFAULT_FORMAT].flatten
       @sizes   = [options[:size]].flatten.compact
       @sizes   = [nil] if @sizes.empty?
-      @resize  = !!options[:resize]
+      @rolling = !!options[:rolling]
     end
 
     def directory_for(size)

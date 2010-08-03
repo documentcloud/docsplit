@@ -19,7 +19,7 @@ class ExtractImagesTest < Test::Unit::TestCase
   end
 
   def test_image_sizes
-    Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :size => ["50x", "150x"], :output => OUTPUT)
+    Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :rolling => true, :size => ["150x", "50x"], :output => OUTPUT)
     assert File.size("#{OUTPUT}/50x/obama_arts_1.gif") < File.size("#{OUTPUT}/150x/obama_arts_1.gif")
   end
 
