@@ -31,7 +31,7 @@ module Docsplit
       common    = "#{MEMORY_ARGS} #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
-        cmd = "OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5 \"#{directory}/*.#{format}\" 2>&1"
+        cmd = "OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1"
       else
         cmd = "OMP_NUM_THREADS=2 gm convert +adjoin #{common} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
       end
