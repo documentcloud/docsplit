@@ -15,7 +15,7 @@ class ExtractInfoTest < Test::Unit::TestCase
   end
 
   def test_date
-    assert "2007-11-29" == Docsplit.extract_date('test/fixtures/obama_arts.pdf')
+    assert "Thu Nov 29 14:54:46 2007" == Docsplit.extract_date('test/fixtures/obama_arts.pdf')
   end
 
   def test_length

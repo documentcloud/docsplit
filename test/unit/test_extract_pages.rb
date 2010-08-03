@@ -7,11 +7,6 @@ class ExtractPagesTest < Test::Unit::TestCase
     assert Dir["#{OUTPUT}/*.pdf"].length == 2
   end
 
-  def test_page_range_extraction
-    Docsplit.extract_pages('test/fixtures/obama_arts.pdf', :pages => 2..2, :output => OUTPUT)
-    assert Dir["#{OUTPUT}/*.pdf"] == ["#{OUTPUT}/obama_arts_2.pdf"]
-  end
-
   def test_single_page_extraction
     Docsplit.extract_pages('test/fixtures/encrypted.pdf', :output => OUTPUT)
     assert Dir["#{OUTPUT}/*.pdf"].length == 1
