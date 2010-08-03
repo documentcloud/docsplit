@@ -20,7 +20,7 @@ module Docsplit
   # Use the ExtractPages Java class to burst a PDF into single pages.
   def self.extract_pages(pdfs, opts={})
     pdfs = ensure_pdfs(pdfs)
-    run "org.documentcloud.ExtractPages", pdfs, opts
+    PageExtractor.new.extract(pdfs, opts)
   end
 
   # Use the ExtractText Java class to write out all embedded text.
@@ -50,8 +50,7 @@ module Docsplit
     instance_eval <<-EOS
       def self.extract_#{key}(pdfs, opts={})
         pdfs = ensure_pdfs(pdfs)
-        result = run "org.documentcloud.ExtractInfo #{key}", pdfs, opts, true
-        :#{key} == :length ? result.to_i : result
+        InfoExtractor.new.extract(:#{key}, pdfs, opts)
       end
     EOS
   end
@@ -77,3 +76,5 @@ require "#{Docsplit::ROOT}/lib/docsplit/image_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/argument_parser"
 require "#{Docsplit::ROOT}/lib/docsplit/transparent_pdfs"
 require "#{Docsplit::ROOT}/lib/docsplit/text_extractor"
+require "#{Docsplit::ROOT}/lib/docsplit/page_extractor"
+require "#{Docsplit::ROOT}/lib/docsplit/info_extractor"
