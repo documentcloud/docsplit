@@ -54,8 +54,8 @@ module Docsplit
     end
 
     def directory_for(size)
-      return @output if @sizes.length == 1
-      File.join(@output, size)
+      path = @sizes.length == 1 ? @output : File.join(@output, size)
+      File.expand_path(path)
     end
 
     # Generate the resize argument.
