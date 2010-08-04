@@ -8,7 +8,7 @@ module Docsplit
 
     BANNER = <<-EOS
 docsplit breaks apart documents into images, text, or individual pages.
-It wraps PDFBox, GraphicsMagick, and JODConverter.
+It wraps GraphicsMagick, Poppler, PDFTK, and JODConverter.
 
 Usage:
   docsplit COMMAND [OPTIONS] path/to/doc.pdf
@@ -71,7 +71,7 @@ Options:
     # Use the OptionParser library to parse out all supported options. Return
     # options formatted for the Ruby API.
     def parse_options
-      @options = {}
+      @options = {:ocr => :default}
       @option_parser = OptionParser.new do |opts|
         opts.on('-o', '--output [DIR]', 'set the directory for all output') do |d|
           @options[:output] = d
@@ -84,6 +84,9 @@ Options:
         end
         opts.on('-f', '--format [FORMAT]', 'set image format (pdf, jpg, gif...)') do |t|
           @options[:format] = t.split(',')
+        end
+        opts.on('--[no-]ocr', 'force OCR to be used, or disable OCR') do |o|
+          @options[:ocr] = o
         end
         opts.on('-r', '--rolling', 'generate images from each previous image') do |r|
           @options[:rolling] = true

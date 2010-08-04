@@ -148,8 +148,8 @@ port install graphicsmagick          # On Mac OS</pre>
     </ol>
     
     <p><i>
-        Note: the gem will take a minute to download &mdash; the combined
-        PDFBox and JODConverter jar files tip the scales at 8MB.
+        Note: the gem will take a minute to download &mdash; the
+        JODConverter jar file tips the scales at 2MB.
     </i></p>
 
     <h2 id="usage">Usage</h2>
@@ -237,11 +237,12 @@ Docsplit.extract_length('path/to/stooges.pdf')
 
     <p>
       Under the hood, Docsplit is a thin wrapper around the excellent 
-      <a href="http://pdfbox.apache.org/">PDFBox</a>, 
-      <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>, and
+      <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>
+      <a href="http://poppler.freedesktop.org/">Poppler</a>
+      <a href="http://www.accesspdf.com/pdftk/">PDFTK</a>, and
       <a href="http://artofsolving.com/opensource/jodconverter">JODConverter</a>
-      libraries. PDFBox is used to extract text and metadata from PDF documents, 
-      as well as to split them apart into pages. GraphicsMagick is used to generate
+      libraries. Poppler is used to extract text and metadata from PDF documents, 
+      PDFTK is used to split them apart into pages, and GraphicsMagick is used to generate
       the page images (internally, it's rendering them with 
       <a href="http://pages.cs.wisc.edu/~ghost/doc/GPL/index.htm">GhostScript</a>).
       JODConverter communicates with OpenOffice to perform the PDF conversions.
