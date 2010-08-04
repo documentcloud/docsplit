@@ -7,11 +7,6 @@ class ExtractPagesTest < Test::Unit::TestCase
     assert Dir["#{OUTPUT}/*.pdf"].length == 2
   end
 
-  def test_single_page_extraction
-    Docsplit.extract_pages('test/fixtures/encrypted.pdf', :output => OUTPUT)
-    assert Dir["#{OUTPUT}/*.pdf"].length == 1
-  end
-
   def test_password_protected
     assert_raises(ExtractionFailed) do
       Docsplit.extract_pages('test/fixtures/completely_encrypted.pdf')

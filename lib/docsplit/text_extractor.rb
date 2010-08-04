@@ -14,7 +14,7 @@ module Docsplit
             extract_page pdf, page, pdf_name
           end
         else
-          cmd = "pdftotext -enc UTF-8 #{pdf} #{text_path}"
+          cmd = "pdftotext -enc UTF-8 #{pdf} #{text_path} 2>&1"
           result = `#{cmd}`.chomp
           raise ExtractionFailed, result if $? != 0
         end
@@ -23,7 +23,7 @@ module Docsplit
 
     def extract_page(pdf, page, pdf_name)
       text_path = File.join(@output, "#{pdf_name}_#{page}.txt")
-      cmd = "pdftotext -enc UTF-8 -f #{page} -l #{page} #{pdf} #{text_path}"
+      cmd = "pdftotext -enc UTF-8 -f #{page} -l #{page} #{pdf} #{text_path} 2>&1"
       result = `#{cmd}`.chomp
       raise ExtractionFailed, result if $? != 0
       result

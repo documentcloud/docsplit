@@ -9,16 +9,9 @@ task :test do
   Dir['test/*/**/test_*.rb'].each {|test| require test }
 end
 
-desc 'Clean the compiled Java classes'
-task :clean do
-  FileUtils.rm_r('build') if File.exists?('build')
-  Dir.mkdir('build')
-end
-
-desc 'Build all Java command-line clients'
-task :build => :clean do
-  sh "javac -cp vendor/'*' -d build -Xlint -Xlint:-path lib/docsplit/*.java"
-  sh "sudo chmod -R 755 build"
+desc 'Launch OpenOffice for testing'
+task :openoffice do
+  sh "/Applications/OpenOffice.org.app/Contents/MacOS/soffice.bin soffice -headless -accept=\"socket,host=127.0.0.1,port=8100;urp;\" -nofirststartwizard"
 end
 
 namespace :gem do
