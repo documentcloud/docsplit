@@ -33,6 +33,15 @@ Our nation’s creativity has filled the world’s libraries, museums, recital h
     assert Dir["#{OUTPUT}/*.txt"].length == 3
   end
 
+  def test_ocr_extraction
+    Docsplit.extract_text('test/fixtures/corrosion.pdf', :pages => 'all', :output => OUTPUT)
+    assert Dir["#{OUTPUT}/*.txt"].length == 4
+    4.times do |i|
+      file = "corrosion_#{i + 1}.txt"
+      assert File.read("#{OUTPUT}/#{file}") == File.read("test/fixtures/corrosion/#{file}")
+    end
+  end
+
   def test_password_protected
     assert_raises(ExtractionFailed) do
       Docsplit.extract_text('test/fixtures/completely_encrypted.pdf')
