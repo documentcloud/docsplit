@@ -4,6 +4,7 @@ module Docsplit
   # a PDF document.
   class PageExtractor
 
+    # Burst a list of pdfs into single pages, as `pdfname_pagenumber.pdf`.
     def extract(pdfs, opts)
       extract_options opts
       [pdfs].flatten.each do |pdf|
@@ -22,7 +23,7 @@ module Docsplit
     private
 
     def extract_options(options)
-      @output  = options[:output] || '.'
+      @output = options[:output] || '.'
     end
 
   end

@@ -3,6 +3,7 @@ module Docsplit
   # Delegates to **pdfinfo** in order to extract information about a PDF file.
   class InfoExtractor
 
+    # Regex matchers for different bits of information.
     MATCHERS = {
       :author   => /^Author:\s+([^\n]+)/,
       :date     => /^CreationDate:\s+([^\n]+)/,
@@ -14,6 +15,7 @@ module Docsplit
       :length   => /^Pages:\s+([^\n]+)/,
     }
 
+    # Pull out a single datum from a pdf.
     def extract(key, pdfs, opts)
       pdf = [pdfs].flatten.first
       cmd = "pdfinfo #{pdf} 2>&1"
