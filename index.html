@@ -92,12 +92,13 @@
     <p>
       <a href="http://github.com/documentcloud/docsplit/">Docsplit</a>
       is a command-line utility and Ruby library for splitting apart
-      documents into their component parts: searchable UTF-8 <b>plain text</b>, 
-      page <b>images</b> or thumbnails in any format, <b>PDFs</b>, single <b>pages</b>, 
-      and document <b>metadata</b> (title, author, number of pages...)
+      documents into their component parts: searchable UTF-8 <b>plain text</b>
+      via OCR if necessary, page <b>images</b> or thumbnails in any format, 
+      <b>PDFs</b>, single <b>pages</b>, and document <b>metadata</b> 
+      (title, author, number of pages...)
     </p>
     
-    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.2.1</a>.</p>
+    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.3.0</a>.</p>
     
     <p>
       <i>Docsplit is an open-source component of <a href="http://documentcloud.org/">DocumentCloud</a>.</i>
@@ -124,21 +125,35 @@
         <a href="http://sourceforge.net/projects/graphicsmagick/files/">source</a>,
         or use a package manager:
 <pre>
-aptitude install graphicsmagick      # On Linux
-port install graphicsmagick          # On Mac OS</pre>
+[aptitude | port] install graphicsmagick</pre>
       </li>
       <li>
-        Install <a href="http://poppler.freedesktop.org/">Poppler</a>. On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
+        Install <a href="http://poppler.freedesktop.org/">Poppler</a>. 
+        On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
         <tt>aptitude install poppler-utils</tt><br />
         On the Mac, you can install from source or use <b>MacPorts</b>:<br />
         <tt>sudo port install poppler</tt><br />
       </li>
       <li>
-        Install <a href="http://www.openoffice.org/">OpenOffice</a>. On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
-        <tt>aptitude install openoffice.org openoffice.org-java-common</tt><br />
-        On the Mac, download and install <a href="http://download.openoffice.org/index.html">the latest release</a>.
+        (Optional) Install <a href="http://code.google.com/p/tesseract-ocr/">Tesseract</a>:<br />
+        <tt>[aptitude | port] install tesseract</tt><br />
+        Without Tesseract installed, you'll still be able to extract text from
+        documents, but you won't be able to automatically OCR them.
       </li>
       <li>
+        (Optional) Install <a href="http://www.accesspdf.com/pdftk/">pdftk</a>.
+        On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />  
+        <tt>aptitude install pdftk</tt><br />
+        On the Mac, you can <a href="http://fredericiana.com/2010/03/01/pdftk-1-41-for-mac-os-x-10-6/">download a recent installer</a> for the binary.
+        Without <b>pdftk</b> installed, you can use Docsplit, but won't be able
+        to split apart a multi-page PDF into single-page PDFs.
+      </li>
+      <li>
+        (Optional) Install <a href="http://www.openoffice.org/">OpenOffice</a>. 
+        On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
+        <tt>aptitude install openoffice.org openoffice.org-java-common</tt><br />
+        On the Mac, download and install <a href="http://download.openoffice.org/index.html">the latest release</a>.
+        <br />
         When you're ready to convert non-PDF documents, you'll need to launch
         OpenOffice in <b>headless server</b> mode:<br />
         <pre>soffice -headless -accept="socket,host=127.0.0.1,port=8100;urp;" -nofirststartwizard</pre>
@@ -177,18 +192,21 @@ docsplit images docs/*.pdf --size 700x,50x50 --format gif --pages 3,10-15,42</pr
 Docsplit.extract_images('example.doc', :size => '1000x', :format => [:png, :jpg])</pre>
 
     <p class="break">
-      <b class="header">text</b><code>--pages</code>
+      <b class="header">text</b><code>--pages --ocr --no-ocr</code>
       <span class="alias">Ruby: <b>extract_text</b></span>
       <br />
       Extract the complete <b>UTF-8</b>-encoded plain text of a document to a 
       single file. If you'd like to extract the text for each page separately, 
-      pass <tt>--pages all</tt>.
+      pass <tt>--pages all</tt>. You can use the <tt>--ocr</tt> and <tt>--no-ocr</tt>
+      flags to force OCR, or disable it, respectively. By default (if Tesseract is installed)
+      Docsplit will OCR the text of each page for which it fails to extract text
+      directly from the document.
     </p>
 <pre>
 docsplit text path/to/doc.pdf --pages all</pre>
 <pre>
 docs = Dir['storage/originals/*.doc']
-Docsplit.extract_text(docs, :output => 'storage/text')</pre>
+Docsplit.extract_text(docs, :ocr => false, :output => 'storage/text')</pre>
 
     <p class="break">
       <b class="header">pages</b><code>--pages</code>
@@ -237,15 +255,18 @@ Docsplit.extract_length('path/to/stooges.pdf')
 
     <p>
       Under the hood, Docsplit is a thin wrapper around the excellent 
-      <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>
-      <a href="http://poppler.freedesktop.org/">Poppler</a>
-      <a href="http://www.accesspdf.com/pdftk/">PDFTK</a>, and
+      <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>,
+      <a href="http://poppler.freedesktop.org/">Poppler</a>,
+      <a href="http://www.accesspdf.com/pdftk/">PDFTK</a>,
+      <a href="http://code.google.com/p/tesseract-ocr/">Tesseract</a>, and
       <a href="http://artofsolving.com/opensource/jodconverter">JODConverter</a>
       libraries. Poppler is used to extract text and metadata from PDF documents, 
       PDFTK is used to split them apart into pages, and GraphicsMagick is used to generate
       the page images (internally, it's rendering them with 
       <a href="http://pages.cs.wisc.edu/~ghost/doc/GPL/index.htm">GhostScript</a>).
       JODConverter communicates with OpenOffice to perform the PDF conversions.
+      Tesseract provides the transparent OCR fallback support, if the document
+      is a simple scan, and the file doesn't contain any embedded text.
     </p>
     
     <p>
@@ -259,9 +280,10 @@ Docsplit.extract_length('path/to/stooges.pdf')
     <h2 id="changes">Change Log</h2>
     
     <p>
-      <b class="header">0.2.1</b><br />
-      The Java dependency on PDFBox has been removed, in favor of a runtime
-      dependency on ... TODO
+      <b class="header">0.3.0</b><br />
+      OCR support added via Tesseract, and the <tt>--ocr</tt> and <tt>--no-ocr</tt>
+      flags. PDFBox is no longer a dependency, and the gem is many megabytes
+      lighter for it.
     </p>
     
     <p>
