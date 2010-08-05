@@ -92,7 +92,7 @@ Options:
           @options[:rolling] = true
         end
         opts.on_tail('-v', '--version', 'display docsplit version') do
-          puts "docsplit version #{Docsplit::VERSION}"
+          puts "Docsplit version #{Docsplit::VERSION}"
           exit
         end
         opts.on_tail('-h', '--help', 'display this help message') do

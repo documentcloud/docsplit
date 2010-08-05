@@ -75,11 +75,20 @@ module Docsplit
   # Runs a Java command, with quieted logging, and the classpath set properly.
   def self.run(command, pdfs, opts, return_output=false)
     pdfs    = [pdfs].flatten.map{|pdf| "\"#{pdf}\""}.join(' ')
-    args    = parse_options(opts)
-    cmd     = "java #{HEADLESS} #{LOGGING} -cp #{CLASSPATH} #{command} #{args} #{pdfs} 2>&1"
+    cmd     = "java #{HEADLESS} #{LOGGING} -cp #{CLASSPATH} #{command} #{pdfs} 2>&1"
     result  = `#{cmd}`.chomp
     raise ExtractionFailed, result if $? != 0
     return return_output ? (result.empty? ? nil : result) : true
+  end
+
+  # Normalize a value in an options hash for the command line.
+  # Ranges look like: 1-10, Arrays like: 1,2,3.
+  def self.normalize_value(value)
+    case value
+    when Range then normalize_range(value)
+    when Array then value.map! {|v| v.is_a?(Range) ? normalize_range(v) : v }.join(',')
+    else            value.to_s
+    end
   end
 
 end
@@ -87,7 +96,6 @@ end
 require 'tmpdir'
 require 'fileutils'
 require "#{Docsplit::ROOT}/lib/docsplit/image_extractor"
-require "#{Docsplit::ROOT}/lib/docsplit/argument_parser"
 require "#{Docsplit::ROOT}/lib/docsplit/transparent_pdfs"
 require "#{Docsplit::ROOT}/lib/docsplit/text_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/page_extractor"
