@@ -8,8 +8,8 @@
     body {
       font-size: 16px;
       line-height: 24px;
-      background: #fff0fa;
-      color: #9f1720;
+      background: #fffff5;
+      color: #333300;
       font-family: Arial;
       font-family: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif;
     }
@@ -27,12 +27,12 @@
     a, a:visited {
       padding: 0 2px;
       text-decoration: none;
-      background: #ffc3d3;
-      color: #9f1720;
+      background: #f7f7bb;
+      color: #333300;
     }
     a:active, a:hover {
       color: #000;
-      background: #f3b3c3;
+      background: #ffff88;
     }
     h1, h2, h3, h4, h5, h6 {
       margin-top: 40px;
@@ -62,7 +62,7 @@
       font-family: Monaco, Consolas, "Lucida Console", monospace;
       font-size: 12px;
       line-height: 18px;
-      color: #da304d;
+      color: #444;
     }
       code {
         margin-left: 20px;
@@ -88,18 +88,18 @@
   <div class="container">
 
     <h1>Doc<sub style="font-size:150%;">&#9889;</sub>split</h1>
-    
+
     <p>
       <a href="http://github.com/documentcloud/docsplit/">Docsplit</a>
       is a command-line utility and Ruby library for splitting apart
       documents into their component parts: searchable UTF-8 <b>plain text</b>
-      via OCR if necessary, page <b>images</b> or thumbnails in any format, 
-      <b>PDFs</b>, single <b>pages</b>, and document <b>metadata</b> 
+      via OCR if necessary, page <b>images</b> or thumbnails in any format,
+      <b>PDFs</b>, single <b>pages</b>, and document <b>metadata</b>
       (title, author, number of pages...)
     </p>
-    
+
     <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.3.0</a>.</p>
-    
+
     <p>
       <i>Docsplit is an open-source component of <a href="http://documentcloud.org/">DocumentCloud</a>.</i>
     </p>
@@ -128,7 +128,7 @@
 [aptitude | port] install graphicsmagick</pre>
       </li>
       <li>
-        Install <a href="http://poppler.freedesktop.org/">Poppler</a>. 
+        Install <a href="http://poppler.freedesktop.org/">Poppler</a>.
         On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
         <tt>aptitude install poppler-utils</tt><br />
         On the Mac, you can install from source or use <b>MacPorts</b>:<br />
@@ -142,14 +142,14 @@
       </li>
       <li>
         (Optional) Install <a href="http://www.accesspdf.com/pdftk/">pdftk</a>.
-        On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />  
+        On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
         <tt>aptitude install pdftk</tt><br />
         On the Mac, you can <a href="http://fredericiana.com/2010/03/01/pdftk-1-41-for-mac-os-x-10-6/">download a recent installer</a> for the binary.
         Without <b>pdftk</b> installed, you can use Docsplit, but won't be able
         to split apart a multi-page PDF into single-page PDFs.
       </li>
       <li>
-        (Optional) Install <a href="http://www.openoffice.org/">OpenOffice</a>. 
+        (Optional) Install <a href="http://www.openoffice.org/">OpenOffice</a>.
         On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
         <tt>aptitude install openoffice.org openoffice.org-java-common</tt><br />
         On the Mac, download and install <a href="http://download.openoffice.org/index.html">the latest release</a>.
@@ -161,7 +161,7 @@
         <tt>/Applications/OpenOffice.org.app/Contents/MacOS/soffice.bin</tt>
       </li>
     </ol>
-    
+
     <p><i>
         Note: the gem will take a minute to download &mdash; the
         JODConverter jar file tips the scales at 2MB.
@@ -195,8 +195,8 @@ Docsplit.extract_images('example.doc', :size => '1000x', :format => [:png, :jpg]
       <b class="header">text</b><code>--pages --ocr --no-ocr</code>
       <span class="alias">Ruby: <b>extract_text</b></span>
       <br />
-      Extract the complete <b>UTF-8</b>-encoded plain text of a document to a 
-      single file. If you'd like to extract the text for each page separately, 
+      Extract the complete <b>UTF-8</b>-encoded plain text of a document to a
+      single file. If you'd like to extract the text for each page separately,
       pass <tt>--pages all</tt>. You can use the <tt>--ocr</tt> and <tt>--no-ocr</tt>
       flags to force OCR, or disable it, respectively. By default (if Tesseract is installed)
       Docsplit will OCR the text of each page for which it fails to extract text
@@ -254,55 +254,55 @@ Docsplit.extract_length('path/to/stooges.pdf')
     <h2 id="internals">Internals</h2>
 
     <p>
-      Under the hood, Docsplit is a thin wrapper around the excellent 
+      Under the hood, Docsplit is a thin wrapper around the excellent
       <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>,
       <a href="http://poppler.freedesktop.org/">Poppler</a>,
       <a href="http://www.accesspdf.com/pdftk/">PDFTK</a>,
       <a href="http://code.google.com/p/tesseract-ocr/">Tesseract</a>, and
       <a href="http://artofsolving.com/opensource/jodconverter">JODConverter</a>
-      libraries. Poppler is used to extract text and metadata from PDF documents, 
+      libraries. Poppler is used to extract text and metadata from PDF documents,
       PDFTK is used to split them apart into pages, and GraphicsMagick is used to generate
-      the page images (internally, it's rendering them with 
+      the page images (internally, it's rendering them with
       <a href="http://pages.cs.wisc.edu/~ghost/doc/GPL/index.htm">GhostScript</a>).
       JODConverter communicates with OpenOffice to perform the PDF conversions.
       Tesseract provides the transparent OCR fallback support, if the document
       is a simple scan, and the file doesn't contain any embedded text.
     </p>
-    
+
     <p>
-      Because documents need to be in PDF format before any metadata, text, 
+      Because documents need to be in PDF format before any metadata, text,
       or images are extracted, it's faster to use <tt>docsplit pdf</tt>
-      to convert it up front, if you're planning to run more than one extraction. 
-      Otherwise Docsplit will write out the PDF version to a temporary file before 
+      to convert it up front, if you're planning to run more than one extraction.
+      Otherwise Docsplit will write out the PDF version to a temporary file before
       proceeding with each command.
     </p>
 
     <h2 id="changes">Change Log</h2>
-    
+
     <p>
       <b class="header">0.3.0</b><br />
       OCR support added via Tesseract, and the <tt>--ocr</tt> and <tt>--no-ocr</tt>
       flags. PDFBox is no longer a dependency, and the gem is many megabytes
       lighter for it.
     </p>
-    
+
     <p>
       <b class="header">0.2.0</b><br />
       Moving to Poppler's <tt>pdftotext</tt>. PDFBox had issues with Unicode in PDFs
       and incorrectly split individual pages of text.
     </p>
-    
+
     <p>
       <b class="header">0.1.3</b><br />
       Fixing a bug with specifying explicit page ranges for image extraction.
     </p>
-    
+
     <p>
       <b class="header">0.1.2</b><br />
-      Limiting the memory usage of GraphicsMagick to avoid out of memory errors 
+      Limiting the memory usage of GraphicsMagick to avoid out of memory errors
       on very large PDFs.
     </p>
-    
+
     <p>
       <b class="header">0.1.1</b><br />
       Upgraded for compatibility with GraphicsMagick 1.3.11.
