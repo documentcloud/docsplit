@@ -23,7 +23,9 @@ module Docsplit
           extract_from_ocr(pdf, pages)
         else
           extract_from_pdf(pdf, pages)
-          extract_from_ocr(pdf, @pages_to_ocr) if !@forbid_ocr && !@pages_to_ocr.empty?
+          if !@forbid_ocr && DEPENDENCIES[:tesseract] && !@pages_to_ocr.empty?
+            extract_from_ocr(pdf, @pages_to_ocr)
+          end
         end
       end
       FileUtils.remove_entry_secure @tempdir if @tempdir

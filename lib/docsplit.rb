@@ -13,6 +13,20 @@ module Docsplit
 
   METADATA_KEYS = [:author, :date, :creator, :keywords, :producer, :subject, :title, :length]
 
+  DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :tesseract => false}
+
+  # Check for all dependencies, and warn of their absence.
+  dirs = ENV['PATH'].split(File::PATH_SEPARATOR)
+  DEPENDENCIES.each_key do |dep|
+    dirs.each do |dir|
+      if File.executable?(File.join(dir, dep.to_s))
+        DEPENDENCIES[dep] = true
+        break
+      end
+    end
+    warn "Warning: Docsplit dependency #{dep} not found." if !DEPENDENCIES[dep]
+  end
+
   # Raise an ExtractionFailed exception when the PDF is encrypted, or otherwise
   # broke.
   class ExtractionFailed < StandardError; end
