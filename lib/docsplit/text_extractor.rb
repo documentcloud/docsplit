@@ -16,7 +16,8 @@ module Docsplit
 
     NO_TEXT_DETECTED = /---------\n\Z/
 
-    OCR_FLAGS = '-density 200x200 -colorspace GRAY'
+    OCR_FLAGS   = '-density 200x200 -colorspace GRAY'
+    MEMORY_ARGS = '-limit memory 128MiB -limit map 256MiB'
 
     MIN_TEXT_PER_PAGE = 100 # in bytes
 
@@ -61,14 +62,14 @@ module Docsplit
       @tempdir  ||= Dir.mktmpdir
       base_path = File.join(@output, @pdf_name)
       if pages
-        run "gm convert +adjoin #{OCR_FLAGS} #{pdf} #{@tempdir}/#{@pdf_name}_%d.tif 2>&1" unless @tiffs_generated
+        run "OMP_NUM_THREADS=2 gm convert +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{@tempdir}/#{@pdf_name}_%d.tif 2>&1" unless @tiffs_generated
         @tiffs_generated = true
         pages.each do |page|
           run "tesseract #{@tempdir}/#{@pdf_name}_#{page - 1}.tif #{base_path}_#{page} 2>&1"
         end
       else
         tiff = "#{@tempdir}/#{@pdf_name}.tif"
-        run "gm convert #{OCR_FLAGS} #{pdf} #{tiff} 2>&1"
+        run "OMP_NUM_THREADS=2 gm convert #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{tiff} 2>&1"
         run "tesseract #{tiff} #{base_path} -l eng 2>&1"
       end
     end
