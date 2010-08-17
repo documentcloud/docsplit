@@ -42,7 +42,6 @@ module Docsplit
           end
         end
       end
-      FileUtils.remove_entry_secure @tempdir if @tempdir && File.exists?(@tempdir)
     end
 
     # Does a PDF have any text embedded?
@@ -59,19 +58,20 @@ module Docsplit
 
     # Extract a page range worth of text from a PDF via OCR.
     def extract_from_ocr(pdf, pages)
-      @tempdir  ||= Dir.mktmpdir
+      tempdir = Dir.mktmpdir
       base_path = File.join(@output, @pdf_name)
       if pages
-        run "MAGICK_TMPDIR=#{@tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{@tempdir}/#{@pdf_name}_%d.tif 2>&1" unless @tiffs_generated
+        run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{tempdir}/#{@pdf_name}_%d.tif 2>&1" unless @tiffs_generated
         @tiffs_generated = true
         pages.each do |page|
-          run "tesseract #{@tempdir}/#{@pdf_name}_#{page - 1}.tif #{base_path}_#{page} 2>&1"
+          run "tesseract #{tempdir}/#{@pdf_name}_#{page - 1}.tif #{base_path}_#{page} 2>&1"
         end
       else
-        tiff = "#{@tempdir}/#{@pdf_name}.tif"
-        run "MAGICK_TMPDIR=#{@tempdir} OMP_NUM_THREADS=2 gm convert #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{tiff} 2>&1"
+        tiff = "#{tempdir}/#{@pdf_name}.tif"
+        run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{tiff} 2>&1"
         run "tesseract #{tiff} #{base_path} -l eng 2>&1"
       end
+      FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
     end
 
 
