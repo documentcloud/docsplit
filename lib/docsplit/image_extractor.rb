@@ -11,6 +11,7 @@ module Docsplit
     # Extract a list of PDFs as rasterized page images, according to the
     # configuration in options.
     def extract(pdfs, options)
+      @tempdir = Dir.mktmpdir
       @pdfs = [pdfs].flatten
       extract_options(options)
       @pdfs.each do |pdf|
@@ -20,6 +21,7 @@ module Docsplit
           previous = size if @rolling
         end
       end
+      FileUtils.remove_entry_secure @tempdir if File.exists?(@tempdir)
     end
 
     # Convert a single PDF into page images at the specified size and format.
@@ -31,9 +33,9 @@ module Docsplit
       common    = "#{MEMORY_ARGS} #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
-        cmd = "OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1"
+        cmd = "MAGICK_TMPDIR=#{@tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1"
       else
-        cmd = "OMP_NUM_THREADS=2 gm convert +adjoin #{common} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
+        cmd = "MAGICK_TMPDIR=#{@tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{common} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
       end
       result = `#{cmd}`.chomp
       raise ExtractionFailed, result if $? != 0
