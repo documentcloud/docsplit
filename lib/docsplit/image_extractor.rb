@@ -8,6 +8,7 @@ module Docsplit
     MEMORY_ARGS       = "-limit memory 256MiB -limit map 512MiB"
     GHOSTSCRIPT_ARGS  = "-q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=tiff24nc -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r100x100"
     DEFAULT_FORMAT    = :png
+    CHUNK_SIZE        = 10
 
     # Extract a list of PDFs as rasterized page images, according to the
     # configuration in options.
@@ -31,20 +32,20 @@ module Docsplit
       pages     = @pages || '1-' + Docsplit.extract_length(pdf).to_s
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
       tiff_file = File.join(tempdir, "#{basename}.tif")
-      out_file  = File.join(directory, "#{basename}_%05d.#{format}")
       common    = "#{MEMORY_ARGS} #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
         cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1"
       else
         cmd = "gs #{GHOSTSCRIPT_ARGS} -sOutputFile=#{tiff_file} -- #{pdf}"
-        page_list(pages, 10).each do |nums|
+        page_list(pages, CHUNK_SIZE).each_with_index do |nums, chunk|
+          out_file = File.join(directory, "#{basename}_chunk#{chunk}_%05d.#{format}")
           cmd += " && MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{common} \"#{tiff_file}#{pages_arg(nums)}\" \"#{out_file}\" 2>&1"
         end
       end
       result = `#{cmd}`.chomp
       raise ExtractionFailed, result if $? != 0
-      renumber_images(pages, out_file, format)
+      renumber_images(pages, File.join(directory, basename + '*.' + format), format) unless previous
       FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
     end
 
@@ -109,10 +110,11 @@ module Docsplit
     # When GraphicsMagick is through, it will have generated a number of
     # incrementing page images, starting at 0. Renumber them with their correct
     # page numbers.
-    def renumber_images(pages, template, format)
-      suffixer = /_0+(\d+)\.#{format}\Z/
-      images = Dir[template.sub('%05d', '0*')].map do |path|
-        index = path[suffixer, 1].to_i
+    def renumber_images(pages, glob, format)
+      suffixer = /_chunk(\d+)_0+(\d+)\.#{format}\Z/
+      images = Dir[glob].map do |path|
+        chunk = path[suffixer, 1].to_i
+        index = chunk * CHUNK_SIZE + path[suffixer, 2].to_i
         {:path => path, :index => index, :page_number => index + 1}
       end
       numbers = page_list(pages).reverse
