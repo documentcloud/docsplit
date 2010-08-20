@@ -98,7 +98,7 @@
       (title, author, number of pages...)
     </p>
 
-    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.3.3</a>.</p>
+    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.3.4</a>.</p>
 
     <p>
       <i>Docsplit is an open-source component of <a href="http://documentcloud.org/">DocumentCloud</a>.</i>
@@ -278,6 +278,14 @@ Docsplit.extract_length('path/to/stooges.pdf')
     </p>
 
     <h2 id="changes">Change Log</h2>
+    
+    <p>
+      <b class="header">0.3.4</b><br />
+      A number of Memory / Disk Space optimizations to the way that GraphicsMagick
+      and GhostScript are used to generate images from PDFs. We now delegate
+      directly to GhostScript, and only run GraphicsMagick on ten pages at a time,
+      before clearing out the temporary files.
+    </p>
     
     <p>
       <b class="header">0.3.3</b><br />

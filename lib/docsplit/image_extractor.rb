@@ -4,9 +4,10 @@ module Docsplit
   # nicely sized images.
   class ImageExtractor
 
-    DENSITY_ARG     = "-density 150"
-    MEMORY_ARGS     = "-limit memory 128MiB -limit map 256MiB"
-    DEFAULT_FORMAT  = :png
+    DENSITY_ARG       = "-density 100"
+    MEMORY_ARGS       = "-limit memory 256MiB -limit map 512MiB"
+    GHOSTSCRIPT_ARGS  = "-q -dBATCH -dMaxBitmap=50000000 -dNOPAUSE -sDEVICE=tiff24nc -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -r100x100"
+    DEFAULT_FORMAT    = :png
 
     # Extract a list of PDFs as rasterized page images, according to the
     # configuration in options.
@@ -27,18 +28,23 @@ module Docsplit
       tempdir   = Dir.mktmpdir
       basename  = File.basename(pdf, File.extname(pdf))
       directory = directory_for(size)
+      pages     = @pages || '1-' + Docsplit.extract_length(pdf).to_s
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
+      tiff_file = File.join(tempdir, "#{basename}.tif")
       out_file  = File.join(directory, "#{basename}_%05d.#{format}")
       common    = "#{MEMORY_ARGS} #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
         cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1"
       else
-        cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{common} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
+        cmd = "gs #{GHOSTSCRIPT_ARGS} -sOutputFile=#{tiff_file} -- #{pdf}"
+        page_list(pages, 10).each do |nums|
+          cmd += " && MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{common} \"#{tiff_file}#{pages_arg(nums)}\" \"#{out_file}\" 2>&1"
+        end
       end
       result = `#{cmd}`.chomp
       raise ExtractionFailed, result if $? != 0
-      renumber_images(out_file, format)
+      renumber_images(pages, out_file, format)
       FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
     end
 
@@ -77,15 +83,13 @@ module Docsplit
     end
 
     # Generate the requested page index into the document.
-    def pages_arg
-      return '' if @pages.nil?
-      pages = @pages.gsub(/\d+/) {|digits| (digits.to_i - 1).to_s }
-      "[#{pages}]"
+    def pages_arg(numbers)
+      '[' + numbers.map {|num| num - 1 }.join(',') + ']'
     end
 
     # Generate the expanded list of requested page numbers.
-    def page_list
-      @pages.split(',').map { |range|
+    def page_list(pages, chunk_count=nil)
+      list = pages.split(',').map { |range|
         if range.include?('-')
           range = range.split('-')
           Range.new(range.first.to_i, range.last.to_i).to_a.map {|n| n.to_i }
@@ -93,18 +97,25 @@ module Docsplit
           range.to_i
         end
       }.flatten.sort
+      return list unless chunk_count
+      chunks = []
+      list.each_with_index do |num, i|
+        chunks << [] if i % chunk_count == 0
+        chunks.last << num
+      end
+      chunks
     end
 
     # When GraphicsMagick is through, it will have generated a number of
     # incrementing page images, starting at 0. Renumber them with their correct
     # page numbers.
-    def renumber_images(template, format)
+    def renumber_images(pages, template, format)
       suffixer = /_0+(\d+)\.#{format}\Z/
       images = Dir[template.sub('%05d', '0*')].map do |path|
         index = path[suffixer, 1].to_i
         {:path => path, :index => index, :page_number => index + 1}
       end
-      numbers = @pages ? page_list.reverse : nil
+      numbers = page_list(pages).reverse
       images.sort_by {|i| -i[:page_number] }.each_with_index do |image, i|
         number = numbers ? numbers[i] : image[:page_number]
         FileUtils.mv(image[:path], image[:path].sub(suffixer, "_#{number}.#{format}"))
