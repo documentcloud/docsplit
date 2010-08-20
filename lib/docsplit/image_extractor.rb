@@ -27,18 +27,21 @@ module Docsplit
       tempdir   = Dir.mktmpdir
       basename  = File.basename(pdf, File.extname(pdf))
       directory = directory_for(size)
+      pages     = @pages || '1-' + Docsplit.extract_length(pdf).to_s
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
-      out_file  = File.join(directory, "#{basename}_%05d.#{format}")
       common    = "#{MEMORY_ARGS} #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
-        cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1"
+        result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
+        raise ExtractionFailed, result if $? != 0
       else
-        cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{common} \"#{pdf}#{pages_arg}\" \"#{out_file}\" 2>&1"
+        page_list(pages).each do |page|
+          out_file  = File.join(directory, "#{basename}_#{page}.#{format}")
+          cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{common} \"#{pdf}[#{page - 1}]\" \"#{out_file}\" 2>&1".chomp
+          result = `#{cmd}`.chomp
+          raise ExtractionFailed, result if $? != 0
+        end
       end
-      result = `#{cmd}`.chomp
-      raise ExtractionFailed, result if $? != 0
-      renumber_images(out_file, format)
       FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
     end
 
@@ -76,16 +79,9 @@ module Docsplit
       end
     end
 
-    # Generate the requested page index into the document.
-    def pages_arg
-      return '' if @pages.nil?
-      pages = @pages.gsub(/\d+/) {|digits| (digits.to_i - 1).to_s }
-      "[#{pages}]"
-    end
-
     # Generate the expanded list of requested page numbers.
-    def page_list
-      @pages.split(',').map { |range|
+    def page_list(pages)
+      pages.split(',').map { |range|
         if range.include?('-')
           range = range.split('-')
           Range.new(range.first.to_i, range.last.to_i).to_a.map {|n| n.to_i }
@@ -93,22 +89,6 @@ module Docsplit
           range.to_i
         end
       }.flatten.sort
-    end
-
-    # When GraphicsMagick is through, it will have generated a number of
-    # incrementing page images, starting at 0. Renumber them with their correct
-    # page numbers.
-    def renumber_images(template, format)
-      suffixer = /_0+(\d+)\.#{format}\Z/
-      images = Dir[template.sub('%05d', '0*')].map do |path|
-        index = path[suffixer, 1].to_i
-        {:path => path, :index => index, :page_number => index + 1}
-      end
-      numbers = @pages ? page_list.reverse : nil
-      images.sort_by {|i| -i[:page_number] }.each_with_index do |image, i|
-        number = numbers ? numbers[i] : image[:page_number]
-        FileUtils.mv(image[:path], image[:path].sub(suffixer, "_#{number}.#{format}"))
-      end
     end
 
   end
