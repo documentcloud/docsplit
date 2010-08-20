@@ -17,13 +17,12 @@ module Docsplit
     NO_TEXT_DETECTED = /---------\n\Z/
 
     OCR_FLAGS   = '-density 200x200 -colorspace GRAY'
-    MEMORY_ARGS = '-limit memory 128MiB -limit map 256MiB'
+    MEMORY_ARGS = '-limit memory 256MiB -limit map 512MiB'
 
     MIN_TEXT_PER_PAGE = 100 # in bytes
 
     def initialize
-      @tiffs_generated = false
-      @pages_to_ocr    = []
+      @pages_to_ocr = []
     end
 
     # Extract text from a list of PDFs.
@@ -61,10 +60,11 @@ module Docsplit
       tempdir = Dir.mktmpdir
       base_path = File.join(@output, @pdf_name)
       if pages
-        run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{tempdir}/#{@pdf_name}_%d.tif 2>&1" unless @tiffs_generated
-        @tiffs_generated = true
         pages.each do |page|
-          run "tesseract #{tempdir}/#{@pdf_name}_#{page - 1}.tif #{base_path}_#{page} 2>&1"
+          tiff = "#{tempdir}/#{@pdf_name}_#{page}.tif"
+          run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf}[#{page - 1}] #{tiff} 2>&1"
+          run "tesseract #{tiff} #{base_path}_#{page} 2>&1"
+          FileUtils.remove_entry_secure tiff
         end
       else
         tiff = "#{tempdir}/#{@pdf_name}.tif"

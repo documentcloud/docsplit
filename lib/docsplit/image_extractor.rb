@@ -5,7 +5,7 @@ module Docsplit
   class ImageExtractor
 
     DENSITY_ARG     = "-density 150"
-    MEMORY_ARGS     = "-limit memory 128MiB -limit map 256MiB"
+    MEMORY_ARGS     = "-limit memory 256MiB -limit map 512MiB"
     DEFAULT_FORMAT  = :png
 
     # Extract a list of PDFs as rasterized page images, according to the
