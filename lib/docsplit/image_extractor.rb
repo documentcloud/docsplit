@@ -46,6 +46,7 @@ module Docsplit
           raise ExtractionFailed, result if $? != 0
         end
       end
+    ensure
       FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
     end
 

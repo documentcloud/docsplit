@@ -71,6 +71,7 @@ module Docsplit
         run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{tiff} 2>&1"
         run "tesseract #{tiff} #{base_path} -l eng 2>&1"
       end
+    ensure
       FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
     end
 
