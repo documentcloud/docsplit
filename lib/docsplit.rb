@@ -1,7 +1,7 @@
 # The Docsplit module delegates to the Java PDF extractors.
 module Docsplit
 
-  VERSION       = '0.4.0' # Keep in sync with gemspec.
+  VERSION       = '0.4.1' # Keep in sync with gemspec.
 
   ROOT          = File.expand_path(File.dirname(__FILE__) + '/..')
 
@@ -10,6 +10,8 @@ module Docsplit
   LOGGING       = "-Djava.util.logging.config.file=#{ROOT}/vendor/logging.properties"
 
   HEADLESS      = "-Djava.awt.headless=true"
+
+  OFFICE        = RUBY_PLATFORM.match(/darwin/i) ? '' : '-Doffice.home=/usr/lib/openoffice'
 
   METADATA_KEYS = [:author, :date, :creator, :keywords, :producer, :subject, :title, :length]
 
@@ -76,7 +78,7 @@ module Docsplit
   # Runs a Java command, with quieted logging, and the classpath set properly.
   def self.run(command, pdfs, opts, return_output=false)
     pdfs    = [pdfs].flatten.map{|pdf| "\"#{pdf}\""}.join(' ')
-    cmd     = "java #{HEADLESS} #{LOGGING} -cp #{CLASSPATH} #{command} #{pdfs} 2>&1"
+    cmd     = "java #{HEADLESS} #{LOGGING} #{OFFICE} -cp #{CLASSPATH} #{command} #{pdfs} 2>&1"
     result  = `#{cmd}`.chomp
     raise ExtractionFailed, result if $? != 0
     return return_output ? (result.empty? ? nil : result) : true
