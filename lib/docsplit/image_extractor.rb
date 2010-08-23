@@ -23,6 +23,10 @@ module Docsplit
     end
 
     # Convert a single PDF into page images at the specified size and format.
+    # If `--rolling`, and we have a previous image at a larger size to work with,
+    # we simply downsample that image, instead of re-rendering the entire PDF.
+    # Now we generate one page at a time, a counterintuitive opimization
+    # suggested by the GraphicsMagick list, that seems to work quite well.
     def convert(pdf, size, format, previous=nil)
       tempdir   = Dir.mktmpdir
       basename  = File.basename(pdf, File.extname(pdf))
@@ -88,7 +92,7 @@ module Docsplit
         else
           range.to_i
         end
-      }.flatten.sort
+      }.flatten.uniq.sort
     end
 
   end

@@ -280,6 +280,13 @@ Docsplit.extract_length('path/to/stooges.pdf')
     <h2 id="changes">Change Log</h2>
     
     <p>
+      <b class="header">0.3.4</b><br />
+      Adding a suggested optimization from the GraphicsMagick list -- only ever
+      generate one page image per GraphicsMagick call. Saves large amounts of
+      disk space for tempfiles on long documents.
+    </p>
+    
+    <p>
       <b class="header">0.3.3</b><br />
       Start using the MAGICK_TMPDIR environment variable to prevent parallel
       Docsplit runs from having the potential to clobber each other's temporary
