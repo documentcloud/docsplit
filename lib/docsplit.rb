@@ -54,7 +54,8 @@ module Docsplit
   def self.extract_pdf(docs, opts={})
     [docs].flatten.each do |doc|
       basename = File.basename(doc, File.extname(doc))
-      run "-jar #{ROOT}/vendor/jodconverter/jodconverter-cli-2.2.2.jar #{doc} #{opts[:output] || '.'}/#{basename}.pdf", [], {}
+      options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-3.jar -r #{ROOT}/vendor/conf/document-formats.js"
+      run "#{options} \"#{doc}\" \"#{opts[:output] || '.'}/#{basename}.pdf\"", [], {}
     end
   end
 
