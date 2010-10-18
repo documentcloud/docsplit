@@ -1,3 +1,4 @@
+require 'iconv'
 require 'strscan'
 
 module Docsplit
@@ -19,11 +20,11 @@ module Docsplit
     SPACE       = /\s+/
     NEWLINE     = /[\r\n]/
     ALNUM       = /[a-z0-9]/i
-    PUNCT       = /[^a-z0-9\s]/i
+    PUNCT       = /[[:punct:]]/i
     REPEAT      = /([^0-9])\1{2,}/
     UPPER       = /[A-Z]/
     LOWER       = /[a-z]/
-    ACRONYM     = /^\(?[A-Z0-9\.]+('?s)?\)?[.,]?$/
+    ACRONYM     = /^\(?[A-Z0-9\.]+('?s)?\)?[.,:]?$/
     ALL_ALPHA   = /^[a-z]+$/i
     CONSONANT   = /(^y|[bcdfghjklmnpqrstvwxz])/i
     VOWEL       = /([aeiou]|y$)/i
@@ -33,8 +34,9 @@ module Docsplit
     SINGLETONS  = /^[AaIi]$/
 
     # For the time being, `clean` uses the regular StringScanner, and not the
-    # multibyte-aware version.
+    # multibyte-aware version, coercing to ASCII first.
     def clean(text)
+      text    = Iconv.iconv('ascii//translit//ignore', 'utf-8', text).first
       scanner = StringScanner.new(text)
       cleaned = []
       spaced  = false

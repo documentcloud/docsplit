@@ -98,7 +98,7 @@
       (title, author, number of pages...)
     </p>
 
-    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.4.1</a>.</p>
+    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.5.0</a>.</p>
 
     <p>
       <i>Docsplit is an open-source component of <a href="http://documentcloud.org/">DocumentCloud</a>.</i>
@@ -192,7 +192,7 @@ docsplit images docs/*.pdf --size 700x,50x50 --format gif --pages 3,10-15,42</pr
 Docsplit.extract_images('example.doc', :size => '1000x', :format => [:png, :jpg])</pre>
 
     <p class="break">
-      <b class="header">text</b><code>--pages --ocr --no-ocr</code>
+      <b class="header">text</b><code>--pages --ocr --no-ocr --no-clean</code>
       <span class="alias">Ruby: <b>extract_text</b></span>
       <br />
       Extract the complete <b>UTF-8</b>-encoded plain text of a document to a
@@ -200,7 +200,9 @@ Docsplit.extract_images('example.doc', :size => '1000x', :format => [:png, :jpg]
       pass <tt>--pages all</tt>. You can use the <tt>--ocr</tt> and <tt>--no-ocr</tt>
       flags to force OCR, or disable it, respectively. By default (if Tesseract is installed)
       Docsplit will OCR the text of each page for which it fails to extract text
-      directly from the document.
+      directly from the document. Docsplit will also attempt to clean up garbage 
+      characters in the OCR'd text &mdash; to disable this, pass the
+      <tt>--no-clean</tt> flag.
     </p>
 <pre>
 docsplit text path/to/doc.pdf --pages all</pre>
@@ -210,7 +212,7 @@ Docsplit.extract_text(docs, :ocr => false, :output => 'storage/text')</pre>
 
     <p class="break">
       <b class="header">pages</b><code>--pages</code>
-      <span class="alias">Ruby: <b>extract_text</b></span>
+      <span class="alias">Ruby: <b>extract_pages</b></span>
       <br />
       Burst apart a document into single-page PDFs. Use <tt>--pages</tt> to
       specify the individual pages (or ranges of pages) you'd like to generate.
@@ -278,6 +280,13 @@ Docsplit.extract_length('path/to/stooges.pdf')
     </p>
 
     <h2 id="changes">Change Log</h2>
+    
+    <p>
+      <b class="header">0.5.0</b><br />
+      Added a <tt>Docsplit::TextCleaner</tt> class which is used to post-process
+      OCR'd text, and remove garbage characters that are created when Tesseract
+      encounters non-english text. To disable the cleanup, pass <tt>--no-clean</tt>.
+    </p>
     
     <p>
       <b class="header">0.4.1</b><br />
