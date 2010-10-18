@@ -5,9 +5,9 @@ the inhibitors in mitigating internal corrosion; and
 (3) Examine the coupons or other monitoring equipment at least twice each
 calendar year, but with intervals not exceeding 7 1/2 months.
 Internal corrosion monitoring was discontinued on the five hydrogen permeation monitors
-(Beta F oils) installed on Line 6B. Two manuallydnterrogated monitors were discontinued in
-May 2006. One remotely—interro gated monitor was discontinued in January 2006, and the
-other two remotely—interro gated monitors were discontinued in October 2007. Enbridge
+(Beta oils) installed on Line 6B. Two monitors were discontinued in
+May 2006. One gated monitor was discontinued in January 2006, and the
+other two gated monitors were discontinued in October 2007. Enbridge
 representatives stated the monitoring was discontinued due to
 "communication/instrumentation problems."
 Enbridge is in the process of implementing an alternative method of internal corrosion
@@ -15,25 +15,25 @@ monitoring on Line 6B utilizing a technology referred to as Electrical Resistanc
 (FSMPIT), however, it is not expected to be implemented on Line 6B until sometime during
 the first half of 2010. In the interim, Enbridge provided the following information as
 demonstration that the internal corrosion threat is being properly managed:
-• a comprehensive report related to the internal corrosion mitigation and
+a comprehensive report related to the internal corrosion mitigation and
 monitoring program for their heavy oil pipeline system
-¤ repair sleeve installations (which require circumferential non-destructive
+repair sleeve installations (which require circumferential non-destructive
 testing)
-¤ inspection ofthe Line 6B Pig Sending Trap at Griffith Station (which included
+inspection ofthe Line 6B Pig Sending Trap at Griffith Station (which included
 ultrasonic inspection of the trap floor between the 5:00 and 7:00 positions)
-¤ detailed pipe examinations at in-line inspection indications
-e records for a weight loss coupon at the Stockbridge Ptunping Station (Line 17),
+detailed pipe examinations at in-line inspection indications
+records for a weight loss coupon at the Stockbridge Ptunping Station (Line 17),
 which sees only fluid flow from Line 6B
 The information provided does not demonstrate compliance with the above regulation. Line
-6B has been subject to a batch chemical treatment program to inhibit internal corrosion for ‘
-several years. As required by l95.579(b), Line 6B must have coupons or other monitoring
+6B has been subject to a batch chemical treatment program to inhibit internal corrosion for 
+several years. As required by Line 6B must have coupons or other monitoring
 equipment to determine the effectiveness of the inhibitor program, and the coupons or other
 monitoring equipment nlust be examined at least twice each calendar year, at intervals not to
 exceed 7-l/2 months. PHMSA acknowledges the positive steps being taken to improve
-Enbridge’s internal corrosion mitigation and monitoring program. However, the transition
+internal corrosion mitigation and monitoring program. However, the transition
 from one technology to another must be implemented in a manner that ensures continued
 compliance with the regulations.
-Under 49 United States Code, § 60122, you are subject to a civil penalty not to exceed
+Under 49 United States Code, 60122, you are subject to a civil penalty not to exceed
 $100,000 for each violation for each day the violation persists up to a maximum of $1,000,000
 for any related series of violations. We have reviewed the circumstances and supporting
 documents involved in this case, and have decided not to conduct additional enforcement

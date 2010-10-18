@@ -118,7 +118,7 @@ module Docsplit
       @pages      = options[:pages]
       @force_ocr  = options[:ocr] == true
       @forbid_ocr = options[:ocr] == false
-      @clean_ocr  = options[:clean]
+      @clean_ocr  = !(options[:clean] == false)
     end
 
   end

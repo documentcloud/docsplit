@@ -38,6 +38,7 @@ Our nation’s creativity has filled the world’s libraries, museums, recital h
     assert Dir["#{OUTPUT}/*.txt"].length == 4
     4.times do |i|
       file = "corrosion_#{i + 1}.txt"
+      # File.open("test/fixtures/corrosion/#{file}", "w+") {|f| f.write(File.read("#{OUTPUT}/#{file}")) }
       assert File.read("#{OUTPUT}/#{file}") == File.read("test/fixtures/corrosion/#{file}")
     end
   end

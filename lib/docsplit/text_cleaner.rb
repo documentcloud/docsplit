@@ -20,10 +20,10 @@ module Docsplit
     NEWLINE     = /[\r\n]/
     ALNUM       = /[a-z0-9]/i
     PUNCT       = /[^a-z0-9\s]/i
-    REPEAT      = /(.)\1{2,}/
+    REPEAT      = /([^0-9])\1{2,}/
     UPPER       = /[A-Z]/
     LOWER       = /[a-z]/
-    ACRONYM     = /^\(?[A-Z]+('?s|[.,])?\)?$/
+    ACRONYM     = /^\(?[A-Z0-9\.]+('?s)?\)?[.,]?$/
     ALL_ALPHA   = /^[a-z]+$/i
     CONSONANT   = /(^y|[bcdfghjklmnpqrstvwxz])/i
     VOWEL       = /([aeiou]|y$)/i
@@ -55,14 +55,16 @@ module Docsplit
 
     # Is a given word OCR garbage?
     def garbage(w)
-      # More than 20 bytes in length.
-      (w.length > 20) ||
+      acronym = w =~ ACRONYM
+
+      # More than 30 bytes in length.
+      (w.length > 30) ||
 
       # If there are three or more identical characters in a row in the string.
       (w =~ REPEAT) ||
 
       # More punctuation than alpha numerics.
-      (w.scan(ALNUM).length < w.scan(PUNCT).length) ||
+      (!acronym && (w.scan(ALNUM).length < w.scan(PUNCT).length)) ||
 
       # Ignoring the first and last characters in the string, if there are three or
       # more different punctuation characters in the string.
@@ -73,14 +75,14 @@ module Docsplit
 
       # Number of uppercase letters greater than lowercase letters, but the word is
       # not all uppercase + punctuation.
-      ((w.scan(UPPER).length > w.scan(LOWER).length) && (w !~ ACRONYM)) ||
+      (!acronym && (w.scan(UPPER).length > w.scan(LOWER).length)) ||
 
       # Single letters that are not A or I.
       (w.length == 1 && (w =~ ALL_ALPHA) && (w !~ SINGLETONS)) ||
 
       # All characters are alphabetic and there are 8 times more vowels than
       # consonants, or 8 times more consonants than vowels.
-      ((w.length > 2 && (w =~ ALL_ALPHA) && (w !~ ACRONYM)) &&
+      (!acronym && (w.length > 2 && (w =~ ALL_ALPHA)) &&
         (((vows = w.scan(VOWEL).length) > (cons = w.scan(CONSONANT).length) * 8) ||
           (cons > vows * 8)))
     end
