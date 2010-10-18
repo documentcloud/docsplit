@@ -72,6 +72,11 @@ module Docsplit
     EOS
   end
 
+  # Utility method to clean OCR'd text with garbage characters.
+  def self.clean_text(text)
+    TextCleaner.new.clean(text)
+  end
+
 
   private
 
@@ -103,3 +108,4 @@ require "#{Docsplit::ROOT}/lib/docsplit/transparent_pdfs"
 require "#{Docsplit::ROOT}/lib/docsplit/text_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/page_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/info_extractor"
+require "#{Docsplit::ROOT}/lib/docsplit/text_cleaner"

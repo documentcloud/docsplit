@@ -62,14 +62,17 @@ module Docsplit
       if pages
         pages.each do |page|
           tiff = "#{tempdir}/#{@pdf_name}_#{page}.tif"
+          file = "#{base_path}_#{page}"
           run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf}[#{page - 1}] #{tiff} 2>&1"
-          run "tesseract #{tiff} #{base_path}_#{page} 2>&1"
+          run "tesseract #{tiff} #{file} 2>&1"
+          clean_text(file + '.txt') if @clean_ocr
           FileUtils.remove_entry_secure tiff
         end
       else
         tiff = "#{tempdir}/#{@pdf_name}.tif"
         run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{tiff} 2>&1"
         run "tesseract #{tiff} #{base_path} -l eng 2>&1"
+        clean_text(base_path + '.txt') if @clean_ocr
       end
     ensure
       FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
@@ -77,6 +80,15 @@ module Docsplit
 
 
     private
+
+    def clean_text(file)
+      File.open(file, 'r+') do |f|
+        text = f.read
+        f.truncate(0)
+        f.rewind
+        f.write(Docsplit.clean_text(text))
+      end
+    end
 
     # Run an external process and raise an exception if it fails.
     def run(command)
@@ -106,6 +118,7 @@ module Docsplit
       @pages      = options[:pages]
       @force_ocr  = options[:ocr] == true
       @forbid_ocr = options[:ocr] == false
+      @clean_ocr  = options[:clean]
     end
 
   end

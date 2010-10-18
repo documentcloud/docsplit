@@ -71,7 +71,7 @@ Options:
     # Use the OptionParser library to parse out all supported options. Return
     # options formatted for the Ruby API.
     def parse_options
-      @options = {:ocr => :default}
+      @options = {:ocr => :default, :clean => true}
       @option_parser = OptionParser.new do |opts|
         opts.on('-o', '--output [DIR]', 'set the directory for all output') do |d|
           @options[:output] = d
@@ -87,6 +87,9 @@ Options:
         end
         opts.on('--[no-]ocr', 'force OCR to be used, or disable OCR') do |o|
           @options[:ocr] = o
+        end
+        opts.on('--no-clean', 'disable cleaning of OCR\'d text') do |c|
+          @options[:clean] = false
         end
         opts.on('-r', '--rolling', 'generate images from each previous image') do |r|
           @options[:rolling] = true
