@@ -29,7 +29,7 @@ module Docsplit
     CONSONANT   = /(^y|[bcdfghjklmnpqrstvwxz])/i
     VOWEL       = /([aeiou]|y$)/i
     CONSONANT_5 = /[bcdfghjklmnpqrstvwxyz]{5}/i
-    VOWEL_4     = /[aeiou]{4}/i
+    VOWEL_5     = /[aeiou]{5}/i
     REPEATED    = /(\b\S{1,2}\s+)(\S{1,3}\s+){5,}(\S{1,2}\s+)/
     SINGLETONS  = /^[AaIi]$/
 
@@ -73,7 +73,7 @@ module Docsplit
       (w[1...-1].scan(PUNCT).uniq.length >= 3) ||
 
       # Four or more consecutive vowels, or five or more consecutive consonants.
-      ((w =~ VOWEL_4) || (w =~ CONSONANT_5)) ||
+      ((w =~ VOWEL_5) || (w =~ CONSONANT_5)) ||
 
       # Number of uppercase letters greater than lowercase letters, but the word is
       # not all uppercase + punctuation.
