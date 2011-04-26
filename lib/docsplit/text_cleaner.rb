@@ -24,7 +24,7 @@ module Docsplit
     REPEAT      = /([^0-9])\1{2,}/
     UPPER       = /[A-Z]/
     LOWER       = /[a-z]/
-    ACRONYM     = /^\(?[A-Z0-9\.]+('?s)?\)?[.,:]?$/
+    ACRONYM     = /^\(?[A-Z0-9\.-]+('?s)?\)?[.,:]?$/
     ALL_ALPHA   = /^[a-z]+$/i
     CONSONANT   = /(^y|[bcdfghjklmnpqrstvwxz])/i
     VOWEL       = /([aeiou]|y$)/i
