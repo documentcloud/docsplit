@@ -64,7 +64,7 @@ module Docsplit
           tiff = "#{tempdir}/#{@pdf_name}_#{page}.tif"
           file = "#{base_path}_#{page}"
           run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf}[#{page - 1}] #{tiff} 2>&1"
-          run "tesseract #{tiff} #{file} 2>&1"
+          run "tesseract #{tiff} #{file} -l eng 2>&1"
           clean_text(file + '.txt') if @clean_ocr
           FileUtils.remove_entry_secure tiff
         end
