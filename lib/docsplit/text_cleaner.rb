@@ -1,4 +1,3 @@
-require 'iconv'
 require 'strscan'
 
 module Docsplit
@@ -36,6 +35,7 @@ module Docsplit
     # For the time being, `clean` uses the regular StringScanner, and not the
     # multibyte-aware version, coercing to ASCII first.
     def clean(text)
+      require 'iconv' unless defined?(Iconv)
       text    = Iconv.iconv('ascii//translit//ignore', 'utf-8', text).first
       scanner = StringScanner.new(text)
       cleaned = []

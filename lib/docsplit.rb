@@ -1,7 +1,7 @@
 # The Docsplit module delegates to the Java PDF extractors.
 module Docsplit
 
-  VERSION       = '0.5.1' # Keep in sync with gemspec.
+  VERSION       = '0.5.2' # Keep in sync with gemspec.
 
   ROOT          = File.expand_path(File.dirname(__FILE__) + '/..')
 
@@ -14,6 +14,8 @@ module Docsplit
   OFFICE        = RUBY_PLATFORM.match(/darwin/i) ? '' : '-Doffice.home=/usr/lib/openoffice'
 
   METADATA_KEYS = [:author, :date, :creator, :keywords, :producer, :subject, :title, :length]
+  
+  GM_FORMATS    = [:png, :gif, :jpg, :jpeg, :tif, :tiff, :bmp, :pnm, :ppm, :svg, :eps]
 
   DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :tesseract => false}
 
@@ -53,11 +55,19 @@ module Docsplit
   end
 
   # Use JODCConverter to extract the documents as PDFs.
+  # If the document is in an image format, use GraphicsMagick to extract the PDF.
   def self.extract_pdf(docs, opts={})
+    out = opts[:output] || '.'
+    FileUtils.mkdir_p out unless File.exists?(out)
     [docs].flatten.each do |doc|
-      basename = File.basename(doc, File.extname(doc))
-      options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-3.jar -r #{ROOT}/vendor/conf/document-formats.js"
-      run "#{options} \"#{doc}\" \"#{opts[:output] || '.'}/#{basename}.pdf\"", [], {}
+      ext = File.extname(doc)
+      basename = File.basename(doc, ext)
+      if GM_FORMATS.include?(ext.sub(/^\./, '').downcase.to_sym)
+        `gm convert "#{doc}" "#{out}/#{basename}.pdf"`
+      else
+        options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-3.jar -r #{ROOT}/vendor/conf/document-formats.js"
+        run "#{options} \"#{doc}\" \"#{out}/#{basename}.pdf\"", [], {}
+      end
     end
   end
 
