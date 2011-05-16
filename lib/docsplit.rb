@@ -62,7 +62,7 @@ module Docsplit
     [docs].flatten.each do |doc|
       ext = File.extname(doc)
       basename = File.basename(doc, ext)
-      if GM_FORMATS.include?(ext.sub(/^\./, '').downcase.to_sym)
+      if ext.length > 0 && GM_FORMATS.include?(ext.sub(/^\./, '').downcase.to_sym)
         `gm convert "#{doc}" "#{out}/#{basename}.pdf"`
       else
         options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-3.jar -r #{ROOT}/vendor/conf/document-formats.js"
