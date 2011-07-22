@@ -18,4 +18,9 @@ class ExtractPagesTest < Test::Unit::TestCase
     assert Dir["#{OUTPUT}/*.pdf"].length == 7
   end
 
+  def test_name_escaping_while_extracting_pages
+    Docsplit.extract_pages('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf', :output => OUTPUT)
+    assert Dir["#{OUTPUT}/*.pdf"].length == 2
+  end
+
 end
