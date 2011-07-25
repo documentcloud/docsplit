@@ -19,6 +19,8 @@ module Docsplit
 
   DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :tesseract => false}
 
+  ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
+
   # Check for all dependencies, and warn of their absence.
   dirs = ENV['PATH'].split(File::PATH_SEPARATOR)
   DEPENDENCIES.each_key do |dep|
@@ -62,11 +64,13 @@ module Docsplit
     [docs].flatten.each do |doc|
       ext = File.extname(doc)
       basename = File.basename(doc, ext)
+      escaped_doc, escaped_out, escaped_basename = [doc, out, basename].map(&ESCAPE)
+
       if ext.length > 0 && GM_FORMATS.include?(ext.sub(/^\./, '').downcase.to_sym)
-        `gm convert "#{doc}" "#{out}/#{basename}.pdf"`
+        `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
       else
         options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-3.jar -r #{ROOT}/vendor/conf/document-formats.js"
-        run "#{options} \"#{doc}\" \"#{out}/#{basename}.pdf\"", [], {}
+        run "#{options} #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf", [], {}
       end
     end
   end
@@ -113,6 +117,7 @@ end
 
 require 'tmpdir'
 require 'fileutils'
+require 'shellwords'
 require "#{Docsplit::ROOT}/lib/docsplit/image_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/transparent_pdfs"
 require "#{Docsplit::ROOT}/lib/docsplit/text_extractor"

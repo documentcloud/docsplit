@@ -44,4 +44,9 @@ class ExtractTextTest < Test::Unit::TestCase
     end
   end
 
+  def test_name_escaping_while_extracting_text
+    Docsplit.extract_text('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf', :pages => 'all', :output => OUTPUT)
+    assert Dir["#{OUTPUT}/*.txt"].length == 2
+  end
+
 end

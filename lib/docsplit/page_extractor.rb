@@ -11,7 +11,7 @@ module Docsplit
         pdf_name = File.basename(pdf, File.extname(pdf))
         page_path = File.join(@output, "#{pdf_name}_%d.pdf")
         FileUtils.mkdir_p @output unless File.exists?(@output)
-        cmd = "pdftk #{pdf} burst output #{page_path} 2>&1"
+        cmd = "pdftk #{ESCAPE[pdf]} burst output #{ESCAPE[page_path]} 2>&1"
         result = `#{cmd}`.chomp
         FileUtils.rm('doc_data.txt') if File.exists?('doc_data.txt')
         raise ExtractionFailed, result if $? != 0
