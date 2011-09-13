@@ -21,7 +21,7 @@ module Docsplit
 
   ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
 
-  # Check for all dependencies, and warn of their absence.
+  # Check for all dependencies, and note their absence.
   dirs = ENV['PATH'].split(File::PATH_SEPARATOR)
   DEPENDENCIES.each_key do |dep|
     dirs.each do |dir|
@@ -30,7 +30,6 @@ module Docsplit
         break
       end
     end
-    warn "Warning: Docsplit dependency #{dep} not found." if !DEPENDENCIES[dep]
   end
 
   # Raise an ExtractionFailed exception when the PDF is encrypted, or otherwise
