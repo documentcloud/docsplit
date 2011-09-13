@@ -85,6 +85,9 @@ Options:
         opts.on('-f', '--format [FORMAT]', 'set image format (pdf, jpg, gif...)') do |t|
           @options[:format] = t.split(',')
         end
+        opts.on('-d', '--density [NUM]', 'set image density (DPI) when rasterizing') do |d|
+          @options[:density] = d
+        end
         opts.on('--[no-]ocr', 'force OCR to be used, or disable OCR') do |o|
           @options[:ocr] = o
         end

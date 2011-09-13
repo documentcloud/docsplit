@@ -4,9 +4,9 @@ module Docsplit
   # nicely sized images.
   class ImageExtractor
 
-    DENSITY_ARG     = "-density 150"
     MEMORY_ARGS     = "-limit memory 256MiB -limit map 512MiB"
     DEFAULT_FORMAT  = :png
+    DEFAULT_DENSITY = '150'
 
     # Extract a list of PDFs as rasterized page images, according to the
     # configuration in options.
@@ -34,7 +34,7 @@ module Docsplit
       pages     = @pages || '1-' + Docsplit.extract_length(pdf).to_s
       escaped_pdf = ESCAPE[pdf]
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
-      common    = "#{MEMORY_ARGS} #{DENSITY_ARG} #{resize_arg(size)} #{quality_arg(format)}"
+      common    = "#{MEMORY_ARGS} -density #{@density} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
         result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
@@ -58,6 +58,7 @@ module Docsplit
     def extract_options(options)
       @output  = options[:output]  || '.'
       @pages   = options[:pages]
+      @density = options[:density] || DEFAULT_DENSITY
       @formats = [options[:format] || DEFAULT_FORMAT].flatten
       @sizes   = [options[:size]].flatten.compact
       @sizes   = [nil] if @sizes.empty?

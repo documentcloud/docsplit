@@ -177,13 +177,15 @@
     </p>
 
     <p>
-      <b class="header">images</b><code>--size --format --pages </code>
+      <b class="header">images</b><code>--size --format --pages --density</code>
       <span class="alias">Ruby: <b>extract_images</b></span>
       <br />
       Generates an image for each page in the document at the specified resolution
       and format. Pass <tt>--pages</tt> or <tt>-p</tt> to choose the specific pages to
       image. Passing<br /> <tt>--size</tt> or <tt>-s</tt> will specify the desired
-      image resolution, and <tt>--format</tt> or <tt>-f</tt> will select the format of the final images.
+      image resolution, <tt>--density</tt> or <tt>-d</tt> will specify the DPI to rasterize the images
+      at during conversion by GraphicsMagick, and <tt>--format</tt> or <tt>-f</tt> 
+      will select the format of the final images.
     </p>
 <pre>
 docsplit images example.pdf
