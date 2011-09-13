@@ -16,7 +16,7 @@ module Docsplit
 
     NO_TEXT_DETECTED = /---------\n\Z/
 
-    OCR_FLAGS   = '-density 200x200 -colorspace GRAY'
+    OCR_FLAGS   = '-density 400x400 -colorspace GRAY'
     MEMORY_ARGS = '-limit memory 256MiB -limit map 512MiB'
 
     MIN_TEXT_PER_PAGE = 100 # in bytes
