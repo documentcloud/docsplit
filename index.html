@@ -98,7 +98,7 @@
       (title, author, number of pages...)
     </p>
 
-    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.5.1</a>.</p>
+    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.6.0</a>.</p>
 
     <p>
       <i>Docsplit is an open-source component of <a href="http://documentcloud.org/">DocumentCloud</a>.</i>
@@ -276,6 +276,19 @@ Docsplit.extract_length('path/to/stooges.pdf')
     </p>
 
     <h2 id="changes">Change Log</h2>
+    
+    <p>
+      <b class="header">0.6.0</b><small> &ndash; Sept. 13, 2011</small><br />
+      Docsplit should now handle shelling out for documents with arbitrary 
+      characters in their filenames correctly, thanks to a series of 
+      epic patches from Vladimir Rybas.
+      A <tt>--density</tt> option was added for specifying the resolution of 
+      rasterization when generating images from documents.
+      The image resolution for OCR has been doubled from 200 to 400 DPI &mdash;
+      this shouldn't make a noticeable difference for normal docs, but will make 
+      a world of difference for the fine print.
+      Docsplit now uses GraphicsMagick's <tt>--despeckle</tt> before OCR.
+    </p>
     
     <p>
       <b class="header">0.5.2</b><small> &ndash; May 13, 2011</small><br />
