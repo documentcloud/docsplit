@@ -45,7 +45,7 @@ module Docsplit
 
     # Does a PDF have any text embedded?
     def contains_text?(pdf)
-      fonts = `pdffonts #{pdf} 2>&1`
+      fonts = `pdffonts #{ESCAPE[pdf]} 2>&1`
       !fonts.match(NO_TEXT_DETECTED)
     end
 
@@ -59,19 +59,22 @@ module Docsplit
     def extract_from_ocr(pdf, pages)
       tempdir = Dir.mktmpdir
       base_path = File.join(@output, @pdf_name)
+      escaped_pdf = ESCAPE[pdf]
       if pages
         pages.each do |page|
           tiff = "#{tempdir}/#{@pdf_name}_#{page}.tif"
+          escaped_tiff = ESCAPE[tiff]
           file = "#{base_path}_#{page}"
-          run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf}[#{page - 1}] #{tiff} 2>&1"
-          run "tesseract #{tiff} #{file} -l eng 2>&1"
+          run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf}[#{page - 1}] #{escaped_tiff} 2>&1"
+          run "tesseract #{escaped_tiff} #{ESCAPE[file]} -l eng 2>&1"
           clean_text(file + '.txt') if @clean_ocr
           FileUtils.remove_entry_secure tiff
         end
       else
         tiff = "#{tempdir}/#{@pdf_name}.tif"
-        run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{pdf} #{tiff} 2>&1"
-        run "tesseract #{tiff} #{base_path} -l eng 2>&1"
+        escaped_tiff = ESCAPE[tiff]
+        run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf} #{escaped_tiff} 2>&1"
+        run "tesseract #{escaped_tiff} #{base_path} -l eng 2>&1"
         clean_text(base_path + '.txt') if @clean_ocr
       end
     ensure
@@ -100,14 +103,14 @@ module Docsplit
     # Extract the full contents of a pdf as a single file, directly.
     def extract_full(pdf)
       text_path = File.join(@output, "#{@pdf_name}.txt")
-      run "pdftotext -enc UTF-8 #{pdf} #{text_path} 2>&1"
+      run "pdftotext -enc UTF-8 #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
     end
 
     # Extract the contents of a single page of text, directly, adding it to
     # the `@pages_to_ocr` list if the text length is inadequate.
     def extract_page(pdf, page)
       text_path = File.join(@output, "#{@pdf_name}_#{page}.txt")
-      run "pdftotext -enc UTF-8 -f #{page} -l #{page} #{pdf} #{text_path} 2>&1"
+      run "pdftotext -enc UTF-8 -f #{page} -l #{page} #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
       unless @forbid_ocr
         @pages_to_ocr.push(page) if File.read(text_path).length < MIN_TEXT_PER_PAGE
       end

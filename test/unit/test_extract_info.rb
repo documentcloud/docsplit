@@ -32,4 +32,8 @@ class ExtractInfoTest < Test::Unit::TestCase
     end
   end
 
+  def test_name_escaping_while_extracting_info
+    assert 2 == Docsplit.extract_length('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf')
+  end
+
 end

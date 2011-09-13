@@ -41,4 +41,9 @@ class ExtractImagesTest < Test::Unit::TestCase
     assert Dir["#{OUTPUT}/*"] == ['test/output/obama_arts_1.gif', 'test/output/obama_arts_2.gif']
   end
 
+  def test_name_escaping_while_extracting_images
+    Docsplit.extract_images('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf', :format => :gif, :size => "250x", :output => OUTPUT)
+    assert Dir["#{OUTPUT}/*"] == ['test/output/PDF file with spaces \'single\' and "double quotes"_1.gif', 'test/output/PDF file with spaces \'single\' and "double quotes"_2.gif']
+  end
+
 end
