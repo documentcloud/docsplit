@@ -37,7 +37,7 @@ module Docsplit
       common    = "#{MEMORY_ARGS} -density #{@density} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
-        result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
+        result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} \"#{directory}/*.#{format}\" 2>&1`.chomp
         raise ExtractionFailed, result if $? != 0
       else
         page_list(pages).each do |page|
