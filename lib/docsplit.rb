@@ -15,7 +15,7 @@ module Docsplit
 
   METADATA_KEYS = [:author, :date, :creator, :keywords, :producer, :subject, :title, :length]
   
-  GM_FORMATS    = [:png, :gif, :jpg, :jpeg, :tif, :tiff, :bmp, :pnm, :ppm, :svg, :eps]
+  GM_FORMATS    = ["image/gif", "image/jpeg", "image/png", "image/x-ms-bmp", "image/svg+xml", "image/tiff", "image/x-portable-bitmap", "application/postscript", "image/x-portable-pixmap"]
 
   DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :tesseract => false}
 
@@ -65,7 +65,7 @@ module Docsplit
       basename = File.basename(doc, ext)
       escaped_doc, escaped_out, escaped_basename = [doc, out, basename].map(&ESCAPE)
 
-      if ext.length > 0 && GM_FORMATS.include?(ext.sub(/^\./, '').downcase.to_sym)
+      if GM_FORMATS.include?(`file -b --mime-type #{doc}`.strip)
         `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
       else
         options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-3.jar -r #{ROOT}/vendor/conf/document-formats.js"
