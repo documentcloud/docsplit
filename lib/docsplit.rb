@@ -65,7 +65,7 @@ module Docsplit
       basename = File.basename(doc, ext)
       escaped_doc, escaped_out, escaped_basename = [doc, out, basename].map(&ESCAPE)
 
-      if GM_FORMATS.include?(`file -b --mime-type #{doc}`.strip)
+      if GM_FORMATS.include?(`file -b --mime #{doc}`.strip.split(/[:;]\s+/)[0])
         `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
       else
         options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-3.jar -r #{ROOT}/vendor/conf/document-formats.js"
