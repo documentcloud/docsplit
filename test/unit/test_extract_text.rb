@@ -40,7 +40,7 @@ class ExtractTextTest < Test::Unit::TestCase
 
   def test_ocr_extraction_in_mock_language
     exception = assert_raise(Docsplit::ExtractionFailed) {Docsplit.extract_text('test/fixtures/corrosion.pdf', :pages => 'all', :output => OUTPUT, :language => "mock")}
-    assert(exception.message.match("mock.traineddata"))
+    assert exception.message.match("tessdata/mock"), "Expected problem with loading data for language 'mock'"
   end
 
   def test_password_protected
