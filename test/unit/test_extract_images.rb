@@ -4,7 +4,7 @@ class ExtractImagesTest < Test::Unit::TestCase
 
   def test_basic_image_extraction
     Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :size => "250x", :output => OUTPUT)
-    assert Dir["#{OUTPUT}/*"] == ['test/output/obama_arts_1.gif', 'test/output/obama_arts_2.gif']
+    assert_directory_contains(OUTPUT, ['obama_arts_1.gif', 'obama_arts_2.gif'])
   end
 
   def test_image_formatting
@@ -36,14 +36,15 @@ class ExtractImagesTest < Test::Unit::TestCase
 
   def test_repeated_extraction_in_the_same_directory
     Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :size => "250x", :output => OUTPUT)
-    assert Dir["#{OUTPUT}/*"] == ['test/output/obama_arts_1.gif', 'test/output/obama_arts_2.gif']
+    assert_directory_contains(OUTPUT, ['obama_arts_1.gif', 'obama_arts_2.gif'])
     Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :size => "250x", :output => OUTPUT)
-    assert Dir["#{OUTPUT}/*"] == ['test/output/obama_arts_1.gif', 'test/output/obama_arts_2.gif']
+    assert_directory_contains(OUTPUT, ['obama_arts_1.gif', 'obama_arts_2.gif'])
   end
 
   def test_name_escaping_while_extracting_images
     Docsplit.extract_images('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf', :format => :gif, :size => "250x", :output => OUTPUT)
-    assert Dir["#{OUTPUT}/*"] == ['test/output/PDF file with spaces \'single\' and "double quotes"_1.gif', 'test/output/PDF file with spaces \'single\' and "double quotes"_2.gif']
+    assert_directory_contains(OUTPUT, ['PDF file with spaces \'single\' and "double quotes"_1.gif',
+                                       'PDF file with spaces \'single\' and "double quotes"_1.gif'])
   end
 
 end
