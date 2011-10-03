@@ -11,7 +11,10 @@ module Docsplit
 
   HEADLESS      = "-Djava.awt.headless=true"
 
-  OFFICE        = RUBY_PLATFORM.match(/darwin/i) ? '' : '-Doffice.home=/usr/lib/openoffice'
+  office ||= "/usr/lib/openoffice" if File.exists? '/usr/lib/openoffice'
+  office ||= "/usr/lib/libreoffice" if File.exists? '/usr/lib/libreoffice'
+
+  OFFICE        = RUBY_PLATFORM.match(/darwin/i) ? '' : "-Doffice.home=#{office}"
 
   METADATA_KEYS = [:author, :date, :creator, :keywords, :producer, :subject, :title, :length]
   
