@@ -20,7 +20,7 @@ module Docsplit
   
   GM_FORMATS    = ["image/gif", "image/jpeg", "image/png", "image/x-ms-bmp", "image/svg+xml", "image/tiff", "image/x-portable-bitmap", "application/postscript", "image/x-portable-pixmap"]
 
-  DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :tesseract => false}
+  DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :tesseract => false, :qpdf => false}
 
   ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
 
@@ -35,9 +35,22 @@ module Docsplit
     end
   end
 
-  # Raise an ExtractionFailed exception when the PDF is encrypted, or otherwise
-  # broke.
+  # Raise an exception when the PDF is encrypted, or otherwise broke.
   class ExtractionFailed < StandardError; end
+  class EncryptedPDF < StandardError; end
+
+  def self.decrypt_pdf(pdf)
+      # Create the temp dir
+      tempdir = File.join(Dir.tmpdir, 'docsplit')
+      FileUtils.mkdir_p tempdir unless File.exists?(tempdir)
+      # Figure out the temp path
+      temppath = File.join(tempdir, pdf)
+      # Decrypt the file
+      cmd = "qpdf --decrypt #{pdf} #{temppath} 2>&1"
+      result = `#{cmd}`.chomp
+      # Pass back the path
+      return temppath
+  end
 
   # Use the ExtractPages Java class to burst a PDF into single pages.
   def self.extract_pages(pdfs, opts={})
