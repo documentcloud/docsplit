@@ -4,9 +4,11 @@ require 'rake/testtask'
 desc 'Run all tests'
 task :test do
   $LOAD_PATH.unshift(File.expand_path('test'))
-  require 'redgreen' if Gem.available?('redgreen')
+
   require 'test/unit'
-  Dir['test/*/**/test_*.rb'].each {|test| require test }
+  Dir['test/*/**/test_*.rb'].each do |test|
+    require File.join(File.dirname(__FILE__), test)
+  end
 end
 
 namespace :gem do
