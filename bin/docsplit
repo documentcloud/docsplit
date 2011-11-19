@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-require "#{File.dirname(__FILE__)}/../lib/docsplit/command_line.rb"
+require File.expand_path("../../lib/docsplit/command_line.rb", __FILE__)
 
 Docsplit::CommandLine.new
