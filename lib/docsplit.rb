@@ -17,7 +17,7 @@ module Docsplit
   OFFICE        = RUBY_PLATFORM.match(/darwin/i) ? '' : "-Doffice.home=#{office}"
 
   METADATA_KEYS = [:author, :date, :creator, :keywords, :producer, :subject, :title, :length]
-  
+
   GM_FORMATS    = ["image/gif", "image/jpeg", "image/png", "image/x-ms-bmp", "image/svg+xml", "image/tiff", "image/x-portable-bitmap", "application/postscript", "image/x-portable-pixmap"]
 
   DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :tesseract => false}
@@ -39,10 +39,20 @@ module Docsplit
   # broke.
   class ExtractionFailed < StandardError; end
 
+  # Raise an RepairFailed exception when the PDF can't be repaired.
+  # (encrypted, broken, ... ).
+  class RepairFailed < StandardError; end
+
   # Use the ExtractPages Java class to burst a PDF into single pages.
   def self.extract_pages(pdfs, opts={})
     pdfs = ensure_pdfs(pdfs)
     PageExtractor.new.extract(pdfs, opts)
+  end
+
+  # Use pdftk to repair pdf files. This sometimes help to fix later hiccups with extract_pages
+  def self.repair_pages(pdfs, opts={})
+    pdfs = ensure_pdfs(pdfs)
+    PageRepair.new.repair(pdfs, opts)
   end
 
   # Use the ExtractText Java class to write out all embedded text.
@@ -124,5 +134,6 @@ require "#{Docsplit::ROOT}/lib/docsplit/image_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/transparent_pdfs"
 require "#{Docsplit::ROOT}/lib/docsplit/text_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/page_extractor"
+require "#{Docsplit::ROOT}/lib/docsplit/page_repair"
 require "#{Docsplit::ROOT}/lib/docsplit/info_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/text_cleaner"
