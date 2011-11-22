@@ -1,7 +1,7 @@
 # The Docsplit module delegates to the Java PDF extractors.
 module Docsplit
 
-  VERSION       = '0.6.0' # Keep in sync with gemspec.
+  VERSION       = '0.6.2' # Keep in sync with gemspec.
 
   ROOT          = File.expand_path(File.dirname(__FILE__) + '/..')
 
@@ -68,7 +68,7 @@ module Docsplit
       basename = File.basename(doc, ext)
       escaped_doc, escaped_out, escaped_basename = [doc, out, basename].map(&ESCAPE)
 
-      if GM_FORMATS.include?(`file -b --mime #{doc}`.strip.split(/[:;]\s+/)[0])
+      if GM_FORMATS.include?(`file -b --mime #{ESCAPE[doc]]}`.strip.split(/[:;]\s+/)[0])
         `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
       else
         options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-4.jar -r #{ROOT}/vendor/conf/document-formats.js"
