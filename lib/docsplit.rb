@@ -62,6 +62,7 @@ module Docsplit
   # If the document is in an image format, use GraphicsMagick to extract the PDF.
   def self.extract_pdf(docs, opts={})
     out = opts[:output] || '.'
+    timeout = opts[:timeout] || 3600
     FileUtils.mkdir_p out unless File.exists?(out)
     [docs].flatten.each do |doc|
       ext = File.extname(doc)
@@ -71,7 +72,7 @@ module Docsplit
       if GM_FORMATS.include?(`file -b --mime #{ESCAPE[doc]}`.strip.split(/[:;]\s+/)[0])
         `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
       else
-        options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-4.jar -r #{ROOT}/vendor/conf/document-formats.js"
+        options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-4.jar -t #{timeout} -r #{ROOT}/vendor/conf/document-formats.js"
         run "#{options} #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf", [], {}
       end
     end
