@@ -35,5 +35,16 @@ class ExtractInfoTest < Test::Unit::TestCase
   def test_name_escaping_while_extracting_info
     assert 2 == Docsplit.extract_length('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf')
   end
+  
+  def test_extract_all
+    metadata = Docsplit.extract_info('test/fixtures/obama_arts.pdf')
+    assert metadata[:author] == "mkommareddi"
+    assert metadata[:date] == "Thu Nov 29 14:54:46 2007"
+    assert metadata[:creator] == "PScript5.dll Version 5.2"
+    assert metadata[:producer] == "Acrobat Distiller 8.1.0 (Windows)"
+    assert metadata[:title] == "Microsoft Word - Fact Sheet Arts 112907 FINAL.doc"
+    assert metadata[:length] == 2
+    assert metadata.length == 6
+  end
 
 end
