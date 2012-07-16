@@ -11,10 +11,18 @@ module Docsplit
         ext = File.extname(doc)
         if ext.downcase == '.pdf'
           doc
-        else
-          tempdir = File.join(Dir.tmpdir, 'docsplit')
-          extract_pdf([doc], {:output => tempdir})
-          File.join(tempdir, File.basename(doc, ext) + '.pdf')
+        else 
+          #this test is nested because it's relatively expensive, no need to do it for files with pdf extensions
+          filetypeHeader = File.open(doc, 'r') { |f| f.read(4)}
+          is_pdf = (filetypeHeader =~ /\%PDF/) == 0 
+          #via http://stackoverflow.com/questions/7919674/how-to-verify-downloaded-file-format
+          if is_pdf
+            doc
+          else
+            tempdir = File.join(Dir.tmpdir, 'docsplit')
+            extract_pdf([doc], {:output => tempdir})
+            File.join(tempdir, File.basename(doc, ext) + '.pdf')
+          end
         end
       end
     end
