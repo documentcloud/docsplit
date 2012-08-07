@@ -17,7 +17,7 @@ module Docsplit
   OFFICE        = RUBY_PLATFORM.match(/darwin/i) ? '' : "-Doffice.home=#{office}"
 
   METADATA_KEYS = [:author, :date, :creator, :keywords, :producer, :subject, :title, :length]
-  
+
   GM_FORMATS    = ["image/gif", "image/jpeg", "image/png", "image/x-ms-bmp", "image/svg+xml", "image/tiff", "image/x-portable-bitmap", "application/postscript", "image/x-portable-pixmap"]
 
   DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :tesseract => false}
@@ -38,6 +38,15 @@ module Docsplit
   # Raise an ExtractionFailed exception when the PDF is encrypted, or otherwise
   # broke.
   class ExtractionFailed < StandardError; end
+
+  # Allow bypassing ensure_pdfs for processing PDFs without extensions
+  def self.skip_ensure_pdfs
+    @skip_ensure_pdfs
+  end
+
+  def self.skip_ensure_pdfs=(val)
+    @skip_ensure_pdfs = val
+  end
 
   # Use the ExtractPages Java class to burst a PDF into single pages.
   def self.extract_pages(pdfs, opts={})
