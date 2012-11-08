@@ -23,7 +23,7 @@ module Docsplit
       end
       case @return_value
       when :images
-        images.reject{|i| i.nil? or i.empty?}
+        images.reject{|i| i.nil? or i.empty?}.flatten
       when :intermediates
         @pdfs
       else
