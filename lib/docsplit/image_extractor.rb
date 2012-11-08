@@ -13,12 +13,20 @@ module Docsplit
     def extract(pdfs, options)
       @pdfs = [pdfs].flatten
       extract_options(options)
+      images = []
       @pdfs.each do |pdf|
         previous = nil
         @sizes.each_with_index do |size, i|
-          @formats.each {|format| convert(pdf, size, format, previous) }
+          images += @formats.map {|format| convert(pdf, size, format, previous) }
           previous = size if @rolling
         end
+      end
+      case @return_value
+      when :intermediates
+        @pdfs
+      else
+        @pdfs
+
       end
     end
 
@@ -46,6 +54,7 @@ module Docsplit
           result = `#{cmd}`.chomp
           raise ExtractionFailed, result if $? != 0
         end
+        return out_file
       end
     ensure
       FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
@@ -63,6 +72,7 @@ module Docsplit
       @sizes   = [options[:size]].flatten.compact
       @sizes   = [nil] if @sizes.empty?
       @rolling = !!options[:rolling]
+      @return_value = options[:and_return] || :intermediates
     end
 
     # If there's only one size requested, generate the images directly into
