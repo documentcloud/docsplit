@@ -13,6 +13,19 @@ class ExtractImagesTest < Test::Unit::TestCase
     assert Dir["#{OUTPUT}/*.jpg"].length == 2
   end
 
+  def test_return_value
+    return_value = Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :size => "50x", :pages => 2, :output => OUTPUT)
+    assert return_value.length == 1
+    assert return_value.is_a?(Enumerable)
+    assert return_value.all?{|el| el =~ /\.gif/}
+    return_value = Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => [:jpg, :gif], :size => "50x", :pages => 2, :output => OUTPUT)
+    assert return_value.length == 2
+    assert return_value.is_a?(Enumerable)
+    assert return_value.any?{|el| el =~ /\.gif/}
+    assert return_value.any?{|el| el =~ /\.jpg/}
+  end
+
+
   def test_page_ranges
     Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :size => "50x", :pages => 2, :output => OUTPUT)
     assert Dir["#{OUTPUT}/*.gif"] == ["#{OUTPUT}/obama_arts_2.gif"]
