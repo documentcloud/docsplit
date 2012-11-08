@@ -52,11 +52,13 @@ module Docsplit
       else
         page_list(pages).each do |page|
           out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
-          image_paths << out_file
           cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
           result = `#{cmd}`.chomp
-          raise ExtractionFailed, result if $? != 0
-
+          if $? != 0
+          raise ExtractionFailed, result 
+          else
+            image_paths << out_file
+          end
         end
         return image_paths
       end
