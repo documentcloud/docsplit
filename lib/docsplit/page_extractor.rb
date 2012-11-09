@@ -11,7 +11,12 @@ module Docsplit
         pdf_name = File.basename(pdf, File.extname(pdf))
         page_path = File.join(@output, "#{pdf_name}_%d.pdf")
         FileUtils.mkdir_p @output unless File.exists?(@output)
-        cmd = "pdftk #{ESCAPE[pdf]} burst output #{ESCAPE[page_path]} 2>&1"
+        
+        cmd = if DEPENDENCIES[:pdftailor] # prefer pdftailor, but keep pdftk for backwards compatability
+          "pdftailor unstitch --output #{ESCAPE[page_path]} #{ESCAPE[pdf]} 2>&1"
+        else
+          "pdftk #{ESCAPE[pdf]} burst output #{ESCAPE[page_path]} 2>&1"
+        end
         result = `#{cmd}`.chomp
         FileUtils.rm('doc_data.txt') if File.exists?('doc_data.txt')
         raise ExtractionFailed, result if $? != 0
