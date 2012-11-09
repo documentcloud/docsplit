@@ -1,5 +1,5 @@
-require 'lib/docsplit'
 require 'fileutils'
+require File.expand_path("../../lib/docsplit", __FILE__)
 
 class Test::Unit::TestCase
   include Docsplit

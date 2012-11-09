@@ -23,4 +23,10 @@ class ExtractPagesTest < Test::Unit::TestCase
     assert Dir["#{OUTPUT}/*.pdf"].length == 2
   end
 
+  def test_broken_pdf
+    assert_raises(ExtractionFailed) do
+      Docsplit.extract_pages('test/fixtures/broken.pdf', :output => OUTPUT)
+    end
+  end
+
 end
