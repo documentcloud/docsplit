@@ -1,13 +1,20 @@
+require 'tmpdir'
+require 'fileutils'
+require 'shellwords'
+
 # The Docsplit module delegates to the Java PDF extractors.
 module Docsplit
 
   VERSION       = '0.6.3' # Keep in sync with gemspec.
 
+  ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
+
   ROOT          = File.expand_path(File.dirname(__FILE__) + '/..')
+  ESCAPED_ROOT  = ESCAPE[ROOT]
 
-  CLASSPATH     = "#{ROOT}/build#{File::PATH_SEPARATOR}#{ROOT}/vendor/'*'"
+  CLASSPATH     = "#{ESCAPED_ROOT}/build#{File::PATH_SEPARATOR}#{ESCAPED_ROOT}/vendor/'*'"
 
-  LOGGING       = "-Djava.util.logging.config.file=#{ROOT}/vendor/logging.properties"
+  LOGGING       = "-Djava.util.logging.config.file=#{ESCAPED_ROOT}/vendor/logging.properties"
 
   HEADLESS      = "-Djava.awt.headless=true"
 
@@ -21,8 +28,6 @@ module Docsplit
   GM_FORMATS    = ["image/gif", "image/jpeg", "image/png", "image/x-ms-bmp", "image/svg+xml", "image/tiff", "image/x-portable-bitmap", "application/postscript", "image/x-portable-pixmap"]
 
   DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :pdftailor => false, :tesseract => false}
-
-  ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
 
   # Check for all dependencies, and note their absence.
   dirs = ENV['PATH'].split(File::PATH_SEPARATOR)
@@ -71,7 +76,7 @@ module Docsplit
       if GM_FORMATS.include?(`file -b --mime #{ESCAPE[doc]}`.strip.split(/[:;]\s+/)[0])
         `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
       else
-        options = "-jar #{ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-4.jar -r #{ROOT}/vendor/conf/document-formats.js"
+        options = "-jar #{ESCAPED_ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-4.jar -r #{ESCAPED_ROOT}/vendor/conf/document-formats.js"
         run "#{options} #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf", [], {}
       end
     end
@@ -117,9 +122,6 @@ module Docsplit
 
 end
 
-require 'tmpdir'
-require 'fileutils'
-require 'shellwords'
 require "#{Docsplit::ROOT}/lib/docsplit/image_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/transparent_pdfs"
 require "#{Docsplit::ROOT}/lib/docsplit/text_extractor"
