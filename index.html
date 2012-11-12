@@ -233,7 +233,9 @@ Docsplit.extract_pages('doc.pdf', :pages => 1..10)</pre>
       <b>xls</b> and so on, as well as <b>html</b>, <b>odf</b>, <b>rtf</b>, <b>swf</b>, <b>svg</b>, and <b>wpd</b>.
       The first time that you convert a new file type, OpenOffice will lazy-load
       the code that processes it &mdash; subsequent conversions will be much faster.
-    </p>
+      <br/>You can use the <tt>--timeout</tt> flag to increase or decrease time before 'error on timeout' exception. 
+      Useful when you convert huge documents. Default timeout is 1 hour (more than enough to convert 1000-paged document).
+      </p>
 <pre>
 docsplit pdf documentation/*.html</pre>
 <pre>
