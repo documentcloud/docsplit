@@ -87,6 +87,12 @@ module Docsplit
       end
     EOS
   end
+  
+  # Use the InfoExtractor to print out all the metadata
+  def self.extract_info(pdfs, opts={})
+    pdfs = ensure_pdfs(pdfs)
+    InfoExtractor.new.extract_all(pdfs, opts)
+  end
 
   # Utility method to clean OCR'd text with garbage characters.
   def self.clean_text(text)
