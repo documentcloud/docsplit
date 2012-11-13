@@ -29,18 +29,23 @@ module Docsplit
     def extract(pdfs, opts)
       extract_options opts
       FileUtils.mkdir_p @output unless File.exists?(@output)
+      pdfs = Array.wrap(pdfs)
+      paths = []
       [pdfs].flatten.each do |pdf|
         @pdf_name = File.basename(pdf, File.extname(pdf))
         pages = (@pages == 'all') ? 1..Docsplit.extract_length(pdf) : @pages
-        if @force_ocr || (!@forbid_ocr && !contains_text?(pdf))
-          extract_from_ocr(pdf, pages)
-        else
-          extract_from_pdf(pdf, pages)
-          if !@forbid_ocr && DEPENDENCIES[:tesseract] && !@pages_to_ocr.empty?
-            extract_from_ocr(pdf, @pages_to_ocr)
-          end
-        end
+        return_value = if @force_ocr || (!@forbid_ocr && !contains_text?(pdf))
+                         extract_from_ocr(pdf, pages)
+                       else
+                         if !@forbid_ocr && DEPENDENCIES[:tesseract] && !@pages_to_ocr.empty?
+                           extract_from_ocr(pdf, @pages_to_ocr)
+                         else
+                           extract_from_pdf(pdf, pages)
+                         end
+                       end
+        paths << return_value
       end
+      return paths.flatten.compact
     end
 
     # Does a PDF have any text embedded?
@@ -52,7 +57,7 @@ module Docsplit
     # Extract a page range worth of text from a PDF, directly.
     def extract_from_pdf(pdf, pages)
       return extract_full(pdf) unless pages
-      pages.each {|page| extract_page(pdf, page) }
+      pages.map {|page| extract_page(pdf, page) }
     end
 
     # Extract a page range worth of text from a PDF via OCR.
@@ -60,6 +65,7 @@ module Docsplit
       tempdir = Dir.mktmpdir
       base_path = File.join(@output, @pdf_name)
       escaped_pdf = ESCAPE[pdf]
+      paths = []
       if pages
         pages.each do |page|
           tiff = "#{tempdir}/#{@pdf_name}_#{page}.tif"
@@ -67,7 +73,9 @@ module Docsplit
           file = "#{base_path}_#{page}"
           run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf}[#{page - 1}] #{escaped_tiff} 2>&1"
           run "tesseract #{escaped_tiff} #{ESCAPE[file]} -l #{@language} 2>&1"
-          clean_text(file + '.txt') if @clean_ocr
+          file_name = file + '.txt'
+          paths << file_name
+          clean_text(file_name) if @clean_ocr
           FileUtils.remove_entry_secure tiff
         end
       else
@@ -75,8 +83,11 @@ module Docsplit
         escaped_tiff = ESCAPE[tiff]
         run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf} #{escaped_tiff} 2>&1"
         run "tesseract #{escaped_tiff} #{base_path} -l #{@language} 2>&1"
-        clean_text(base_path + '.txt') if @clean_ocr
+        file_name = base_path + '.txt'
+        paths << file_name
+        clean_text(file_name) if @clean_ocr
       end
+      return paths
     ensure
       FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
     end
@@ -104,6 +115,7 @@ module Docsplit
     def extract_full(pdf)
       text_path = File.join(@output, "#{@pdf_name}.txt")
       run "pdftotext -enc UTF-8 #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+      return text_path
     end
 
     # Extract the contents of a single page of text, directly, adding it to
@@ -111,9 +123,11 @@ module Docsplit
     def extract_page(pdf, page)
       text_path = File.join(@output, "#{@pdf_name}_#{page}.txt")
       run "pdftotext -enc UTF-8 -f #{page} -l #{page} #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+
       unless @forbid_ocr
         @pages_to_ocr.push(page) if File.read(text_path).length < MIN_TEXT_PER_PAGE
       end
+      return text_path
     end
 
     def extract_options(options)
