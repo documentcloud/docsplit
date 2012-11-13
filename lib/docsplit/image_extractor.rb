@@ -21,14 +21,7 @@ module Docsplit
           previous = size if @rolling
         end
       end
-      case @return_value
-      when :images
-        images.reject{|i| i.nil? or i.empty?}.flatten
-      when :intermediates
-        @pdfs
-      else
-        @pdfs
-      end
+       return images.reject{|i|  i.empty?}.flatten
     end
 
     # Convert a single PDF into page images at the specified size and format.
@@ -78,7 +71,6 @@ module Docsplit
       @sizes   = [options[:size]].flatten.compact
       @sizes   = [nil] if @sizes.empty?
       @rolling = !!options[:rolling]
-      @return_value = options[:and_return] || :intermediates
     end
 
     # If there's only one size requested, generate the images directly into
