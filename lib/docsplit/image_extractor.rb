@@ -21,7 +21,7 @@ module Docsplit
           previous = size if @rolling
         end
       end
-       return images.reject{|i|  i.empty?}.flatten
+       return images.reject{|i| i.nil? or i.empty?}.flatten
     end
 
     # Convert a single PDF into page images at the specified size and format.
