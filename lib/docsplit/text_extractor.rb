@@ -29,7 +29,7 @@ module Docsplit
     def extract(pdfs, opts)
       extract_options opts
       FileUtils.mkdir_p @output unless File.exists?(@output)
-      pdfs = Array.wrap(pdfs)
+      pdfs = pdfs.is_a?(Array) ? pdfs : [pdfs]
       paths = []
       [pdfs].flatten.each do |pdf|
         @pdf_name = File.basename(pdf, File.extname(pdf))

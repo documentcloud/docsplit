@@ -8,7 +8,7 @@ class ExtractTextTest < Test::Unit::TestCase
     assert Dir["#{OUTPUT}/*.txt"].length == 2
     assert File.read("#{OUTPUT}/obama_arts_1.txt").match("Paid for by Obama for America")
     assert return_value.is_a?(Enumerable)
-    assert return_value.all?(/\.txt/)
+    assert return_value.all?{|val| val =~ /\.txt/}
     assert return_value.length == 2
   end
 
@@ -30,7 +30,7 @@ class ExtractTextTest < Test::Unit::TestCase
     return_value = Docsplit.extract_text('test/fixtures/unicode.pdf', :pages => 'all', :output => OUTPUT)
     assert Dir["#{OUTPUT}/*.txt"].length == 3
     assert return_value.is_a?(Enumerable)
-    assert return_value.all?(/\.txt/)
+    assert return_value.all?{|val| val =~ /\.txt/}
     assert return_value.length == 3
   end
 
