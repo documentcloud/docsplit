@@ -45,7 +45,7 @@ module Docsplit
         raise ExtractionFailed, result 
         end
       else
-        logger.info "pages is #{pages}"
+        puts "pages is #{pages}"
         page_list(pages).each do |page|
           out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
           cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
