@@ -102,6 +102,7 @@ module Docsplit
     # Generate the expanded list of requested page numbers.
     def page_list(pages)
       puts "got a result of #{pages.inspect} for pages}"
+      if pages
       pages.split(',').map { |range|
         puts "range is #{range.inspect}"
         if range.include?('-')
@@ -111,6 +112,9 @@ module Docsplit
           range.to_i
         end
       }.flatten.uniq.sort
+      else
+        raise "Can't list pages if there are none"
+      end
     end
 
   end
