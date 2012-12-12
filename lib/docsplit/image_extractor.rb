@@ -34,20 +34,26 @@ module Docsplit
       basename  = File.basename(pdf, File.extname(pdf))
       directory = directory_for(size)
       pages     = @pages || '1-' + Docsplit.extract_length(pdf).to_s
-      escaped_pdf = ESCAPE[pdf]
+      escaped_pdf =  ESCAPE[pdf]
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
       common    = "#{MEMORY_ARGS} -density #{@density} #{resize_arg(size)} #{quality_arg(format)}"
       image_paths = []
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
         result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
-        raise ExtractionFailed, result if $? != 0
+        if $? != 0
+        raise ExtractionFailed, result 
+        end
       else
+        logger.info "pages is #{pages}"
         page_list(pages).each do |page|
           out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
           cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
           result = `#{cmd}`.chomp
           if $? != 0
+            puts cmd
+            puts "failed"
+            puts "-----"
           raise ExtractionFailed, result 
           else
             image_paths << out_file
