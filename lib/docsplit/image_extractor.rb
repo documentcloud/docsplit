@@ -45,7 +45,6 @@ module Docsplit
         raise ExtractionFailed, result 
         end
       else
-        puts "pages is #{pages}"
         page_list(pages).each do |page|
           out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
           cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
@@ -102,7 +101,9 @@ module Docsplit
 
     # Generate the expanded list of requested page numbers.
     def page_list(pages)
+      puts "got a result of #{pages.inspect} for pages}"
       pages.split(',').map { |range|
+        puts "range is #{range.inspect}"
         if range.include?('-')
           range = range.split('-')
           Range.new(range.first.to_i, range.last.to_i).to_a.map {|n| n.to_i }
