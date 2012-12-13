@@ -25,6 +25,7 @@ module Docsplit
   ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
 
   # Check for all dependencies, and note their absence.
+  puts "attempting to split ENV['PATH']"
   dirs = ENV['PATH'].split(File::PATH_SEPARATOR)
   DEPENDENCIES.each_key do |dep|
     dirs.each do |dir|
@@ -68,6 +69,8 @@ module Docsplit
       basename = File.basename(doc, ext)
       escaped_doc, escaped_out, escaped_basename = [doc, out, basename].map(&ESCAPE)
 
+      
+      puts "attempting to split GM_FORMATS line"
       if GM_FORMATS.include?(`file -b --mime #{ESCAPE[doc]}`.strip.split(/[:;]\s+/)[0])
         `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
       else
