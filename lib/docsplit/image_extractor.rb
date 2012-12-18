@@ -50,9 +50,6 @@ module Docsplit
           cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
           result = `#{cmd}`.chomp
           if $? != 0
-            puts cmd
-            puts "failed"
-            puts "-----"
           raise ExtractionFailed, result 
           else
             image_paths << out_file
@@ -101,10 +98,8 @@ module Docsplit
 
     # Generate the expanded list of requested page numbers.
     def page_list(pages)
-      puts "got a result of #{pages.inspect} for pages}"
       if pages
       pages.split(',').map { |range|
-        puts "range is #{range.inspect}"
         if range.include?('-')
           range = range.split('-')
           Range.new(range.first.to_i, range.last.to_i).to_a.map {|n| n.to_i }
