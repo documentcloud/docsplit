@@ -36,5 +36,11 @@ class ExtractInfoTest < Test::Unit::TestCase
   def test_name_escaping_while_extracting_info
     assert 2 == Docsplit.extract_length('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf')
   end
+  
+  def test_malformed_unicode
+    assert_nothing_raised do
+      Docsplit.extract_date('test/fixtures/Faktura 10.pdf')
+    end
+  end
 
 end
