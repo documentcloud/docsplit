@@ -1,4 +1,5 @@
-require 'lib/docsplit'
+here = File.dirname(__FILE__)
+require File.join(here, '..', 'lib', 'docsplit')
 require 'fileutils'
 
 class Test::Unit::TestCase

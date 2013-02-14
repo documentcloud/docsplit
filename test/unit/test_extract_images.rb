@@ -1,4 +1,5 @@
-require 'test_helper'
+here = File.dirname(__FILE__)
+require File.join(here, '..', 'test_helper')
 
 class ExtractImagesTest < Test::Unit::TestCase
 
