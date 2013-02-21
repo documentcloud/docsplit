@@ -80,11 +80,9 @@ Options:
           @options[:pages] = p
         end
         opts.on('-s', '--size [SIZE]', 'set a fixed size (eg: 50x75)') do |s|
-          puts "splitting size"
           @options[:size] = s.split(',')
         end
         opts.on('-f', '--format [FORMAT]', 'set image format (pdf, jpg, gif...)') do |t|
-          puts "splitting format"
           @options[:format] = t.split(',')
         end
         opts.on('-d', '--density [NUM]', 'set image density (DPI) when rasterizing') do |d|
