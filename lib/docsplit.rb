@@ -114,8 +114,8 @@ module Docsplit
   # Ranges look like: 1-10, Arrays like: 1,2,3.
   def self.normalize_value(value)
     case value
-    when Range then normalize_range(value)
-    when Array then value.map! {|v| v.is_a?(Range) ? normalize_range(v) : v }.join(',')
+    when Range then value.to_a.join(',')
+    when Array then value.map! {|v| v.is_a?(Range) ? normalize_value(v) : v }.join(',')
     else            value.to_s
     end
   end
