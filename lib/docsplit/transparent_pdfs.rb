@@ -12,7 +12,7 @@ module Docsplit
         if ext.downcase == '.pdf'
           doc
         else
-          tempdir = File.join(Dir.tmpdir, 'docsplit')
+          tempdir = Dir.mktmpdir
           extract_pdf([doc], {:output => tempdir})
           File.join(tempdir, File.basename(doc, ext) + '.pdf')
         end
