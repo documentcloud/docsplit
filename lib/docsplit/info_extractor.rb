@@ -25,7 +25,8 @@ module Docsplit
       if String.method_defined?(:encode)
         result.encode!('UTF-8', 'UTF-8', :invalid => :replace)
       else
-        ic = Iconv.new('UTF-8', 'UTF-8//IGNORE')
+        require 'iconv' unless defined?(Iconv)
+        ic = Iconv.new('UTF-8//IGNORE','UTF-8')
         result = ic.iconv(result)
       end
       match = result.match(MATCHERS[key])
