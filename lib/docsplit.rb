@@ -73,6 +73,7 @@ module Docsplit
       basename = File.basename(doc, ext)
       escaped_doc, escaped_out, escaped_basename = [doc, out, basename].map(&ESCAPE)
 
+      
       if GM_FORMATS.include?(`file -b --mime #{ESCAPE[doc]}`.strip.split(/[:;]\s+/)[0])
         `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
       else
