@@ -17,6 +17,10 @@ module Docsplit
 
     # Pull out a single datum from a pdf.
     def extract(key, pdfs, opts)
+      extract_all(pdfs, opts)[key]
+    end
+    
+    def extract_all(pdfs, opts)
       pdf = [pdfs].flatten.first
       cmd = "pdfinfo #{ESCAPE[pdf]} 2>&1"
       result = `#{cmd}`.chomp
@@ -29,10 +33,16 @@ module Docsplit
         ic = Iconv.new('UTF-8//IGNORE','UTF-8')
         result = ic.iconv(result)
       end
-      match = result.match(MATCHERS[key])
-      answer = match && match[1]
-      answer = answer.to_i if answer && key == :length
-      answer
+      info = {}
+      MATCHERS.each do |key, matcher|
+        match = result.match(matcher)
+        answer = match && match[1]
+        if answer
+          answer = answer.to_i if key == :length
+          info[key] = answer
+        end
+      end
+      info
     end
 
   end

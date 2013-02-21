@@ -92,6 +92,11 @@ module Docsplit
       end
     EOS
   end
+  
+  def self.extract_info(pdfs, opts={})
+    pdfs = ensure_pdfs(pdfs)
+    InfoExtractor.new.extract_all(pdfs, opts)
+  end
 
   # Utility method to clean OCR'd text with garbage characters.
   def self.clean_text(text)

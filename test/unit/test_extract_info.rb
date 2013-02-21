@@ -42,5 +42,16 @@ class ExtractInfoTest < Test::Unit::TestCase
       Docsplit.extract_date('test/fixtures/Faktura 10.pdf')
     end
   end
+  
+  def test_extract_all
+    metadata = Docsplit.extract_info('test/fixtures/obama_arts.pdf')
+    assert metadata[:author] == "mkommareddi"
+    assert metadata[:date] == "Thu Nov 29 14:54:46 2007"
+    assert metadata[:creator] == "PScript5.dll Version 5.2"
+    assert metadata[:producer] == "Acrobat Distiller 8.1.0 (Windows)"
+    assert metadata[:title] == "Microsoft Word - Fact Sheet Arts 112907 FINAL.doc"
+    assert metadata[:length] == 2
+    assert metadata.length == 6
+  end
 
 end
