@@ -98,7 +98,7 @@
       (title, author, number of pages...)
     </p>
 
-    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.6.4</a>.</p>
+    <p>Docsplit is currently at <a href="http://rubygems.org/gems/docsplit">version 0.7.0</a>.</p>
 
     <p>
       <i>Docsplit is an open-source component of <a href="http://documentcloud.org/">DocumentCloud</a>.</i>
@@ -149,15 +149,15 @@
         (Optional) Install <a href="http://www.accesspdf.com/pdftk/">pdftk</a>.
         On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
         <tt>aptitude install pdftk</tt><br />
-        On the Mac, you can <a href="http://fredericiana.com/2010/03/01/pdftk-1-41-for-mac-os-x-10-6/">download a recent installer</a> for the binary.
+        On the Mac, you can <a href="http://www.pdflabs.com/tools/pdftk-the-pdf-toolkit/">download a recent installer</a> for the binary.
         Without <b>pdftk</b> installed, you can use Docsplit, but won't be able
         to split apart a multi-page PDF into single-page PDFs.
       </li>
       <li>
-        (Optional) Install <a href="http://www.openoffice.org/">OpenOffice</a>.
+        (Optional) Install <a href="http://www.libreoffice.org/">LibreOffice</a>.
         On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
-        <tt>aptitude install openoffice.org openoffice.org-java-common</tt><br />
-        On the Mac, download and install <a href="http://download.openoffice.org/index.html">the latest release</a>.
+        <tt>aptitude install libreoffice</tt><br />
+        On the Mac, download and install <a href="http://www.libreoffice.org/download">the latest release</a>.
       </li>
     </ol>
 
@@ -228,10 +228,10 @@ Docsplit.extract_pages('doc.pdf', :pages => 1..10)</pre>
       <b class="header">pdf</b>
       <span class="alias">Ruby: <b>extract_pdf</b></span>
       <br />
-      Convert documents into PDFs. Any type of document that OpenOffice can read
+      Convert documents into PDFs. Any type of document that LibreOffice can read
       may be converted. These include the Microsoft Office formats: <b>doc</b>, <b>docx</b>, <b>ppt</b>,
       <b>xls</b> and so on, as well as <b>html</b>, <b>odf</b>, <b>rtf</b>, <b>swf</b>, <b>svg</b>, and <b>wpd</b>.
-      The first time that you convert a new file type, OpenOffice will lazy-load
+      The first time that you convert a new file type, LibreOffice will lazy-load
       the code that processes it &mdash; subsequent conversions will be much faster.
     </p>
 <pre>
@@ -262,12 +262,12 @@ Docsplit.extract_length('path/to/stooges.pdf')
       <a href="http://poppler.freedesktop.org/">Poppler</a>,
       <a href="http://www.accesspdf.com/pdftk/">PDFTK</a>,
       <a href="http://code.google.com/p/tesseract-ocr/">Tesseract</a>, and
-      <a href="http://artofsolving.com/opensource/jodconverter">JODConverter</a>
-      libraries. Poppler is used to extract text and metadata from PDF documents,
+      <a href="http://www.libreoffice.org/">LibreOffice</a> libraries. 
+      Poppler is used to extract text and metadata from PDF documents,
       PDFTK is used to split them apart into pages, and GraphicsMagick is used to generate
       the page images (internally, it's rendering them with
       <a href="http://pages.cs.wisc.edu/~ghost/doc/GPL/index.htm">GhostScript</a>).
-      JODConverter communicates with OpenOffice to perform the PDF conversions.
+      LibreOffice and GraphicsMagick convert documents and images to PDF.
       Tesseract provides the transparent OCR fallback support, if the document
       is a simple scan, and the file doesn't contain any embedded text.
     </p>
@@ -281,6 +281,14 @@ Docsplit.extract_length('path/to/stooges.pdf')
     </p>
 
     <h2 id="changes">Change Log</h2>
+    
+    <p>
+      <b class="header">0.7.0</b><small> &ndash; Feb. 21, 2013</small><br />
+      Docsplit now expresses a preference for LibreOffice over OpenOffice, with
+      an eye to removing JODConverter and OpenOffice support in future versions.
+      Improved unicode support now correctly collects non-ascii characters from
+      pdfinfo.
+    </p>
     
     <p>
       <b class="header">0.6.4</b><small> &ndash; Nov. 12, 2012</small><br />
