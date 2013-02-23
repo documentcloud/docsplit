@@ -55,7 +55,7 @@ module Docsplit
   # Use JODCConverter to extract the documents as PDFs.
   # If the document is in an image format, use GraphicsMagick to extract the PDF.
   def self.extract_pdf(docs, opts={})
-    PdfExtractor.new.extract_pdf(docs, opts)
+    PdfExtractor.new.extract(docs, opts)
   end
 
   # Define custom methods for each of the metadata keys that we support.

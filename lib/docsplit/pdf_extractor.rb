@@ -75,7 +75,7 @@ module Docsplit
       @@executable
     end
     
-    def extract_pdfs(docs, opts)
+    def extract(docs, opts)
       out = opts[:output] || '.'
       FileUtils.mkdir_p out unless File.exists?(out)
       [docs].flatten.each do |doc|
