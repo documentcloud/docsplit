@@ -9,37 +9,34 @@ module Docsplit
     HEADLESS      = "-Djava.awt.headless=true"
 
     HOST_OS = (defined?("Config") ? Config : RbConfig)::CONFIG['host_os']
-    
-    def self.windows?
+    def windows?
       !!HOST_OS.match(/mswin|windows|cygwin/i)
     end
-    
-    def self.osx?
+    def osx?
       !!HOST_OS.match(/darwin/i)
     end
-    
-    def self.linux?
+    def linux?
       !!HOST_OS.match(/linux/i)
     end
     
-    def self.version_string
-      @@help ||= `#{self.office_executable} -h 2>&1`.split("\n").first
+    def version_string
+      @@help ||= `#{office_executable} -h 2>&1`.split("\n").first
     end
     
-    def self.libre_office?
-      !!self.version_string.match(/^LibreOffice/)
+    def libre_office?
+      !!version_string.match(/^LibreOffice/)
     end
 
     def self.open_office?
-      !!self.version_string.match(/^OpenOffice.org/)
+      !!version_string.match(/^OpenOffice.org/)
     end
     
-    def self.office_search_paths
-      if self.windows?
+    def office_search_paths
+      if windows?
         office_names       = ["LibreOffice 3", "LibreOffice 4", "OpenOffice.org 3"]
         program_files_path = ENV["CommonProgramFiles"]
         search_paths       = office_name.map{ |program| File.join(program_files_path, program) }
-      elsif self.osx?
+      elsif osx?
         search_paths = %w(
           /Applications/LibreOffice.app/Contents/program
           /Applications/OpenOffice.org.app/Contents/MacOS
@@ -55,8 +52,8 @@ module Docsplit
       search_paths.compact
     end
     
-    def self.office_executable
-      paths = self.office_search_paths
+    def office_executable
+      paths = office_search_paths
 
       if ENV['OFFICE_PATH']
         raise ArgumentError, "No such file or directory #{ENV['OFFICE_PATH']}" unless File.exists? ENV['OFFICE_PATH']
