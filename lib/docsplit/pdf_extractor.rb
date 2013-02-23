@@ -7,6 +7,7 @@ module Docsplit
     LOGGING       = "-Djava.util.logging.config.file=#{ESCAPED_ROOT}/vendor/logging.properties"
 
     HEADLESS      = "-Djava.awt.headless=true"
+    @@executable = nil
 
     HOST_OS = (defined?("Config") ? Config : RbConfig)::CONFIG['host_os']
     def windows?
@@ -38,8 +39,8 @@ module Docsplit
         search_paths       = office_name.map{ |program| File.join(program_files_path, program) }
       elsif osx?
         search_paths = %w(
-          /Applications/LibreOffice.app/Contents/program
-          /Applications/OpenOffice.org.app/Contents/MacOS
+          /Applications/LibreOffice.app/Contents
+          /Applications/OpenOffice.org.app/Contents
         )
       else # probably linux/unix
         search_paths = %w(
@@ -60,19 +61,31 @@ module Docsplit
         paths.unshift(ENV['OFFICE_PATH'])
       end
       
+      path_pieces = [ "soffice"]
+      if windows?
+        path_pieces += [["program", "soffice.bin"]]
+      elsif osx?
+        path_pieces += [["MacOS", "soffice"], ["Contents", "MacOS", "soffice"]]
+      else
+        path_pieces += ["program", "soffice"]
+      end
+      
       paths.each do |path|
         if File.exists? path
           @@executable ||= path unless File.directory? path
-          path_pieces = [ "soffice", ["MacOS", "soffice"], ["Contents", "MacOS", "soffice"], 
-                                     ["program", "soffice"], ["Contents", "program", "soffice"] ]
           path_pieces.each do |pieces|
             check_path = File.join(path, pieces)
             @@executable ||= check_path if File.exists? check_path
           end
-          break if @@executable
         end
+        break if @@executable
       end
+      raise OfficeNotFound, "No office software found" unless @@executable
       @@executable
+    end
+    
+    def office_path
+      File.dirname(File.dirname(office_executable))
     end
     
     def extract(docs, opts)
@@ -116,5 +129,6 @@ module Docsplit
     def extract_options(options)
       
     end
+    class OfficeNotFound < StandardError; end
   end
 end
