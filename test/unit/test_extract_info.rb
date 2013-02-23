@@ -1,4 +1,4 @@
-here = File.dirname(__FILE__)
+here = File.expand_path(File.dirname(__FILE__))
 require File.join(here, '..', 'test_helper')
 
 class ExtractInfoTest < Test::Unit::TestCase
