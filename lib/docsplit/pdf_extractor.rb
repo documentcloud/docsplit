@@ -45,7 +45,7 @@ module Docsplit
           /opt/openoffice.org3
         )
       end
-      search_paths.compact
+      search_paths
     end
     
     def office_executable
@@ -56,13 +56,13 @@ module Docsplit
         paths.unshift(ENV['OFFICE_PATH'])
       end
       
-      path_pieces = [ "soffice"]
+      path_pieces = ["soffice"]
       if windows?
         path_pieces += [["program", "soffice.bin"]]
       elsif osx?
         path_pieces += [["MacOS", "soffice"], ["Contents", "MacOS", "soffice"]]
       else
-        path_pieces += ["program", "soffice"]
+        path_pieces += [["program", "soffice"]]
       end
       
       paths.each do |path|
