@@ -4,7 +4,7 @@ module Docsplit
   class PdfExtractor
     @@executable = nil
 
-    HOST_OS = (defined?("Config") ? Config : RbConfig)::CONFIG['host_os']
+    HOST_OS = (defined?("RbConfig") ? RbConfig : Config)::CONFIG['host_os']
     def windows?
       !!HOST_OS.match(/mswin|windows|cygwin/i)
     end
