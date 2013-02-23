@@ -2,11 +2,6 @@ require 'rbconfig'
 
 module Docsplit
   class PdfExtractor
-    CLASSPATH     = "#{ESCAPED_ROOT}/build#{File::PATH_SEPARATOR}#{ESCAPED_ROOT}/vendor/'*'"
-
-    LOGGING       = "-Djava.util.logging.config.file=#{ESCAPED_ROOT}/vendor/logging.properties"
-
-    HEADLESS      = "-Djava.awt.headless=true"
     @@executable = nil
 
     HOST_OS = (defined?("Config") ? Config : RbConfig)::CONFIG['host_os']
@@ -99,36 +94,39 @@ module Docsplit
         if GM_FORMATS.include?(`file -b --mime #{ESCAPE[doc]}`.strip.split(/[:;]\s+/)[0])
           `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
         else
-          #options = "-jar #{ESCAPED_ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-4.jar -r #{ESCAPED_ROOT}/vendor/conf/document-formats.js"
-          #run "#{options} #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf", [], {}
-          
-          if self.class.libre_office?
-            puts "Libre!"
-
-          elsif self.class.open_office?
-            puts "Open!"
-            
-          else
-            puts "Wha?"
+          if libre_office?
+            options = "--headless --convert-to pdf --outdir #{escaped_out} #{escaped_doc}"
+            cmd = "#{office_executable} #{options} 2>&1"
+            result = `#{cmd}`.chomp
+            raise ExtractionFailed, result if $? != 0
+            true
+          else # open office presumably
+            options = "-jar #{ESCAPED_ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-4.jar -r #{ESCAPED_ROOT}/vendor/conf/document-formats.js"
+            run_jod "#{options} #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf", [], {}
           end
         end
       end
     end
+
+    CLASSPATH     = "#{ESCAPED_ROOT}/build#{File::PATH_SEPARATOR}#{ESCAPED_ROOT}/vendor/'*'"
+
+    LOGGING       = "-Djava.util.logging.config.file=#{ESCAPED_ROOT}/vendor/logging.properties"
+
+    HEADLESS      = "-Djava.awt.headless=true"
     
     private
     
     # Runs a Java command, with quieted logging, and the classpath set properly.
-    def run(command, pdfs, opts, return_output=false)
-      pdfs    = [pdfs].flatten.map{|pdf| "\"#{pdf}\""}.join(' ')
-      cmd     = "java #{HEADLESS} #{LOGGING} #{OFFICE} -cp #{CLASSPATH} #{command} #{pdfs} 2>&1"
-      result  = `#{cmd}`.chomp
+    def run_jod(command, pdfs, opts, return_output=false)
+
+      pdfs   = [pdfs].flatten.map{|pdf| "\"#{pdf}\""}.join(' ')
+      office = osx? ? "-Doffice.home=#{office_path}" : office_path
+      cmd    = "java #{HEADLESS} #{LOGGING} #{office} -cp #{CLASSPATH} #{command} #{pdfs} 2>&1"
+      result = `#{cmd}`.chomp
       raise ExtractionFailed, result if $? != 0
       return return_output ? (result.empty? ? nil : result) : true
     end
 
-    def extract_options(options)
-      
-    end
     class OfficeNotFound < StandardError; end
   end
 end
