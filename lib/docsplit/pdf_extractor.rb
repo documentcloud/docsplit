@@ -23,7 +23,7 @@ module Docsplit
       !!version_string.match(/^LibreOffice/)
     end
 
-    def self.open_office?
+    def open_office?
       !!version_string.match(/^OpenOffice.org/)
     end
     
