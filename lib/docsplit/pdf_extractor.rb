@@ -95,12 +95,15 @@ module Docsplit
           `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
         else
           if libre_office?
-            options = "--headless --convert-to pdf --outdir #{escaped_out} #{escaped_doc}"
+            # Set the LibreOffice user profile, so 
+            ENV['SYSUSERCONFIG']="file://#{File.expand_path(escaped_out)}"
+
+            options = "--headless --invisible  --norestore --nolockcheck --convert-to pdf --outdir #{escaped_out} #{escaped_doc}"
             cmd = "#{office_executable} #{options} 2>&1"
             result = `#{cmd}`.chomp
             raise ExtractionFailed, result if $? != 0
             true
-          else # open office presumably
+          else # open office presumably, rely on JODConverter to figure it out.
             options = "-jar #{ESCAPED_ROOT}/vendor/jodconverter/jodconverter-core-3.0-beta-4.jar -r #{ESCAPED_ROOT}/vendor/conf/document-formats.js"
             run_jod "#{options} #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf", [], {}
           end
