@@ -37,7 +37,7 @@ module Docsplit
       if windows?
         office_names       = ["LibreOffice 3", "LibreOffice 4", "OpenOffice.org 3"]
         program_files_path = ENV["CommonProgramFiles"]
-        search_paths       = office_name.map{ |program| File.join(program_files_path, program) }
+        search_paths       = office_names.map{ |program| File.join(program_files_path, program) }
       elsif osx?
         search_paths = %w(
           /Applications/LibreOffice.app/Contents
