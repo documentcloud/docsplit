@@ -96,6 +96,7 @@ Options:
         end
         opts.on('-l', '--language [LANGUAGE]', 'set the language (ISO 639-2/T code) for text extraction') do |l|
           @options[:language] = l
+          @options[:clean] = false
         end
         opts.on('-r', '--rolling', 'generate images from each previous image') do |r|
           @options[:rolling] = true
