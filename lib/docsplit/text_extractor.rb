@@ -60,13 +60,15 @@ module Docsplit
       tempdir = Dir.mktmpdir
       base_path = File.join(@output, @pdf_name)
       escaped_pdf = ESCAPE[pdf]
+      additional_opts = ""
+      additional_opts += "hocr " if @use_hocr
       if pages
         pages.each do |page|
           tiff = "#{tempdir}/#{@pdf_name}_#{page}.tif"
           escaped_tiff = ESCAPE[tiff]
           file = "#{base_path}_#{page}"
           run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf}[#{page - 1}] #{escaped_tiff} 2>&1"
-          run "tesseract #{escaped_tiff} #{ESCAPE[file]} -l #{@language} 2>&1"
+          run "tesseract #{escaped_tiff} #{ESCAPE[file]} -l #{@language} #{additional_opts} 2>&1"
           clean_text(file + '.txt') if @clean_ocr
           FileUtils.remove_entry_secure tiff
         end
@@ -74,7 +76,7 @@ module Docsplit
         tiff = "#{tempdir}/#{@pdf_name}.tif"
         escaped_tiff = ESCAPE[tiff]
         run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf} #{escaped_tiff} 2>&1"
-        run "tesseract #{escaped_tiff} #{base_path} -l #{@language} 2>&1"
+        run "tesseract #{escaped_tiff} #{base_path} -l #{@language} #{additional_opts} 2>&1"
         clean_text(base_path + '.txt') if @clean_ocr
       end
     ensure
@@ -120,8 +122,9 @@ module Docsplit
       @output     = options[:output] || '.'
       @pages      = options[:pages]
       @force_ocr  = options[:ocr] == true
+      @use_hocr   = options[:hocr] == true
       @forbid_ocr = options[:ocr] == false
-      @clean_ocr  = !(options[:clean] == false)
+      @clean_ocr  = !(options[:clean] == false) && !@use_hocr
       @language   = options[:language] || 'eng'
     end
 
