@@ -35,8 +35,13 @@ module Docsplit
     # For the time being, `clean` uses the regular StringScanner, and not the
     # multibyte-aware version, coercing to ASCII first.
     def clean(text)
-      require 'iconv' unless defined?(Iconv)
-      text    = Iconv.iconv('ascii//translit//ignore', 'utf-8', text).first
+      if String.method_defined?(:encode)
+        text.encode!('ascii', :invalid => :replace, :undef => :replace, :replace => '?')
+      else
+        require 'iconv' unless defined?(Iconv)
+        text = Iconv.iconv('ascii//translit//ignore', 'utf-8', text).first
+      end
+
       scanner = StringScanner.new(text)
       cleaned = []
       spaced  = false
