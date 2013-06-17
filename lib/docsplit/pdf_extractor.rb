@@ -46,8 +46,10 @@ module Docsplit
       else # probably linux/unix
         search_paths = %w(
           /usr/lib/libreoffice
+          /usr/lib64/libreoffice
           /opt/libreoffice
           /usr/lib/openoffice
+          /usr/lib64/openoffice.org3
           /opt/openoffice.org3
         )
       end
