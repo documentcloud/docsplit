@@ -94,7 +94,7 @@ Options:
         opts.on('--no-clean', 'disable cleaning of OCR\'d text') do |c|
           @options[:clean] = false
         end
-        opts.on('-t', '--timeout [SEC]', 'Timeout for PDF extraction from OpenOffice document format (default is 1 hour)') do |t|
+        opts.on('-t', '--timeout [SEC]', 'Timeout for PDF extraction from OpenOffice supported document format (default is 1 hour)') do |t|
           @options[:timeout] = t
         end
         opts.on('-r', '--rolling', 'generate images from each previous image') do |r|
