@@ -8,6 +8,12 @@ module Docsplit
     DEFAULT_FORMAT  = :png
     DEFAULT_DENSITY = '150'
 
+    # Helper function to determine the OS
+    HOST_OS = (defined?("RbConfig") ? RbConfig : Config)::CONFIG['host_os']
+    def windows?
+      !!HOST_OS.match(/mswin|msys|mingw|cygwin|bccwin|wince|emc/i)
+    end
+
     # Extract a list of PDFs as rasterized page images, according to the
     # configuration in options.
     def extract(pdfs, options)
@@ -37,12 +43,22 @@ module Docsplit
       common    = "#{MEMORY_ARGS} -density #{@density} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
-        result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
+        if windows?
+          cmd = 'set MAGICK_TMPDIR=#{tempdir} & set OMP_NUM_THREADS=2 & gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1'.chomp
+        else
+          cmd = 'MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1'.chomp
+        end
+        result = `#{cmd}`.chomp
         raise ExtractionFailed, result if $? != 0
       else
         page_list(pages).each do |page|
-          out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
-          cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
+          if windows?
+            out_file  = File.join(directory, "#{basename}_#{page}.#{format}")
+            cmd = "set MAGICK_TMPDIR=#{tempdir} & set OMP_NUM_THREADS=2 & gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] \"#{out_file}\" 2>&1".chomp
+          else
+            out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
+            cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
+          end
           result = `#{cmd}`.chomp
           raise ExtractionFailed, result if $? != 0
         end
