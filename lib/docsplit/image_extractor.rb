@@ -42,11 +42,13 @@ module Docsplit
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
       common    = "#{MEMORY_ARGS} -density #{@density} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
-        FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
+        # Only copy image files, skip other files such as Thumbs.db under windows platform
+        imageFiles = File.join(directory_for(previous), '*.' + format)
+        FileUtils.cp(Dir.glob(imageFiles), directory)
         if windows?
-          cmd = 'set MAGICK_TMPDIR=#{tempdir} & set OMP_NUM_THREADS=2 & gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1'.chomp
+          cmd = "set MAGICK_TMPDIR=#{tempdir} & set OMP_NUM_THREADS=2 & gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1".chomp
         else
-          cmd = 'MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1'.chomp
+          cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1".chomp
         end
         result = `#{cmd}`.chomp
         raise ExtractionFailed, result if $? != 0
