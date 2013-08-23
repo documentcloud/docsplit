@@ -40,8 +40,10 @@ module Docsplit
         result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
         raise ExtractionFailed, result if $? != 0
       else
-        page_list(pages).each do |page|
-          out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
+        page_nums = page_list(pages)
+        padding_val = "%0#{Math.log(page_nums.last.to_i, 10).ceil}d"
+        page_nums.each do |page|
+          out_file  = ESCAPE[File.join(directory, "#{basename}_#{padding_val % page}.#{format}")]
           cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
           result = `#{cmd}`.chomp
           raise ExtractionFailed, result if $? != 0
