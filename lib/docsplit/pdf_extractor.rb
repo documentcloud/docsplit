@@ -7,7 +7,7 @@ module Docsplit
     # Provide a set of helper functions to determine the OS.
     HOST_OS = (defined?("RbConfig") ? RbConfig : Config)::CONFIG['host_os']
     def windows?
-      !!HOST_OS.match(/mswin|msys|mingw|cygwin|bccwin|wince|emc/i)
+      IS_WIN
     end
     def osx?
       !!HOST_OS.match(/darwin/i)

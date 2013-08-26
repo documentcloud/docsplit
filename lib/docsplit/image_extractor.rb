@@ -8,12 +8,6 @@ module Docsplit
     DEFAULT_FORMAT  = :png
     DEFAULT_DENSITY = '150'
 
-    # Helper function to determine the OS
-    HOST_OS = (defined?("RbConfig") ? RbConfig : Config)::CONFIG['host_os']
-    def windows?
-      !!HOST_OS.match(/mswin|msys|mingw|cygwin|bccwin|wince|emc/i)
-    end
-
     # Extract a list of PDFs as rasterized page images, according to the
     # configuration in options.
     def extract(pdfs, options)
@@ -45,7 +39,7 @@ module Docsplit
         # Only copy image files, skip other files such as Thumbs.db under windows platform
         imageFiles = File.join(directory_for(previous), '*.' + format)
         FileUtils.cp(Dir.glob(imageFiles), directory)
-        if windows?
+        if IS_WIN
           cmd = "set MAGICK_TMPDIR=#{tempdir} & set OMP_NUM_THREADS=2 & gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1".chomp
         else
           cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1".chomp
@@ -54,7 +48,7 @@ module Docsplit
         raise ExtractionFailed, result if $? != 0
       else
         page_list(pages).each do |page|
-          if windows?
+          if IS_WIN
             out_file  = File.join(directory, "#{basename}_#{page}.#{format}")
             cmd = "set MAGICK_TMPDIR=#{tempdir} & set OMP_NUM_THREADS=2 & gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] \"#{out_file}\" 2>&1".chomp
           else
