@@ -91,6 +91,9 @@ Options:
         opts.on('--[no-]ocr', 'force OCR to be used, or disable OCR') do |o|
           @options[:ocr] = o
         end
+        opts.on('--hocr', 'force hOCR output when OCR enabled') do |h|
+          @options[:hocr] = h
+        end
         opts.on('--no-clean', 'disable cleaning of OCR\'d text') do |c|
           @options[:clean] = false
         end
