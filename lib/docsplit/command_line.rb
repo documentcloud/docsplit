@@ -91,6 +91,9 @@ Options:
         opts.on('--[no-]ocr', 'force OCR to be used, or disable OCR') do |o|
           @options[:ocr] = o
         end
+        opts.on('-c', '--config [FILE]', 'use the specified config file') do |c|
+          @options[:config] = c
+        end
         opts.on('--no-clean', 'disable cleaning of OCR\'d text') do |c|
           @options[:clean] = false
         end

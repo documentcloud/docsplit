@@ -1,4 +1,5 @@
 require 'strscan'
+require 'nokogiri'
 
 module Docsplit
 
@@ -32,16 +33,8 @@ module Docsplit
     REPEATED    = /(\b\S{1,2}\s+)(\S{1,3}\s+){5,}(\S{1,2}\s+)/
     SINGLETONS  = /^[AaIi]$/
 
-    # For the time being, `clean` uses the regular StringScanner, and not the
-    # multibyte-aware version, coercing to ASCII first.
     def clean(text)
-      if String.method_defined?(:encode)
-        text.encode!('ascii', :invalid => :replace, :undef => :replace, :replace => '?')
-      else
-        require 'iconv' unless defined?(Iconv)
-        text = Iconv.iconv('ascii//translit//ignore', 'utf-8', text).first
-      end
-
+      text = get_conversion_method.call(text)
       scanner = StringScanner.new(text)
       cleaned = []
       spaced  = false
@@ -57,6 +50,31 @@ module Docsplit
         elsif scanner.eos?
           return cleaned.join('').gsub(REPEATED, '')
         end
+      end
+    end
+
+    # When cleaning hOCR output, we follow a slightly simplied cleaning
+    # heuristic. Simply look at the individual word embedded within the
+    # XML text node that is a child of the XML element with the class
+    # attribute set to '.ocrx_word.' If it is garbage, delete that node.
+    def clean_hocr(xhtml)
+      convert = get_conversion_method
+      xml = Nokogiri::XML(xhtml)
+      xml.css('.ocrx_word').each do |elt|
+        word = xml.css('.ocrx_word').last.xpath(".//text()").text
+        elt.remove if garbage(convert.call(word))
+      end
+      xml.to_s
+    end
+
+    # For the time being, `clean` uses the regular StringScanner, and not the
+    # multibyte-aware version, coercing to ASCII first.
+    def get_conversion_method
+      if String.method_defined?(:encode)
+        lambda { |text| text.encode('ascii', :invalid => :replace, :undef => :replace, :replace => '?') }
+      else
+        require 'iconv' unless defined?(Iconv)
+        lambda { |text| Iconv.iconv('ascii//translit//ignore', 'utf-8', text).first }
       end
     end
 

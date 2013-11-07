@@ -21,4 +21,6 @@ Gem::Specification.new do |s|
 
   s.files = Dir['build/**/*', 'lib/**/*', 'bin/*', 'vendor/**/*',
                 'docsplit.gemspec', 'LICENSE', 'README']
+
+  s.add_dependency "nokogiri"
 end

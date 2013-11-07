@@ -1,5 +1,6 @@
 here = File.expand_path(File.dirname(__FILE__))
 require File.join(here, '..', 'test_helper')
+require 'fileutils'
 require 'tmpdir'
 
 class ExtractTextTest < Test::Unit::TestCase
@@ -36,6 +37,33 @@ class ExtractTextTest < Test::Unit::TestCase
       assert_directory_contains(OUTPUT, file)
       assert File.read(File.join(OUTPUT, file)).size > 1, "Expected that file with extracted text should have reasonable size"
     end
+  end
+
+  def test_hocr_extraction
+    # Create a config that enables hOCR output
+    FileUtils.mkdir_p(OUTPUT)
+    File.write("#{OUTPUT}/config", "tessedit_create_hocr 1")
+
+    Docsplit.extract_text('test/fixtures/corrosion.pdf', :pages => 'all', :output => OUTPUT, :config => "#{OUTPUT}/config")
+
+    # Remove the file to avoid polluting the tests below
+    FileUtils.rm("#{OUTPUT}/config")
+
+    files = []
+    4.times do |i|
+      file = "corrosion_#{i + 1}.txt"
+      files.push(file)
+      assert File.read(File.join(OUTPUT, file)).size > 1, "Expected that file with extracted text should have reasonable size"
+      # This page contains does not need ocr.
+      next if i == 2
+      file = "corrosion_#{i + 1}.html"
+      files.push(file)
+      assert File.read(File.join(OUTPUT, file)).size > 1, "Expected that file with annotated html should have reasonable size"
+      file = "corrosion_#{i + 1}.tif"
+      files.push(file)
+      assert File.read(File.join(OUTPUT, file)).size > 1, "Expected that tif file should have reasonable size"
+    end
+    assert_directory_contains(OUTPUT, files)
   end
 
   def test_ocr_extraction_in_mock_language
