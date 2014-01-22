@@ -101,6 +101,9 @@ Options:
         opts.on('-r', '--rolling', 'generate images from each previous image') do |r|
           @options[:rolling] = true
         end
+        opts.on('--leading_zeros', 'include leading zeros when naming a page') do |l|
+          @options[:leading_zeros] = true
+        end
         opts.on_tail('-v', '--version', 'display docsplit version') do
           puts "Docsplit version #{Docsplit::VERSION}"
           exit

@@ -32,6 +32,7 @@ module Docsplit
       basename  = File.basename(pdf, File.extname(pdf))
       directory = directory_for(size)
       pages     = @pages || '1-' + Docsplit.extract_length(pdf).to_s
+      page_format = page_number_format(pdf)
       escaped_pdf = ESCAPE[pdf]
       FileUtils.mkdir_p(directory) unless File.exists?(directory)
       common    = "#{MEMORY_ARGS} -density #{@density} #{resize_arg(size)} #{quality_arg(format)}"
@@ -41,7 +42,8 @@ module Docsplit
         raise ExtractionFailed, result if $? != 0
       else
         page_list(pages).each do |page|
-          out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
+          page_number = sprintf(page_format, page)
+          out_file  = ESCAPE[File.join(directory, "#{basename}_#{page_number}.#{format}")]
           cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
           result = `#{cmd}`.chomp
           raise ExtractionFailed, result if $? != 0
@@ -63,6 +65,7 @@ module Docsplit
       @sizes   = [options[:size]].flatten.compact
       @sizes   = [nil] if @sizes.empty?
       @rolling = !!options[:rolling]
+      @zeros   = !!options[:leading_zeros]
     end
 
     # If there's only one size requested, generate the images directly into
@@ -96,6 +99,12 @@ module Docsplit
           range.to_i
         end
       }.flatten.uniq.sort
+    end
+
+    # Generate the appropriate page number format.
+    def page_number_format(pdf)
+      digits = Docsplit.extract_length(pdf).to_s.length
+      @zeros ? "%0#{digits}d" : "%d"
     end
 
   end
