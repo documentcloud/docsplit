@@ -24,4 +24,17 @@ class ExtractPagesTest < Test::Unit::TestCase
     assert Dir["#{OUTPUT}/*.pdf"].length == 2
   end
 
+  def test_leading_zeros_while_extracting_pages
+    Docsplit.extract_pages('test/fixtures/leading_zeros.pdf', :leading_zeros => true, :output => OUTPUT)
+
+    doc_data_path = File.join(OUTPUT, 'doc_data.txt')
+    File.delete(doc_data_path) if File.exists?(doc_data_path)
+
+    assert_directory_contains(OUTPUT, ['leading_zeros_01.pdf', 'leading_zeros_02.pdf',
+                                       'leading_zeros_03.pdf', 'leading_zeros_04.pdf',
+                                       'leading_zeros_05.pdf', 'leading_zeros_06.pdf',
+                                       'leading_zeros_07.pdf', 'leading_zeros_08.pdf',
+                                       'leading_zeros_09.pdf', 'leading_zeros_10.pdf'])
+  end
+
 end

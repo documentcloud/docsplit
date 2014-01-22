@@ -54,4 +54,13 @@ class ExtractTextTest < Test::Unit::TestCase
     assert Dir["#{OUTPUT}/*.txt"].length == 2
   end
 
+  def test_leading_zeros_while_extracting_text
+    Docsplit.extract_text('test/fixtures/leading_zeros.pdf', :pages => 'all', :leading_zeros => true, :output => OUTPUT)
+    assert_directory_contains(OUTPUT, ['leading_zeros_01.txt', 'leading_zeros_02.txt',
+                                       'leading_zeros_03.txt', 'leading_zeros_04.txt',
+                                       'leading_zeros_05.txt', 'leading_zeros_06.txt',
+                                       'leading_zeros_07.txt', 'leading_zeros_08.txt',
+                                       'leading_zeros_09.txt', 'leading_zeros_10.txt'])
+  end
+
 end
