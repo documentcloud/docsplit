@@ -2,7 +2,8 @@ require 'rbconfig'
 
 module Docsplit
   class PdfExtractor
-    @@executable = nil
+    @@executable     = nil
+    @@version_string = nil
 
     # Provide a set of helper functions to determine the OS.
     HOST_OS = (defined?("RbConfig") ? RbConfig : Config)::CONFIG['host_os']
@@ -19,13 +20,14 @@ module Docsplit
     # The first line of the help output holds the name and version number
     # of the office software to be used for extraction.
     def version_string
-      null = windows? ? "NUL" : "/dev/null"
-      versionstr = `#{office_executable} -h 2>#{null}`.split("\n").first
-      if !!versionstr.match(/[0-9]*/)
-        versionstr = `#{office_executable} --version`.split("\n").first
+      unless @@version_string
+        null = windows? ? "NUL" : "/dev/null"
+        @@version_string = `#{office_executable} -h 2>#{null}`.split("\n").first
+        if !!@@version_string.match(/[0-9]*/)
+          @@version_string = `#{office_executable} --version`.split("\n").first
+        end
       end
-      @@help ||= versionstr
-
+      @@version_string
     end
     def libre_office?
       !!version_string.match(/^LibreOffice/)
