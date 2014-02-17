@@ -79,7 +79,7 @@ module Docsplit
         escaped_tiff = ESCAPE[tiff]
         if TOOLCHAIN == 'graphicsmagick'
           run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf} #{escaped_tiff} 2>&1"
-        elsif TOOLCHAIN == 'graphicsmagick'
+        elsif TOOLCHAIN == 'imagemagick'
           run "convert -define quantum:polarity=min-is-white -endian MSB -units PixelsPerInch -density 204x196 -monochrome -compress Fax -sample 1728 #{escaped_pdf} #{escaped_tiff}"
         end
         run "tesseract #{escaped_tiff} #{base_path} -l #{@language} 2>&1"
