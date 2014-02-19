@@ -5,7 +5,6 @@ require 'docsplit/version'
 Gem::Specification.new do |s|
   s.name      = 'docsplit'
   s.version   = Docsplit::VERSION
-  s.date      = '2014-02-16'
 
   s.homepage    = "http://documentcloud.github.com/docsplit/"
   s.summary     = "Break Apart Documents into Images, Text, Pages and PDFs"
