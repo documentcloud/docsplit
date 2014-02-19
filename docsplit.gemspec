@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name      = 'docsplit'
   s.version   = Docsplit::VERSION
 
-  s.homepage    = "http://documentcloud.github.com/docsplit/"
+  s.homepage    = 'http://documentcloud.github.io/docsplit/'
   s.summary     = "Break Apart Documents into Images, Text, Pages and PDFs"
   s.description = <<-EOS
     Docsplit is a command-line utility and Ruby library for splitting apart
