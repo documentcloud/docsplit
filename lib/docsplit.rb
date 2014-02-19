@@ -5,8 +5,6 @@ require 'shellwords'
 # The Docsplit module delegates to the Java PDF extractors.
 module Docsplit
 
-  VERSION       = '0.7.4' # Keep in sync with gemspec.
-
   ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
 
   ROOT          = File.expand_path(File.dirname(__FILE__) + '/..')
