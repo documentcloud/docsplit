@@ -1,3 +1,5 @@
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'docsplit/version'
 
 Gem::Specification.new do |s|
@@ -25,5 +27,6 @@ Gem::Specification.new do |s|
   s.files = Dir['build/**/*', 'lib/**/*', 'bin/*', 'vendor/**/*',
                 'docsplit.gemspec', 'LICENSE', 'README']
 
+  s.add_development_dependency 'bundler', '~> 1.5'
   s.add_development_dependency 'rake'
 end

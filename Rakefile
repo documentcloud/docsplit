@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'rake/testtask'
+require 'bundler/gem_tasks'
 
 desc 'Run all tests'
 task :test do
