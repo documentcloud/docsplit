@@ -28,4 +28,11 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'bundler', '~> 1.5'
   s.add_development_dependency 'rake'
+
+  s.requirements << 'GraphicsMagick'
+  s.requirements << 'Poppler'
+  s.requirements << 'Ghostscript (optional)'
+  s.requirements << 'Tesseract (optional)'
+  s.requirements << 'pdftk (optional)'
+  s.requirements << 'LibreOffice (optional)'
 end
