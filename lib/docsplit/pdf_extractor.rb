@@ -52,6 +52,7 @@ module Docsplit
           /Applications/OpenOffice.org.app/Contents
         )
       else # probably linux/unix
+        # heroku libreoffice buildpack: https://github.com/rishihahs/heroku-buildpack-libreoffice
         search_paths = %w(
           /usr/lib/libreoffice
           /usr/lib64/libreoffice
@@ -59,6 +60,7 @@ module Docsplit
           /usr/lib/openoffice
           /usr/lib64/openoffice
           /opt/openoffice.org3
+          /app/vendor/libreoffice
         )
       end
       search_paths
