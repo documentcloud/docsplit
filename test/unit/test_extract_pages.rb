@@ -1,7 +1,7 @@
 here = File.expand_path(File.dirname(__FILE__))
 require File.join(here, '..', 'test_helper')
 
-class ExtractPagesTest < Test::Unit::TestCase
+class ExtractPagesTest < Minitest::Test
 
   def test_multi_page_extraction
     Docsplit.extract_pages('test/fixtures/obama_arts.pdf', :output => OUTPUT)

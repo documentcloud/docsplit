@@ -1,7 +1,7 @@
 here = File.expand_path(File.dirname(__FILE__))
 require File.join(here, '..', 'test_helper')
 
-class ConvertToPdfTest < Test::Unit::TestCase
+class ConvertToPdfTest < Minitest::Test
 
   def test_doc_conversion
     Docsplit.extract_pdf('test/fixtures/obama_veterans.doc', :output => OUTPUT)

@@ -1,7 +1,7 @@
 here = File.expand_path(File.dirname(__FILE__))
 require File.join(here, '..', 'test_helper')
 
-class ExtractImagesTest < Test::Unit::TestCase
+class ExtractImagesTest < Minitest::Test
 
   def test_basic_image_extraction
     Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :size => "250x", :output => OUTPUT)
