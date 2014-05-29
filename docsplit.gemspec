@@ -1,9 +1,12 @@
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'docsplit/version'
+
 Gem::Specification.new do |s|
   s.name      = 'docsplit'
-  s.version   = '0.7.4'         # Keep version in sync with docsplit.rb
-  s.date      = '2014-02-16'
+  s.version   = Docsplit::VERSION
 
-  s.homepage    = "http://documentcloud.github.com/docsplit/"
+  s.homepage    = 'http://documentcloud.github.io/docsplit/'
   s.summary     = "Break Apart Documents into Images, Text, Pages and PDFs"
   s.description = <<-EOS
     Docsplit is a command-line utility and Ruby library for splitting apart
@@ -22,4 +25,14 @@ Gem::Specification.new do |s|
 
   s.files = Dir['build/**/*', 'lib/**/*', 'bin/*', 'vendor/**/*',
                 'docsplit.gemspec', 'LICENSE', 'README']
+
+  s.add_development_dependency 'bundler', '~> 1.5'
+  s.add_development_dependency 'rake'
+
+  s.requirements << 'GraphicsMagick'
+  s.requirements << 'Poppler'
+  s.requirements << 'Ghostscript (optional)'
+  s.requirements << 'Tesseract (optional)'
+  s.requirements << 'pdftk (optional)'
+  s.requirements << 'LibreOffice (optional)'
 end
