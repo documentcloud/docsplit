@@ -1,9 +1,9 @@
 here = File.dirname(__FILE__)
 require File.join(here, '..', 'lib', 'docsplit')
 require 'fileutils'
-require 'test/unit'
+require 'minitest'
 
-class Test::Unit::TestCase
+class Minitest::Test
   include Docsplit
 
   OUTPUT = 'test/output'

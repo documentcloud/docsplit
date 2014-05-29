@@ -1,7 +1,7 @@
 here = File.expand_path(File.dirname(__FILE__))
 require File.join(here, '..', 'test_helper')
 
-class ExtractInfoTest < Test::Unit::TestCase
+class ExtractInfoTest < Minitest::Test
 
   def test_title
     assert "PDF Pieces" == Docsplit.extract_title('test/fixtures/encrypted.pdf')
@@ -38,9 +38,7 @@ class ExtractInfoTest < Test::Unit::TestCase
   end
   
   def test_malformed_unicode
-    assert_nothing_raised do
-      Docsplit.extract_date('test/fixtures/Faktura 10.pdf')
-    end
+    assert Docsplit.extract_date('test/fixtures/Faktura 10.pdf')
   end
   
   def test_extract_all

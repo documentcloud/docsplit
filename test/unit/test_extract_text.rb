@@ -2,7 +2,7 @@ here = File.expand_path(File.dirname(__FILE__))
 require File.join(here, '..', 'test_helper')
 require 'tmpdir'
 
-class ExtractTextTest < Test::Unit::TestCase
+class ExtractTextTest < Minitest::Test
 
   def test_paged_extraction
     Docsplit.extract_text('test/fixtures/obama_arts.pdf', :pages => 'all', :output => OUTPUT)
@@ -39,7 +39,7 @@ class ExtractTextTest < Test::Unit::TestCase
   end
 
   def test_ocr_extraction_in_mock_language
-    exception = assert_raise(Docsplit::ExtractionFailed) {Docsplit.extract_text('test/fixtures/corrosion.pdf', :pages => 'all', :output => OUTPUT, :language => "mock")}
+    exception = assert_raises(Docsplit::ExtractionFailed) {Docsplit.extract_text('test/fixtures/corrosion.pdf', :pages => 'all', :output => OUTPUT, :language => "mock")}
     assert exception.message.match("tessdata/mock"), "Expected problem with loading data for language 'mock'"
   end
 
