@@ -2,7 +2,7 @@ here = File.expand_path(File.dirname(__FILE__))
 require File.join(here, '..', 'test_helper')
 require 'tmpdir'
 
-class TransparentPDFsTest < Test::Unit::TestCase
+class TransparentPDFsTest < Minitest::Test
 
   def setup
     @klass = Class.new
