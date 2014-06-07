@@ -120,6 +120,7 @@ module Docsplit
 
         if GM_FORMATS.include?(`file -b --mime #{ESCAPE[doc]}`.strip.split(/[:;]\s+/)[0])
           `gm convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
+          `#{"gm" unless ENV["toolchain"] == "imagemagick"} convert #{escaped_doc} #{escaped_out}/#{escaped_basename}.pdf`
         else
           if libre_office?
             # Set the LibreOffice user profile, so that parallel uses of cloudcrowd don't trip over each other.

@@ -37,12 +37,12 @@ module Docsplit
       common    = "#{MEMORY_ARGS} -density #{@density} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
-        result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
+        result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 #{"gm" unless ENV["toolchain"] == "imagemagick"} mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
         raise ExtractionFailed, result if $? != 0
       else
         page_list(pages).each do |page|
           out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
-          cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
+          cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 #{"gm" unless ENV["toolchain"] == "imagemagick"} convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
           result = `#{cmd}`.chomp
           raise ExtractionFailed, result if $? != 0
         end
