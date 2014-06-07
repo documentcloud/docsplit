@@ -12,6 +12,8 @@ module Docsplit
   ROOT          = File.expand_path(File.dirname(__FILE__) + '/..')
   ESCAPED_ROOT  = ESCAPE[ROOT]
 
+  TOOLCHAIN     = 'graphicsmagick' #set to either graphicsmagick or imagemagick to switch conversion commands
+
   METADATA_KEYS = [:author, :date, :creator, :keywords, :producer, :subject, :title, :length]
   
   GM_FORMATS    = ["image/gif", "image/jpeg", "image/png", "image/x-ms-bmp", "image/svg+xml", "image/tiff", "image/x-portable-bitmap", "application/postscript", "image/x-portable-pixmap"]
