@@ -9,7 +9,8 @@ module Docsplit
       extract_options opts
       [pdfs].flatten.each do |pdf|
         pdf_name = File.basename(pdf, File.extname(pdf))
-        page_path = File.join(@output, "#{pdf_name}_%d.pdf")
+        page_format = page_number_format(pdf)
+        page_path = File.join(@output, "#{pdf_name}_#{page_format}.pdf")
         FileUtils.mkdir_p @output unless File.exists?(@output)
         
         cmd = if DEPENDENCIES[:pdftailor] # prefer pdftailor, but keep pdftk for backwards compatability
@@ -29,6 +30,14 @@ module Docsplit
 
     def extract_options(options)
       @output = options[:output] || '.'
+      @zeros  = !!options[:leading_zeros]
+    end
+
+    # Generate the appropriate page number format. 
+    def page_number_format(pdf)
+      digits = Docsplit.extract_length(pdf).to_s.length
+      # PDFTailor doesn't support printf-style format in the output, yet
+      (!DEPENDENCIES[:pdftailor] && @zeros) ? "%0#{digits}d" : "%d"
     end
 
   end

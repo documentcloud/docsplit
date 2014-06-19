@@ -59,12 +59,14 @@ module Docsplit
     def extract_from_ocr(pdf, pages)
       tempdir = Dir.mktmpdir
       base_path = File.join(@output, @pdf_name)
+      page_format = page_number_format(pdf)
       escaped_pdf = ESCAPE[pdf]
       if pages
         pages.each do |page|
-          tiff = "#{tempdir}/#{@pdf_name}_#{page}.tif"
+          page_number = sprintf(page_format, page)
+          tiff = "#{tempdir}/#{@pdf_name}_#{page_number}.tif"
           escaped_tiff = ESCAPE[tiff]
-          file = "#{base_path}_#{page}"
+          file = "#{base_path}_#{page_number}"
           run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf}[#{page - 1}] #{escaped_tiff} 2>&1"
           run "tesseract #{escaped_tiff} #{ESCAPE[file]} -l #{@language} 2>&1"
           clean_text(file + '.txt') if @clean_ocr
@@ -109,7 +111,8 @@ module Docsplit
     # Extract the contents of a single page of text, directly, adding it to
     # the `@pages_to_ocr` list if the text length is inadequate.
     def extract_page(pdf, page)
-      text_path = File.join(@output, "#{@pdf_name}_#{page}.txt")
+      page_number = sprintf(page_number_format(pdf), page)
+      text_path = File.join(@output, "#{@pdf_name}_#{page_number}.txt")
       run "pdftotext -enc UTF-8 -f #{page} -l #{page} #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
       unless @forbid_ocr
         @pages_to_ocr.push(page) if File.read(text_path).length < MIN_TEXT_PER_PAGE
@@ -123,6 +126,13 @@ module Docsplit
       @forbid_ocr = options[:ocr] == false
       @clean_ocr  = !(options[:clean] == false)
       @language   = options[:language] || 'eng'
+      @zeros      = !!options[:leading_zeros]
+    end
+
+    # Generate the appropriate page number format.
+    def page_number_format(pdf)
+      digits = Docsplit.extract_length(pdf).to_s.length
+      @zeros ? "%0#{digits}d" : "%d"
     end
 
   end

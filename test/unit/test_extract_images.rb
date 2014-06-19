@@ -48,4 +48,13 @@ class ExtractImagesTest < Minitest::Test
                                        'PDF file with spaces \'single\' and "double quotes"_1.gif'])
   end
 
+  def test_leading_zeros_while_extracting_images
+    Docsplit.extract_images('test/fixtures/leading_zeros.pdf', :leading_zeros => true, :output => OUTPUT)
+    assert_directory_contains(OUTPUT, ['leading_zeros_01.png', 'leading_zeros_02.png',
+                                       'leading_zeros_03.png', 'leading_zeros_04.png',
+                                       'leading_zeros_05.png', 'leading_zeros_06.png',
+                                       'leading_zeros_07.png', 'leading_zeros_08.png',
+                                       'leading_zeros_09.png', 'leading_zeros_10.png'])
+  end
+
 end
