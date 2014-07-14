@@ -103,14 +103,22 @@ module Docsplit
     # Extract the full contents of a pdf as a single file, directly.
     def extract_full(pdf)
       text_path = File.join(@output, "#{@pdf_name}.txt")
-      run "pdftotext -enc UTF-8 #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+      unless @pdf_txt_opts.empty?
+        run "pdftotext  -enc UTF-8 #{@pdf_txt_opts}  #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+      else
+        run "pdftotext  -enc UTF-8 #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+      end
     end
 
     # Extract the contents of a single page of text, directly, adding it to
     # the `@pages_to_ocr` list if the text length is inadequate.
     def extract_page(pdf, page)
       text_path = File.join(@output, "#{@pdf_name}_#{page}.txt")
-      run "pdftotext -enc UTF-8 -f #{page} -l #{page} #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+      unless @pdf_txt_opts.empty?
+        run "pdftotext -enc UTF-8 -f #{page} -l #{page} #{@pdf_txt_opts}  #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+      else
+        run "pdftotext -enc UTF-8 -f #{page} -l #{page} #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+      end
       unless @forbid_ocr
         @pages_to_ocr.push(page) if File.read(text_path).length < MIN_TEXT_PER_PAGE
       end
@@ -123,6 +131,7 @@ module Docsplit
       @forbid_ocr = options[:ocr] == false
       @clean_ocr  = !(options[:clean] == false)
       @language   = options[:language] || 'eng'
+      @pdf_txt_opts = options[:pdf_opts] || '' 
     end
 
   end
