@@ -23,7 +23,7 @@ module Docsplit
       unless @@version_string
         null = windows? ? "NUL" : "/dev/null"
         @@version_string = `#{office_executable} -h 2>#{null}`.split("\n").first
-        if !!@@version_string.match(/[0-9]*/)
+        if !!@@version_string.to_s.match(/[0-9]*/)
           @@version_string = `#{office_executable} --version`.split("\n").first
         end
       end
