@@ -14,9 +14,15 @@
   Installation:
   gem install docsplit
   
+  Added the options:
+    pdf_opts: which can be used to passed the pdftotext binary file options to docsplit gem
+    For Example:
+      Passing raw options to pdftotext, 
+        Docsplit.extract_text(path, {:pdf_opts => '-raw'})
+
   For documentation, usage, and examples, see:
   http://documentcloud.github.com/docsplit/
   
   To suggest a feature or report a bug: 
   http://github.com/documentcloud/docsplit/issues/
-
+  
