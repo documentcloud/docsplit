@@ -79,6 +79,11 @@ module Docsplit
     TextCleaner.new.clean(text)
   end
 
+  # Utility method to clean OCR'd text in hOCR output format.
+  def self.clean_hocr(html)
+    TextCleaner.new.clean_hocr(html)
+  end
+
   private
 
   # Normalize a value in an options hash for the command line.
