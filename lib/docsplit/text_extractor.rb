@@ -78,6 +78,8 @@ module Docsplit
         if @nod || !DEPENDENCIES[:osd] #if the user says don't do orientation detection or the plugin is not installed, set psm to 0
           psm = ""
         end
+        puts 'psm'
+        puts psm
         run "tesseract #{escaped_tiff} #{base_path} -l #{@language} #{psm} 2>&1"
         clean_text(base_path + '.txt') if @clean_ocr
       end
@@ -127,6 +129,7 @@ module Docsplit
       @forbid_ocr = options[:ocr] == false
       @clean_ocr  = !(options[:clean] == false)
       @language   = options[:language] || 'eng'
+      @nod        = options[:nod] == true
     end
 
   end
