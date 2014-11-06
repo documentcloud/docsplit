@@ -98,11 +98,11 @@ Options:
           @options[:language] = l
           @options[:clean] = false
         end
+        opts.on('-n', '--no-orientation-detection', 'turn off automatic orientation detection in tesseract') do |r|
+          @options[:nod] = true
+        end
         opts.on('-r', '--rolling', 'generate images from each previous image') do |r|
           @options[:rolling] = true
-        end
-        opts.on('-nod', '--no-orientation-detection', 'turn off automatic orientation detection in tesseract') do |r|
-          @options[:nod] = true
         end
         opts.on_tail('-v', '--version', 'display docsplit version') do
           puts "Docsplit version #{Docsplit::VERSION}"
