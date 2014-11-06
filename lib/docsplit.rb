@@ -18,18 +18,28 @@ module Docsplit
 
   DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :pdftailor => false, :tesseract => false}
 
+  osd = false
+
   # Check for all dependencies, and note their absence.
   dirs = ENV['PATH'].split(File::PATH_SEPARATOR)
   DEPENDENCIES.each_key do |dep|
     dirs.each do |dir|
       if File.executable?(File.join(dir, dep.to_s))
         DEPENDENCIES[dep] = true
+        if dep.to_s == 'tesseract'  #if the tesseract dependency is found
+          val = %x[ #{'tesseract --list-langs'} 2>&1 >/dev/null ]  #check for the osd plugin.
+          if val =~ /\bosd\b/     #osd will be listed in tesseract --listlangs
+            osd = true
+          end
+        end
         break
       end
     end
   end
 
-  # Raise an ExtractionFailed exception when the PDF is encrypted, or otherwise
+  DEPENDENCIES[:osd] = osd
+
+    # Raise an ExtractionFailed exception when the PDF is encrypted, or otherwise
   # broke.
   class ExtractionFailed < StandardError; end
 

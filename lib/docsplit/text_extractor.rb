@@ -74,7 +74,11 @@ module Docsplit
         tiff = "#{tempdir}/#{@pdf_name}.tif"
         escaped_tiff = ESCAPE[tiff]
         run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf} #{escaped_tiff} 2>&1"
-        run "tesseract #{escaped_tiff} #{base_path} -l #{@language} 2>&1"
+        psm = "-psm 1"
+        if @nod
+          psm = ""
+        end
+        run "tesseract #{escaped_tiff} #{base_path} -l #{@language} #{psm} 2>&1"
         clean_text(base_path + '.txt') if @clean_ocr
       end
     ensure
