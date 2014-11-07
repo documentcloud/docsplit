@@ -98,7 +98,7 @@ Options:
           @options[:language] = l
           @options[:clean] = false
         end
-        opts.on('-n', '--no-orientation-detection', 'turn off automatic orientation detection in tesseract') do |r|
+        opts.on('-n', '--no-orientation-detection', 'turn off automatic orientation detection in tesseract') do |n|
           @options[:nod] = true
         end
         opts.on('-r', '--rolling', 'generate images from each previous image') do |r|
