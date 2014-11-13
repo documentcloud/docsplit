@@ -71,7 +71,7 @@ Options:
     # Use the OptionParser library to parse out all supported options. Return
     # options formatted for the Ruby API.
     def parse_options
-      @options = {:ocr => :default, :clean => true}
+      @options = {:ocr => :default, :clean => true, :detect_orientation => true}
       @option_parser = OptionParser.new do |opts|
         opts.on('-o', '--output [DIR]', 'set the directory for all output') do |d|
           @options[:output] = d
@@ -98,8 +98,8 @@ Options:
           @options[:language] = l
           @options[:clean] = false
         end
-        opts.on('-n', '--no-orientation-detection', 'turn off automatic orientation detection in tesseract') do |n|
-          @options[:nod] = true
+        opts.on('--no-orientation-detection', 'turn off automatic orientation detection in tesseract') do |n|
+          @options[:detect_orientation] = false
         end
         opts.on('-r', '--rolling', 'generate images from each previous image') do |r|
           @options[:rolling] = true

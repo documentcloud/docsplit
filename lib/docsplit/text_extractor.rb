@@ -74,10 +74,9 @@ module Docsplit
         tiff = "#{tempdir}/#{@pdf_name}.tif"
         escaped_tiff = ESCAPE[tiff]
         run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf} #{escaped_tiff} 2>&1"
-        psm = "-psm 1"
-        if @nod || !DEPENDENCIES[:osd] #if the user says don't do orientation detection or the plugin is not installed, set psm to 0
-          psm = ""
-        end
+        #if the user says don't do orientation detection or the plugin is not installed, set psm to 0
+        psm = "-psm 1" if @detect_orientation and DEPENDENCIES[:osd]
+        psm ||= ""
         run "tesseract #{escaped_tiff} #{base_path} -l #{@language} #{psm} 2>&1"
         clean_text(base_path + '.txt') if @clean_ocr
       end
@@ -121,13 +120,13 @@ module Docsplit
     end
 
     def extract_options(options)
-      @output     = options[:output] || '.'
-      @pages      = options[:pages]
-      @force_ocr  = options[:ocr] == true
-      @forbid_ocr = options[:ocr] == false
-      @clean_ocr  = !(options[:clean] == false)
-      @language   = options[:language] || 'eng'
-      @nod        = options[:nod] == true
+      @output             = options[:output] || '.'
+      @pages              = options[:pages]
+      @force_ocr          = options[:ocr] == true
+      @forbid_ocr         = options[:ocr] == false
+      @clean_ocr          = !(options[:clean] == false)
+      @language           = options[:language] || 'eng'
+      @detect_orientation = options[:detect_orientation] == true
     end
 
   end
