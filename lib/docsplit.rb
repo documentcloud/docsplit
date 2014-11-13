@@ -16,9 +16,7 @@ module Docsplit
   
   GM_FORMATS    = ["image/gif", "image/jpeg", "image/png", "image/x-ms-bmp", "image/svg+xml", "image/tiff", "image/x-portable-bitmap", "application/postscript", "image/x-portable-pixmap"]
 
-  DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :pdftailor => false, :tesseract => false}
-
-  osd = false
+  DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :pdftailor => false, :tesseract => false, :osd => false}
 
   # Check for all dependencies, and note their absence.
   dirs = ENV['PATH'].split(File::PATH_SEPARATOR)
@@ -26,18 +24,17 @@ module Docsplit
     dirs.each do |dir|
       if File.executable?(File.join(dir, dep.to_s))
         DEPENDENCIES[dep] = true
-        if dep.to_s == 'tesseract'  #if the tesseract dependency is found
-          val = %x[ #{'tesseract --list-langs'} 2>&1 >/dev/null ]  #check for the osd plugin.
-          if val =~ /\bosd\b/     #osd will be listed in tesseract --listlangs
-            osd = true
-          end
-        end
         break
       end
     end
   end
 
-  DEPENDENCIES[:osd] = osd
+  # if tesseract is found check for the osd plugin so that we can do orientation independent OCR.
+  if DEPENDENCIES[:tesseract]
+    # osd will be listed in tesseract --listlangs
+    val = %x[ #{'tesseract --list-langs'} 2>&1 >/dev/null ]
+    DEPENDENCIES[:osd] = true if val =~ /\bosd\b/
+  end
 
     # Raise an ExtractionFailed exception when the PDF is encrypted, or otherwise
   # broke.
