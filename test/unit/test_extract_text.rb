@@ -70,7 +70,7 @@ class ExtractTextTest < Minitest::Test
       end
       
       # There should be a ratio of better than 2:1 letters to non-letters.
-      assert letters.values.reduce(0,:+)/2 > nonletters.values.reduce(0,:+)
+      assert letters.values.reduce(0,:+)/2 > nonletters.values.reduce(0,:+), "Expected that text extracted with orientation detection would have more letters."
     else
       skip "Orientation detection module (osd) for Tesseract isn't installed"
     end

@@ -5,7 +5,7 @@ require 'shellwords'
 # The Docsplit module delegates to the Java PDF extractors.
 module Docsplit
 
-  VERSION       = '0.7.5' # Keep in sync with gemspec.
+  VERSION       = '0.7.6' # Keep in sync with gemspec.
 
   ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
 
