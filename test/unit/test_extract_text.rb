@@ -53,5 +53,27 @@ class ExtractTextTest < Minitest::Test
     Docsplit.extract_text('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf', :pages => 'all', :output => OUTPUT)
     assert Dir["#{OUTPUT}/*.txt"].length == 2
   end
+  
+  def test_orientation_detected_ocr_extraction
+    if Docsplit::DEPENDENCIES[:osd]
+      Docsplit.extract_text('test/fixtures/president-obamas-long-form-birth-certificate.sideways.pdf', :output => OUTPUT)
+      letters = Hash.new(0)
+      nonletters = Hash.new(0)
+      File.open(File.join(OUTPUT,'president-obamas-long-form-birth-certificate.sideways.txt')).each_char do |c| 
+        case c
+        when /[A-Za-z]/
+          letters[c] += 1
+        when /\s/
+        else
+          nonletters[c] += 1
+        end
+      end
+      
+      # There should be a ratio of better than 2:1 letters to non-letters.
+      assert letters.values.reduce(0,:+)/2 > nonletters.values.reduce(0,:+)
+    else
+      skip "Orientation detection module (osd) for Tesseract isn't installed"
+    end
+  end
 
 end
