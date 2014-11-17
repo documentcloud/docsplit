@@ -61,6 +61,7 @@ module Docsplit
           /usr/lib64/openoffice
           /opt/openoffice.org3
           /app/vendor/libreoffice
+          /usr/local/bin
         )
       end
       search_paths
