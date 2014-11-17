@@ -2,6 +2,7 @@ here = File.dirname(__FILE__)
 require File.join(here, '..', 'lib', 'docsplit')
 require 'fileutils'
 require 'minitest'
+require "minitest/autorun"
 
 class Minitest::Test
   include Docsplit
