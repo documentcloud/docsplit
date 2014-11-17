@@ -193,7 +193,7 @@ docsplit images docs/*.pdf --size 700x,50x50 --format gif --pages 3,10-15,42</pr
 Docsplit.extract_images('example.doc', :size => '1000x', :format => [:png, :jpg])</pre>
 
     <p class="break">
-      <b class="header">text</b><code>--pages --ocr --no-ocr --no-clean</code>
+      <b class="header">text</b><code>--pages --ocr --no-ocr --no-clean --language --no-orientation-detection</code>
       <span class="alias">Ruby: <b>extract_text</b></span>
       <br />
       Extract the complete <b>UTF-8</b>-encoded plain text of a document to a
@@ -205,8 +205,18 @@ Docsplit.extract_images('example.doc', :size => '1000x', :format => [:png, :jpg]
       characters in the OCR'd text &mdash; to disable this, pass the
       <tt>--no-clean</tt> flag.
     </p>
+    <p>
+      By default Tesseract ships only with english extraction data.  
+      If <a href="https://code.google.com/p/tesseract-ocr/downloads/list"/>
+      any additional language models</a> are installed you can select one using
+      the <tt>--language</tt> flag.
+      
+      If <a href="https://code.google.com/p/tesseract-ocr/downloads/detail?name=tesseract-ocr-3.01.osd.tar.gz&can=2&q=">
+      Tesseract's orientation detection model</a> Docsplit will automatically use it
+      unless you specify not to with the <tt>--no-orientation-detection</tt>.
+    </p>
 <pre>
-docsplit text path/to/doc.pdf --pages all</pre>
+docsplit text path/to/doc.pdf --pages all --language deu</pre>
 <pre>
 docs = Dir['storage/originals/*.doc']
 Docsplit.extract_text(docs, :ocr => false, :output => 'storage/text')</pre>
