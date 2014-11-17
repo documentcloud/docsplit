@@ -71,7 +71,7 @@ Options:
     # Use the OptionParser library to parse out all supported options. Return
     # options formatted for the Ruby API.
     def parse_options
-      @options = {:ocr => :default, :clean => true, :detect_orientation => true}
+      @options = {:ocr => :default, :clean => true}
       @option_parser = OptionParser.new do |opts|
         opts.on('-o', '--output [DIR]', 'set the directory for all output') do |d|
           @options[:output] = d
