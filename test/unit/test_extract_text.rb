@@ -56,10 +56,10 @@ class ExtractTextTest < Minitest::Test
   
   def test_orientation_detected_ocr_extraction
     if Docsplit::DEPENDENCIES[:osd]
-      Docsplit.extract_text('test/fixtures/president-obamas-long-form-birth-certificate.sideways.pdf', :output => OUTPUT)
+      Docsplit.extract_text('test/fixtures/corrosion.reoriented.pdf', :output => OUTPUT)
       letters = Hash.new(0)
       nonletters = Hash.new(0)
-      File.open(File.join(OUTPUT,'president-obamas-long-form-birth-certificate.sideways.txt')).each_char do |c| 
+      File.open(File.join(OUTPUT,'corrosion.reoriented.txt')).each_char do |c| 
         case c
         when /[A-Za-z]/
           letters[c] += 1
