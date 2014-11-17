@@ -123,8 +123,8 @@ module Docsplit
       @pages              = options[:pages]
       @force_ocr          = options[:ocr] == true
       @forbid_ocr         = options[:ocr] == false
-      @clean_ocr          = !(options[:clean] == false)
       @language           = options[:language] || 'eng'
+      @clean_ocr          = (!(options[:clean] == false) and @language == 'eng')
       @detect_orientation = ((options[:detect_orientation] != false) and DEPENDENCIES[:osd])
     end
 
