@@ -159,6 +159,12 @@
         <tt>aptitude install libreoffice</tt><br />
         On the Mac, download and install <a href="http://www.libreoffice.org/download">the latest release</a>.
       </li>
+      <li>
+        (Optional) Install fonts to process documents that use <a href="https://help.ubuntu.com/community/Fonts#Chinese.2C_Japanese.2C_and_Korean_Fonts">Chinese, Japanese, and Korean Fonts</a>.
+        On Linux, use <b>aptitude</b>, <b>apt-get</b> or <b>yum</b>:<br />
+        <tt>aptitude install ttf-wqy-microhei ttf-wqy-zenhei ttf-kochi-gothic ttf-kochi-mincho fonts-nanum</tt><br />
+        On the Mac, the fonts should already be present. However you can always download the TTF files and install them using <a href="http://support.apple.com/en-us/HT201749">Font Book</a>.
+      </li>
     </ol>
 
     <p><i>
@@ -183,7 +189,7 @@
       and format. Pass <tt>--pages</tt> or <tt>-p</tt> to choose the specific pages to
       image. Passing<br /> <tt>--size</tt> or <tt>-s</tt> will specify the desired
       image resolution, <tt>--density</tt> or <tt>-d</tt> will specify the DPI to rasterize the images
-      at during conversion by GraphicsMagick, and <tt>--format</tt> or <tt>-f</tt> 
+      at during conversion by GraphicsMagick, and <tt>--format</tt> or <tt>-f</tt>
       will select the format of the final images.
     </p>
 <pre>
@@ -201,7 +207,7 @@ Docsplit.extract_images('example.doc', :size => '1000x', :format => [:png, :jpg]
       pass <tt>--pages all</tt>. You can use the <tt>--ocr</tt> and <tt>--no-ocr</tt>
       flags to force OCR, or disable it, respectively. By default (if Tesseract is installed)
       Docsplit will OCR the text of each page for which it fails to extract text
-      directly from the document. Docsplit will also attempt to clean up garbage 
+      directly from the document. Docsplit will also attempt to clean up garbage
       characters in the OCR'd text &mdash; to disable this, pass the
       <tt>--no-clean</tt> flag.
     </p>
@@ -272,7 +278,7 @@ Docsplit.extract_length('path/to/stooges.pdf')
       <a href="http://poppler.freedesktop.org/">Poppler</a>,
       <a href="http://www.accesspdf.com/pdftk/">PDFTK</a>,
       <a href="http://code.google.com/p/tesseract-ocr/">Tesseract</a>, and
-      <a href="http://www.libreoffice.org/">LibreOffice</a> libraries. 
+      <a href="http://www.libreoffice.org/">LibreOffice</a> libraries.
       Poppler is used to extract text and metadata from PDF documents,
       PDFTK is used to split them apart into pages, and GraphicsMagick is used to generate
       the page images (internally, it's rendering them with
@@ -291,7 +297,7 @@ Docsplit.extract_length('path/to/stooges.pdf')
     </p>
 
     <h2 id="changes">Change Log</h2>
-    
+
     <p>
       <b class="header">0.7.6</b><small> &ndash; Nov. 16, 2014</small><br />
       Docsplit will now automatically use Tesseract's orientation detection model
@@ -308,7 +314,7 @@ Docsplit.extract_length('path/to/stooges.pdf')
       <b class="header">0.7.2</b><small> &ndash; Feb. 23, 2013</small><br />
       Bug fixes for LibreOffice support.
     </p>
-    
+
     <p>
       <b class="header">0.7.0</b><small> &ndash; Feb. 23, 2013</small><br />
       Docsplit now expresses a preference for LibreOffice over OpenOffice, with
@@ -317,81 +323,81 @@ Docsplit.extract_length('path/to/stooges.pdf')
       Improved unicode support now correctly collects non-ascii characters from
       pdfinfo.
     </p>
-    
+
     <p>
       <b class="header">0.6.4</b><small> &ndash; Nov. 12, 2012</small><br />
       Added a language flag for the Docsplit commandline, fixed several bugs,
       and began preparations for the deprecation of pdftk.
     </p>
-    
+
     <p>
       <b class="header">0.6.2</b><small> &ndash; Nov. 22, 2011</small><br />
       Bugfix to escape document names during file type detection.
     </p>
-    
+
     <p>
       <b class="header">0.6.1</b><small> &ndash; Nov. 18, 2011</small><br />
       Docsplit now supports converting documents using LibreOffice
       as well as OpenOffice, through JODConverter 3.0 beta4.
     </p>
-    
+
     <p>
       <b class="header">0.6.0</b><small> &ndash; Sept. 13, 2011</small><br />
-      Docsplit should now handle shelling out for documents with arbitrary 
-      characters in their filenames correctly, thanks to a series of 
+      Docsplit should now handle shelling out for documents with arbitrary
+      characters in their filenames correctly, thanks to a series of
       epic patches from Vladimir Rybas.
-      A <tt>--density</tt> option was added for specifying the resolution of 
+      A <tt>--density</tt> option was added for specifying the resolution of
       rasterization when generating images from documents.
       The image resolution for OCR has been doubled from 200 to 400 DPI &mdash;
-      this shouldn't make a noticeable difference for normal docs, but will make 
+      this shouldn't make a noticeable difference for normal docs, but will make
       a world of difference for the fine print.
       Docsplit now uses GraphicsMagick's <tt>--despeckle</tt> before OCR.
     </p>
-    
+
     <p>
       <b class="header">0.5.2</b><small> &ndash; May 13, 2011</small><br />
       For transparent conversion to PDF, made Docsplit prefer GraphicsMagick
       over OpenOffice, when the file format is one that GraphicsMagick is able
       to read: (png, gif, jpg, jpeg, tif, tiff, bmp, pnm, ppm, svg, eps).
     </p>
-    
+
     <p>
       <b class="header">0.5.1</b><small> &ndash; April 26, 2011</small><br />
       Minor tweaks to the <tt>TextCleaner</tt> to be more lenient about acryonms
       with hyphens, and words with four vowels in a row.
     </p>
-    
+
     <p>
       <b class="header">0.5.0</b><br />
       Added a <tt>Docsplit::TextCleaner</tt> class which is used to post-process
       OCR'd text, and remove garbage characters that are created when Tesseract
       encounters non-english text. To disable the cleanup, pass <tt>--no-clean</tt>.
     </p>
-    
+
     <p>
       <b class="header">0.4.1</b><br />
       Upgraded the JODConverter dependency for PDF conversion via OpenOffice to
-      3.0 beta. Added PNG, GIF, TIF, JPG, and BMP to the list of supported 
+      3.0 beta. Added PNG, GIF, TIF, JPG, and BMP to the list of supported
       formats.
     </p>
-    
+
     <p>
       <b class="header">0.3.4</b><br />
       Adding a suggested optimization from the GraphicsMagick list -- only ever
       generate one page image per GraphicsMagick call. Saves large amounts of
       disk space for tempfiles on long documents.
     </p>
-    
+
     <p>
       <b class="header">0.3.3</b><br />
       Start using the MAGICK_TMPDIR environment variable to prevent parallel
       Docsplit runs from having the potential to clobber each other's temporary
       image files.
     </p>
-    
+
     <p>
       <b class="header">0.3.1</b><br />
-      Added a memory limit to GraphicsMagick while generating the TIFFs for 
+      Added a memory limit to GraphicsMagick while generating the TIFFs for
       Tesseract OCR -- prevents <tt>gm</tt> from gobbling up all available memory
       on large files.
     </p>
