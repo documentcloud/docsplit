@@ -25,7 +25,11 @@ module Docsplit
     # Convert a single PDF into page images at the specified size and format.
     # If `--rolling`, and we have a previous image at a larger size to work with,
     # we simply downsample that image, instead of re-rendering the entire PDF.
-    # Now we generate one page at a time, a counterintuitive opimization
+    #
+    # Converting PDFs, we first try GraphicsMagick, and fail through to Poppler.
+    # Note that Poppler won't respect the memory limits.
+    #
+    # For gm, we generate one page at a time, a counterintuitive opimization
     # suggested by the GraphicsMagick list, that seems to work quite well.
     def convert(pdf, size, format, previous=nil)
       tempdir   = Dir.mktmpdir
@@ -40,9 +44,22 @@ module Docsplit
         result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
         raise ExtractionFailed, result if $? != 0
       else
-        page_list(pages).each do |page|
-          out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
-          cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
+        begin
+          # First, try extracting with GraphicsMagick.
+          page_list(pages).each do |page|
+            out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
+            cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
+            result = `#{cmd}`.chomp
+            raise ExtractionFailed, result if $? != 0
+          end
+        rescue ExtractionFailed
+          # Now try extracting with Poppler.
+          out_file  = ESCAPE[File.join(directory, "#{basename}")]
+          cmd = "pdftocairo -r #{@density} -#{format.to_s} #{escaped_pdf} #{out_file} 2>&1".chomp
+          result = `#{cmd}`.chomp
+          raise ExtractionFailed, result if $? != 0
+
+          cmd = "rename 's/#{basename}-/#{basename}_/' #{out_file}*.#{format}"
           result = `#{cmd}`.chomp
           raise ExtractionFailed, result if $? != 0
         end
