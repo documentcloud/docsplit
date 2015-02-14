@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name      = 'docsplit'
-  s.version   = '0.7.6'         # Keep version in sync with docsplit.rb
+  s.version   = '0.8.0.alpha'         # Keep version in sync with docsplit.rb
   s.date      = '2014-11-17'
 
   s.homepage    = "http://documentcloud.github.com/docsplit/"

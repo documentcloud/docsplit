@@ -5,7 +5,7 @@ require 'shellwords'
 # The Docsplit module delegates to the Java PDF extractors.
 module Docsplit
 
-  VERSION       = '0.7.6' # Keep in sync with gemspec.
+  VERSION       = '0.8.0' # Keep in sync with gemspec.
 
   ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
 
@@ -56,7 +56,7 @@ module Docsplit
   def self.extract_images(pdfs, opts={})
     pdfs = ensure_pdfs(pdfs)
     opts[:pages] = normalize_value(opts[:pages]) if opts[:pages]
-    ImageExtractor.new.extract(pdfs, opts)
+    PDFShaverExtractor.new.extract(pdfs, opts)
   end
 
   # Use JODCConverter to extract the documents as PDFs.
