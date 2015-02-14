@@ -101,6 +101,7 @@ module Docsplit
 end
 
 require "#{Docsplit::ROOT}/lib/docsplit/image_extractor"
+require "#{Docsplit::ROOT}/lib/docsplit/pdfshaver_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/transparent_pdfs"
 require "#{Docsplit::ROOT}/lib/docsplit/text_extractor"
 require "#{Docsplit::ROOT}/lib/docsplit/page_extractor"
