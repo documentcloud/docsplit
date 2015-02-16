@@ -9,7 +9,11 @@ module Docsplit
     def extract(paths, options={})
       extract_options(options)
       paths.flatten.each do |pdf_path|
-        pdf = PDFShaver::Document.new(pdf_path)
+        begin
+          pdf = PDFShaver::Document.new(pdf_path)
+        rescue ArgumentError => e
+          raise ExtractionFailed
+        end
         pdf.pages.each do |page|
           @formats.each do |format|
             @sizes.each do |size_string|
