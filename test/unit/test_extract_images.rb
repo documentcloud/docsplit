@@ -10,23 +10,23 @@ class ExtractImagesTest < Minitest::Test
 
   def test_image_formatting
     Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => [:jpg, :gif], :size => "250x", :output => OUTPUT)
-    assert Dir["#{OUTPUT}/*.gif"].length == 2
-    assert Dir["#{OUTPUT}/*.jpg"].length == 2
+    assert_equal 2, Dir["#{OUTPUT}/*.gif"].length
+    assert_equal 2, Dir["#{OUTPUT}/*.jpg"].length
   end
 
   def test_page_ranges
     Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :size => "50x", :pages => 2, :output => OUTPUT)
-    assert Dir["#{OUTPUT}/*.gif"] == ["#{OUTPUT}/obama_arts_2.gif"]
+    assert_equal Dir["#{OUTPUT}/*.gif"], ["#{OUTPUT}/obama_arts_2.gif"]
   end
 
   def test_image_sizes
     Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :rolling => true, :size => ["150x", "50x"], :output => OUTPUT)
-    assert File.size("#{OUTPUT}/50x/obama_arts_1.gif") < File.size("#{OUTPUT}/150x/obama_arts_1.gif")
+    assert_operator File.size("#{OUTPUT}/50x/obama_arts_1.gif"), :<, File.size("#{OUTPUT}/150x/obama_arts_1.gif")
   end
 
   def test_encrypted_images
     Docsplit.extract_images('test/fixtures/encrypted.pdf', :format => :gif, :size => "50x", :output => OUTPUT)
-    assert File.size("#{OUTPUT}/encrypted_1.gif") > 100
+    assert_operator File.size("#{OUTPUT}/encrypted_1.gif"), :>, 100
   end
 
   def test_password_protected_extraction
