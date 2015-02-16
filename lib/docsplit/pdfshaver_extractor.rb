@@ -1,21 +1,27 @@
+require 'pdfshaver'
 module Docsplit
-  class PDShaverExtractor
+  class PDFShaverExtractor
     
+    MEMORY_ARGS     = "-limit memory 256MiB -limit map 512MiB"
+    DEFAULT_FORMAT  = :png
+    DEFAULT_DENSITY = '150'
     
     def extract(paths, options={})
-      paths.flatten.each |pdf_path| do
-        pdf = PDFium::Document.new(pdf_path)
+      extract_options(options)
+      paths.flatten.each do |pdf_path|
+        pdf = PDFShaver::Document.new(pdf_path)
         pdf.pages.each do |page|
           @formats.each do |format|
-            sizes.each do |size_string|
+            @sizes.each do |size_string|
               options     = {}
               
               directory   = directory_for(size_string)
               pdf_name    = File.basename(pdf_path, File.extname(pdf_path))
               filename    = "#{pdf_name}_#{page.number}.#{format}"
-              destination = ESCAPE[File.join(directory, filename)]
+              destination = File.join(directory, filename)
+              FileUtils.mkdir_p ESCAPE[directory]
               
-              options[:width], options[:height] = extract_size(size_string)
+              options = options.merge extract_size(size_string)
               page.render(destination, options)
             end
           end
@@ -38,5 +44,14 @@ module Docsplit
       File.expand_path(path)
     end
     
+    def extract_options(options)
+      @output  = options[:output]  || '.'
+      @pages   = options[:pages]
+      @density = options[:density] || DEFAULT_DENSITY
+      @formats = [options[:format] || DEFAULT_FORMAT].flatten
+      @sizes   = [options[:size]].flatten.compact
+      @sizes   = [nil] if @sizes.empty?
+      @rolling = !!options[:rolling]
+    end
   end
 end
