@@ -21,7 +21,7 @@ module Docsplit
               pdf_name    = File.basename(pdf_path, File.extname(pdf_path))
               filename    = "#{pdf_name}_#{page.number}.#{format}"
               destination = File.join(directory, filename)
-              FileUtils.mkdir_p ESCAPE[directory]
+              FileUtils.mkdir_p directory
               
               dimensions = page.extract_dimensions_from_gm_geometry_string(size_string)
               page.render(destination, dimensions)
