@@ -16,7 +16,7 @@ class ExtractImagesTest < Minitest::Test
 
   def test_page_ranges
     Docsplit.extract_images('test/fixtures/obama_arts.pdf', :format => :gif, :size => "50x", :pages => 2, :output => OUTPUT)
-    assert_equal Dir["#{OUTPUT}/*.gif"], ["#{OUTPUT}/obama_arts_2.gif"]
+    assert_equal ["#{OUTPUT}/obama_arts_2.gif"], Dir["#{OUTPUT}/*.gif"]
   end
 
   def test_image_sizes
