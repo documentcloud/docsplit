@@ -14,19 +14,17 @@ module Docsplit
         rescue ArgumentError => e
           raise ExtractionFailed
         end
-        pdf.pages.each do |page|
+        pdf.pages(extract_page_list(@pages)).each do |page|
           @formats.each do |format|
             @sizes.each do |size_string|
-              options     = {}
-              
               directory   = directory_for(size_string)
               pdf_name    = File.basename(pdf_path, File.extname(pdf_path))
               filename    = "#{pdf_name}_#{page.number}.#{format}"
               destination = File.join(directory, filename)
               FileUtils.mkdir_p ESCAPE[directory]
               
-              options = options.merge extract_size(size_string)
-              page.render(destination, options)
+              dimensions = page.extract_dimensions_from_gm_geometry_string(size_string)
+              page.render(destination, dimensions)
             end
           end
         end
@@ -34,18 +32,24 @@ module Docsplit
     end
     
     private
-    def extract_size(size_string)
-      height = nil
-      width  = nil
-      
-      {:height => height, :width => width }
-    end
-    
     # If there's only one size requested, generate the images directly into
     # the output directory. Multiple sizes each get a directory of their own.
     def directory_for(size)
       path = @sizes.length == 1 ? @output : File.join(@output, size)
       File.expand_path(path)
+    end
+    
+    # Generate the expanded list of requested page numbers.
+    def extract_page_list(pages)
+      return :all if pages.nil?
+      pages.split(',').map { |range|
+        if range.include?('-')
+          range = range.split('-')
+          Range.new(range.first.to_i, range.last.to_i).to_a.map {|n| n.to_i }
+        else
+          range.to_i
+        end
+      }.flatten.uniq.sort
     end
     
     def extract_options(options)
