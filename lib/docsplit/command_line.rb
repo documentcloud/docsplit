@@ -76,8 +76,8 @@ Options:
         opts.on('-o', '--output [DIR]', 'set the directory for all output') do |d|
           @options[:output] = d
         end
-        opts.on('-p', '--pages [PAGES]', "extract specific pages (eg: 5-10)") do |p|
-          @options[:pages] = p
+        opts.on('-p', '--pages [PAGES]', "extract specific pages (eg: 5-10 or 1,3,5)") do |p|
+          @options[:pages] = self.class.format_page_param(p)
         end
         opts.on('-s', '--size [SIZE]', 'set a fixed size (eg: 50x75)') do |s|
           @options[:size] = s.split(',')
@@ -118,6 +118,19 @@ Options:
         puts e.message
         exit(1)
       end
+    end
+
+    def self.format_page_param(pages_arg)
+      numbers_and_ranges = pages_arg.to_s.scan(/[\d\-]+/)
+      output = numbers_and_ranges.collect {|page_arg|
+        if page_arg.include?("-")
+          Range.new(*page_arg.split("-")).to_a
+        else
+          page_arg
+        end
+      }
+
+      output.flatten.uniq.map(&:to_i).sort
     end
 
   end
