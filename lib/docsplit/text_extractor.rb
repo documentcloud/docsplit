@@ -46,7 +46,7 @@ module Docsplit
     # Does a PDF have any text embedded?
     def contains_text?(pdf)
       fonts = `pdffonts #{ESCAPE[pdf]} 2>&1`
-      !fonts.match(NO_TEXT_DETECTED)
+      !fonts.scrub.match(NO_TEXT_DETECTED)
     end
 
     # Extract a page range worth of text from a PDF, directly.
