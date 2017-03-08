@@ -29,6 +29,11 @@ class ExtractImagesTest < Minitest::Test
     assert File.size("#{OUTPUT}/encrypted_1.gif") > 100
   end
 
+  def test_quartz_annotated
+    Docsplit.extract_images('test/fixtures/quartz_annotated.pdf', :format => :png, :size => "250x", :output => OUTPUT)
+    assert_directory_contains(OUTPUT, ['quartz_annotated_1.png'])
+  end
+
   def test_password_protected_extraction
     assert_raises(ExtractionFailed) do
       Docsplit.extract_images('test/fixtures/completely_encrypted.pdf')
