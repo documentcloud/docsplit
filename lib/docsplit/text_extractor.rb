@@ -102,17 +102,26 @@ module Docsplit
       result
     end
 
+    # Run pdftotext command
+    def run_pdftotext(pdf, text_path, options=[])
+      options << '-enc UTF-8'
+      options << '-layout' if @keep_layout
+
+      run "pdftotext #{options.join(' ')} #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+    end
+
     # Extract the full contents of a pdf as a single file, directly.
     def extract_full(pdf)
       text_path = File.join(@output, "#{@pdf_name}.txt")
-      run "pdftotext -enc UTF-8 #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+      run_pdftotext pdf, text_path
     end
 
     # Extract the contents of a single page of text, directly, adding it to
     # the `@pages_to_ocr` list if the text length is inadequate.
     def extract_page(pdf, page)
       text_path = File.join(@output, "#{@pdf_name}_#{page}.txt")
-      run "pdftotext -enc UTF-8 -f #{page} -l #{page} #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
+      run_pdftotext pdf, text_path, ["-f #{page}", "-l #{page}"]
+
       unless @forbid_ocr
         @pages_to_ocr.push(page) if File.read(text_path).length < MIN_TEXT_PER_PAGE
       end
@@ -126,6 +135,7 @@ module Docsplit
       @language           = options[:language] || 'eng'
       @clean_ocr          = (!(options[:clean] == false) and @language == 'eng')
       @detect_orientation = ((options[:detect_orientation] != false) and DEPENDENCIES[:osd])
+      @keep_layout        = options.fetch(:layout, false)
     end
 
   end
