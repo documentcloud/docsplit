@@ -1,0 +1,26 @@
+<?php
+$archivo ="archivofrases.txt";
+$frases = file("$archivo");
+$frase = rand(0, sizeof($frases)-1);
+echo "<h2>".$frases[$frase]."</h2>";
+?>
+
+01	<script>
+02	  function publicar(){
+03	    var mensaje = "<?php echo $frases[$frase]; ?>";
+04	    var user_message_prompt = "¿Deseas comentar algo?";
+05	    var user_message = "Que buena frase!";
+06	    var attachment = {'media':
+07	                     [{'type':'image',
+08	                       'src':'http://brianur.info/logo.png',
+
+09	                       'href':'http://apps.facebook.com/tuaplicacion/'}],
+
+10	                       'name': mensaje +'<br />',
+11	                       'description':'Frases Urban'};
+12	 
+13	    Facebook.streamPublish(user_message,attachment,'','',user_message_prompt);
+14	  }
+15	</script>
+
+<input type="button" name="frase" value="Publicar Frase" onclick="publicar();" />
