@@ -1,3 +1,5 @@
+require 'iconv'
+
 module Docsplit
 
   # Delegates to **pdfinfo** in order to extract information about a PDF file.
@@ -23,7 +25,8 @@ module Docsplit
     def extract_all(pdfs, opts)
       pdf = [pdfs].flatten.first
       cmd = "pdfinfo #{ESCAPE[pdf]} 2>&1"
-      result = `#{cmd}`.chomp
+      # Remove non-ASCII characters as the matcher chokes on them
+      result = Iconv.conv('ASCII//IGNORE', 'UTF8', `#{cmd}`.chomp)
       raise ExtractionFailed, result if $? != 0
       # ruby  1.8 (iconv) and 1.9 (String#encode) :
       if String.method_defined?(:encode)
