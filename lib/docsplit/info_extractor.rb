@@ -5,14 +5,14 @@ module Docsplit
 
     # Regex matchers for different bits of information.
     MATCHERS = {
-      :author   => /^Author:\s+([^\n]+)/,
-      :date     => /^CreationDate:\s+([^\n]+)/,
-      :creator  => /^Creator:\s+([^\n]+)/,
-      :keywords => /^Keywords:\s+([^\n]+)/,
-      :producer => /^Producer:\s+([^\n]+)/,
-      :subject  => /^Subject:\s+([^\n]+)/,
-      :title    => /^Title:\s+([^\n]+)/,
-      :length   => /^Pages:\s+([^\n]+)/,
+      :author   => Regexp.new("^Author:\s+([^\n]+)".encode('UTF-8')),
+      :date     => Regexp.new("^CreationDate:\s+([^\n]+)".encode('UTF-8')),
+      :creator  => Regexp.new("^Creator:\s+([^\n]+)".encode('UTF-8')),
+      :keywords => Regexp.new("^Keywords:\s+([^\n]+)".encode('UTF-8')),
+      :producer => Regexp.new("^Producer:\s+([^\n]+)".encode('UTF-8')),
+      :subject  => Regexp.new("^Subject:\s+([^\n]+)".encode('UTF-8')),
+      :title    => Regexp.new("^Title:\s+([^\n]+)".encode('UTF-8')),
+      :length   => Regexp.new("^Pages:\s+([^\n]+)".encode('UTF-8')),
     }
 
     # Pull out a single datum from a pdf.
