@@ -106,6 +106,7 @@ module Docsplit
     def run_pdftotext(pdf, text_path, options=[])
       options << '-enc UTF-8'
       options << '-layout' if @keep_layout
+      options << '-nopgbrk' if @nopgbrk
 
       run "pdftotext #{options.join(' ')} #{ESCAPE[pdf]} #{ESCAPE[text_path]} 2>&1"
     end
@@ -136,6 +137,7 @@ module Docsplit
       @clean_ocr          = (!(options[:clean] == false) and @language == 'eng')
       @detect_orientation = ((options[:detect_orientation] != false) and DEPENDENCIES[:osd])
       @keep_layout        = options.fetch(:layout, false)
+      @nopgbrk            = options.fetch(:nopgbrk, false)
     end
 
   end
