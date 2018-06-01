@@ -23,6 +23,10 @@ class ExtractInfoTest < Minitest::Test
     assert 2 == Docsplit.extract_length('test/fixtures/obama_arts.pdf')
   end
 
+  def test_page_size
+    assert "612 x 792 pts (letter)" == Docsplit.extract_page_size('test/fixtures/encrypted.pdf')
+  end
+
   def test_producer
     assert "Mac OS X 10.6.2 Quartz PDFContext" == Docsplit.extract_producer('test/fixtures/encrypted.pdf')
   end
@@ -46,10 +50,11 @@ class ExtractInfoTest < Minitest::Test
     assert metadata[:author] == "mkommareddi"
     assert metadata[:date] == "Thu Nov 29 14:54:46 2007"
     assert metadata[:creator] == "PScript5.dll Version 5.2"
+    assert metadata[:page_size] == "612 x 792 pts (letter)"
     assert metadata[:producer] == "Acrobat Distiller 8.1.0 (Windows)"
     assert metadata[:title] == "Microsoft Word - Fact Sheet Arts 112907 FINAL.doc"
     assert metadata[:length] == 2
-    assert metadata.length == 6
+    assert metadata.length == 7
   end
 
 end

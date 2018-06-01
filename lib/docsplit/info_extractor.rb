@@ -9,6 +9,7 @@ module Docsplit
       :date     => /^CreationDate:\s+([^\n]+)/,
       :creator  => /^Creator:\s+([^\n]+)/,
       :keywords => /^Keywords:\s+([^\n]+)/,
+      :page_size=> /^Page size:\s+([^\n]+)/,
       :producer => /^Producer:\s+([^\n]+)/,
       :subject  => /^Subject:\s+([^\n]+)/,
       :title    => /^Title:\s+([^\n]+)/,
