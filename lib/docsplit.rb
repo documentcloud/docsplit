@@ -5,7 +5,7 @@ require 'shellwords'
 # The Docsplit module delegates to the Java PDF extractors.
 module Docsplit
 
-  VERSION       = '0.7.6' # Keep in sync with gemspec.
+  VERSION       = '0.7.7' # Keep in sync with gemspec.
 
   ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
 
@@ -13,7 +13,7 @@ module Docsplit
   ESCAPED_ROOT  = ESCAPE[ROOT]
 
   METADATA_KEYS = [:author, :date, :creator, :keywords, :producer, :subject, :title, :length]
-  
+
   GM_FORMATS    = ["image/gif", "image/jpeg", "image/png", "image/x-ms-bmp", "image/svg+xml", "image/tiff", "image/x-portable-bitmap", "application/postscript", "image/x-portable-pixmap"]
 
   DEPENDENCIES  = {:java => false, :gm => false, :pdftotext => false, :pdftk => false, :pdftailor => false, :tesseract => false, :osd => false}
@@ -75,7 +75,7 @@ module Docsplit
       end
     EOS
   end
-  
+
   def self.extract_info(pdfs, opts={})
     pdfs = ensure_pdfs(pdfs)
     InfoExtractor.new.extract_all(pdfs, opts)

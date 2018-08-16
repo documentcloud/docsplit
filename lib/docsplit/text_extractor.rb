@@ -17,7 +17,7 @@ module Docsplit
     NO_TEXT_DETECTED = /---------\n\Z/
 
     OCR_FLAGS   = '-density 400x400 -colorspace GRAY'
-    MEMORY_ARGS = '-limit memory 256MiB -limit map 512MiB'
+    MEMORY_ARGS = '-limit memory 512MiB -limit map 1024MiB'
 
     MIN_TEXT_PER_PAGE = 100 # in bytes
 
@@ -60,14 +60,14 @@ module Docsplit
       tempdir = Dir.mktmpdir
       base_path = File.join(@output, @pdf_name)
       escaped_pdf = ESCAPE[pdf]
-      psm = @detect_orientation ? "-psm 1" : ""
+
       if pages
         pages.each do |page|
           tiff = "#{tempdir}/#{@pdf_name}_#{page}.tif"
           escaped_tiff = ESCAPE[tiff]
           file = "#{base_path}_#{page}"
           run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf}[#{page - 1}] #{escaped_tiff} 2>&1"
-          run "tesseract #{escaped_tiff} #{ESCAPE[file]} -l #{@language} #{psm} 2>&1"
+          run "tesseract #{escaped_tiff} #{ESCAPE[file]} -l #{@language} #{@tesseract_options} #{@tesseract_config} 2>&1"
           clean_text(file + '.txt') if @clean_ocr
           FileUtils.remove_entry_secure tiff
         end
@@ -76,7 +76,7 @@ module Docsplit
         escaped_tiff = ESCAPE[tiff]
         run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf} #{escaped_tiff} 2>&1"
         #if the user says don't do orientation detection or the plugin is not installed, set psm to 0
-        run "tesseract #{escaped_tiff} #{base_path} -l #{@language} #{psm} 2>&1"
+        run "tesseract #{escaped_tiff} #{base_path} -l #{@language} #{@tesseract_options} #{@tesseract_config} 2>&1"
         clean_text(base_path + '.txt') if @clean_ocr
       end
     ensure
@@ -134,8 +134,10 @@ module Docsplit
       @forbid_ocr         = options[:ocr] == false
       @language           = options[:language] || 'eng'
       @clean_ocr          = (!(options[:clean] == false) and @language == 'eng')
-      @detect_orientation = ((options[:detect_orientation] != false) and DEPENDENCIES[:osd])
+      # @detect_orientation = ((options[:detect_orientation] != false) and DEPENDENCIES[:osd])
       @keep_layout        = options.fetch(:layout, false)
+      @tesseract_options  = options[:tesseract_options] || ""
+      @tesseract_config   = options[:tesseract_config] || ""
     end
 
   end
