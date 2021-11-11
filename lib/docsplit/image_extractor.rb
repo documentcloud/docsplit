@@ -7,6 +7,7 @@ module Docsplit
     MEMORY_ARGS     = "-limit memory 256MiB -limit map 512MiB"
     DEFAULT_FORMAT  = :png
     DEFAULT_DENSITY = '150'
+    DEFAULT_PAGE_DELIMITER = "_"
 
     # Extract a list of PDFs as rasterized page images, according to the
     # configuration in options.
@@ -41,7 +42,7 @@ module Docsplit
         raise ExtractionFailed, result if $? != 0
       else
         page_list(pages).each do |page|
-          out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
+          out_file  = ESCAPE[File.join(directory, "#{basename}#{@delimiter}#{page}.#{format}")]
           cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
           result = `#{cmd}`.chomp
           raise ExtractionFailed, result if $? != 0
@@ -63,6 +64,7 @@ module Docsplit
       @sizes   = [options[:size]].flatten.compact
       @sizes   = [nil] if @sizes.empty?
       @rolling = !!options[:rolling]
+      @delimiter = options[:delimiter] || DEFAULT_PAGE_DELIMITER
     end
 
     # If there's only one size requested, generate the images directly into

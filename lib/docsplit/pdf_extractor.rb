@@ -16,7 +16,7 @@ module Docsplit
     def linux?
       !!HOST_OS.match(/linux/i)
     end
-    
+
     # The first line of the help output holds the name and version number
     # of the office software to be used for extraction.
     def version_string
@@ -35,10 +35,10 @@ module Docsplit
     def open_office?
       !!version_string.match(/^OpenOffice.org/)
     end
-    
+
     # A set of default locations to search for office software
     # These have been extracted from JODConverter.  Each listed
-    # path should contain a directory "program" which in turn 
+    # path should contain a directory "program" which in turn
     # contains the "soffice" executable.
     # see: https://github.com/mirkonasato/jodconverter/blob/master/jodconverter-core/src/main/java/org/artofsolving/jodconverter/office/OfficeUtils.java#L63-L91
     def office_search_paths
@@ -56,6 +56,7 @@ module Docsplit
         search_paths = %w(
           /usr/lib/libreoffice
           /usr/lib64/libreoffice
+          /usr/bin/libreoffice
           /opt/libreoffice
           /usr/lib/openoffice
           /usr/lib64/openoffice
@@ -69,7 +70,7 @@ module Docsplit
       end
       search_paths
     end
-    
+
     # Identify the path to a working office executable.
     def office_executable
       paths = office_search_paths
@@ -81,7 +82,7 @@ module Docsplit
         raise ArgumentError, "No such file or directory #{ENV['OFFICE_PATH']}" unless File.exists? ENV['OFFICE_PATH']
         paths.unshift(ENV['OFFICE_PATH'])
       end
-      
+
       # The location of the office executable is OS dependent
       path_pieces = ["soffice"]
       if windows?
@@ -91,7 +92,7 @@ module Docsplit
       else
         path_pieces += [["program", "soffice"]]
       end
-      
+
       # Search for the first suitable office executable
       # and short circuit an executable is found.
       paths.each do |path|
@@ -107,12 +108,12 @@ module Docsplit
       raise OfficeNotFound, "No office software found" unless @@executable
       @@executable
     end
-    
+
     # Used to specify the office location for JODConverter
     def office_path
       File.dirname(File.dirname(office_executable))
     end
-    
+
     # Convert documents to PDF.
     def extract(docs, opts)
       out = opts[:output] || '.'
@@ -128,7 +129,7 @@ module Docsplit
           if libre_office?
             # Set the LibreOffice user profile, so that parallel uses of cloudcrowd don't trip over each other.
             ENV['SYSUSERCONFIG']="file://#{File.expand_path(escaped_out)}"
-            
+
             options = "--headless --invisible  --norestore --nolockcheck --convert-to pdf --outdir #{escaped_out} #{escaped_doc}"
             cmd = "#{office_executable} #{options} 2>&1"
             result = `#{cmd}`.chomp
@@ -147,9 +148,9 @@ module Docsplit
     LOGGING       = "-Djava.util.logging.config.file=#{ESCAPED_ROOT}/vendor/logging.properties"
 
     HEADLESS      = "-Djava.awt.headless=true"
-    
+
     private
-    
+
     # Runs a Java command, with quieted logging, and the classpath set properly.
     def run_jod(command, pdfs, opts, return_output=false)
 

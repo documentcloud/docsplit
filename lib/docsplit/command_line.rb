@@ -103,6 +103,9 @@ Options:
         opts.on('-r', '--rolling', 'generate images from each previous image') do |r|
           @options[:rolling] = true
         end
+        opts.on('--delimiter [DELIMITER]', 'set page number delimiter (eg: _, -, -Page-...)') do |d|
+          @options[:delimiter] = d.tr('^','')
+        end
         opts.on_tail('-v', '--version', 'display docsplit version') do
           puts "Docsplit version #{Docsplit::VERSION}"
           exit
