@@ -49,11 +49,16 @@ class ExtractTextTest < Minitest::Test
     end
   end
 
-  def test_name_escaping_while_extracting_text
+  def test_name_escaping_while_extracting_text_into_pages
     Docsplit.extract_text('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf', :pages => 'all', :output => OUTPUT)
     assert Dir["#{OUTPUT}/*.txt"].length == 2
   end
-  
+
+  def test_name_escaping_while_extracting_text_using_ocr
+    Docsplit.extract_text('test/fixtures/PDF file with spaces \'single\' and "double quotes".pdf', :ocr => true, :output => OUTPUT)
+    assert Dir["#{OUTPUT}/*.txt"].length == 1
+  end
+
   def test_orientation_detected_ocr_extraction
     if Docsplit::DEPENDENCIES[:osd]
       pages = 1..4
