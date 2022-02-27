@@ -8,7 +8,7 @@ module Docsplit
     # Provide a set of helper functions to determine the OS.
     HOST_OS = (defined?("RbConfig") ? RbConfig : Config)::CONFIG['host_os']
     def windows?
-      !!HOST_OS.match(/mswin|windows|cygwin/i)
+      IS_WIN
     end
     def osx?
       !!HOST_OS.match(/darwin/i)
@@ -30,7 +30,13 @@ module Docsplit
       @@version_string
     end
     def libre_office?
-      !!version_string.match(/^LibreOffice/)
+      if windows?
+        # on windows platform we can't get version string by 'version_string' func,
+        # so we simply match the executable path
+        !!office_executable.match(/libreOffice/i)
+      else
+        !!version_string.match(/^LibreOffice/)
+      end
     end
     def open_office?
       !!version_string.match(/^OpenOffice.org/)
@@ -130,7 +136,14 @@ module Docsplit
             ENV['SYSUSERCONFIG']="file://#{File.expand_path(escaped_out)}"
             
             options = "--headless --invisible  --norestore --nolockcheck --convert-to pdf --outdir #{escaped_out} #{escaped_doc}"
-            cmd = "#{office_executable} #{options} 2>&1"
+
+            # quote path on windows platform to avoid wrong path issue
+            if windows?
+              cmd = "\"#{office_executable}\" #{options} 2>&1"
+            else
+              cmd = "#{office_executable} #{options} 2>&1"
+            end
+
             result = `#{cmd}`.chomp
             raise ExtractionFailed, result if $? != 0
             true
@@ -155,7 +168,14 @@ module Docsplit
 
       pdfs   = [pdfs].flatten.map{|pdf| "\"#{pdf}\""}.join(' ')
       office = osx? ? "-Doffice.home=#{office_path}" : office_path
-      cmd    = "java #{HEADLESS} #{LOGGING} #{office} -cp #{CLASSPATH} #{command} #{pdfs} 2>&1"
+      
+      # quote path on windows platform to avoid wrong path issue
+      if windows?
+        cmd = "java #{HEADLESS} #{LOGGING} \"#{office}\" -cp #{CLASSPATH} #{command} #{pdfs} 2>&1"
+      else
+        cmd = "java #{HEADLESS} #{LOGGING} #{office} -cp #{CLASSPATH} #{command} #{pdfs} 2>&1"
+      end
+
       result = `#{cmd}`.chomp
       raise ExtractionFailed, result if $? != 0
       return return_output ? (result.empty? ? nil : result) : true
