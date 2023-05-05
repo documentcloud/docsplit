@@ -33,7 +33,7 @@ module Docsplit
       directory = directory_for(size)
       pages     = @pages || '1-' + Docsplit.extract_length(pdf).to_s
       escaped_pdf = ESCAPE[pdf]
-      FileUtils.mkdir_p(directory) unless File.exists?(directory)
+      FileUtils.mkdir_p(directory) unless File.exist?(directory)
       common    = "#{MEMORY_ARGS} -density #{@density} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
@@ -48,7 +48,7 @@ module Docsplit
         end
       end
     ensure
-      FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
+      FileUtils.remove_entry_secure tempdir if File.exist?(tempdir)
     end
 
 
