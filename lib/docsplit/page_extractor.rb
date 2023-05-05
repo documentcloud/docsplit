@@ -18,7 +18,7 @@ module Docsplit
           "pdftk #{ESCAPE[pdf]} burst output #{page_path} 2>&1"
         end
         result = `#{cmd}`.chomp
-        FileUtils.rm('doc_data.txt') if File.exists?('doc_data.txt')
+        FileUtils.rm('doc_data.txt') if File.exist?('doc_data.txt')
         raise ExtractionFailed, result if $? != 0
         result
       end

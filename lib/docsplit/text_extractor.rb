@@ -80,7 +80,7 @@ module Docsplit
         clean_text(base_path + '.txt') if @clean_ocr
       end
     ensure
-      FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
+      FileUtils.remove_entry_secure tempdir if File.exist?(tempdir)
     end
 
 

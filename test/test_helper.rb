@@ -10,7 +10,7 @@ class Minitest::Test
   OUTPUT = 'test/output'
 
   def clear_output
-    FileUtils.rm_r(OUTPUT) if File.exists?(OUTPUT)
+    FileUtils.rm_r(OUTPUT) if File.exist?(OUTPUT)
   end
 
   def teardown
