@@ -78,7 +78,7 @@ module Docsplit
       # raise an error if that path isn't valid, otherwise, add
       # it to the front of our search paths.
       if ENV['OFFICE_PATH']
-        raise ArgumentError, "No such file or directory #{ENV['OFFICE_PATH']}" unless File.exists? ENV['OFFICE_PATH']
+        raise ArgumentError, "No such file or directory #{ENV['OFFICE_PATH']}" unless File.exist? ENV['OFFICE_PATH']
         paths.unshift(ENV['OFFICE_PATH'])
       end
       
@@ -95,11 +95,11 @@ module Docsplit
       # Search for the first suitable office executable
       # and short circuit an executable is found.
       paths.each do |path|
-        if File.exists? path
+        if File.exist? path
           @@executable ||= path unless File.directory? path
           path_pieces.each do |pieces|
             check_path = File.join(path, pieces)
-            @@executable ||= check_path if File.exists? check_path
+            @@executable ||= check_path if File.exist? check_path
           end
         end
         break if @@executable
@@ -116,7 +116,7 @@ module Docsplit
     # Convert documents to PDF.
     def extract(docs, opts)
       out = opts[:output] || '.'
-      FileUtils.mkdir_p out unless File.exists?(out)
+      FileUtils.mkdir_p out unless File.exist?(out)
       [docs].flatten.each do |doc|
         ext = File.extname(doc)
         basename = File.basename(doc, ext)
