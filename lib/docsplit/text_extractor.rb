@@ -21,6 +21,8 @@ module Docsplit
 
     MIN_TEXT_PER_PAGE = 100 # in bytes
 
+    TIMEOUT = '5m'
+
     def initialize
       @pages_to_ocr = []
     end
@@ -28,7 +30,7 @@ module Docsplit
     # Extract text from a list of PDFs.
     def extract(pdfs, opts)
       extract_options opts
-      FileUtils.mkdir_p @output unless File.exists?(@output)
+      FileUtils.mkdir_p @output unless File.exist?(@output)
       [pdfs].flatten.each do |pdf|
         @pdf_name = File.basename(pdf, File.extname(pdf))
         pages = (@pages == 'all') ? 1..Docsplit.extract_length(pdf) : @pages
@@ -46,7 +48,7 @@ module Docsplit
     # Does a PDF have any text embedded?
     def contains_text?(pdf)
       fonts = `pdffonts #{ESCAPE[pdf]} 2>&1`
-      !fonts.match(NO_TEXT_DETECTED)
+      !fonts.scrub.match(NO_TEXT_DETECTED)
     end
 
     # Extract a page range worth of text from a PDF, directly.
@@ -66,7 +68,8 @@ module Docsplit
           tiff = "#{tempdir}/#{@pdf_name}_#{page}.tif"
           escaped_tiff = ESCAPE[tiff]
           file = "#{base_path}_#{page}"
-          run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf}[#{page - 1}] #{escaped_tiff} 2>&1"
+          run "MAGICK_TEMPORARY_PATH=#{tempdir} OMP_NUM_THREADS=2 timeout #{TIMEOUT} gm convert -despeckle +adjoin #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf}[#{page - 1}] #{escaped_tiff} 2>&1"
+          raise Docsplit::ExtractionFailed unless File.exist? escaped_tiff
           run "tesseract #{escaped_tiff} #{ESCAPE[file]} -l #{@language} #{psm} 2>&1"
           clean_text(file + '.txt') if @clean_ocr
           FileUtils.remove_entry_secure tiff
@@ -74,13 +77,14 @@ module Docsplit
       else
         tiff = "#{tempdir}/#{@pdf_name}.tif"
         escaped_tiff = ESCAPE[tiff]
-        run "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf} #{escaped_tiff} 2>&1"
+        run "MAGICK_TEMPORARY_PATH=#{tempdir} OMP_NUM_THREADS=2 timeout #{TIMEOUT} gm convert -despeckle #{MEMORY_ARGS} #{OCR_FLAGS} #{escaped_pdf} #{escaped_tiff} 2>&1"
         #if the user says don't do orientation detection or the plugin is not installed, set psm to 0
+        raise Docsplit::ExtractionFailed unless File.exist? escaped_tiff
         run "tesseract #{escaped_tiff} #{base_path} -l #{@language} #{psm} 2>&1"
         clean_text(base_path + '.txt') if @clean_ocr
       end
     ensure
-      FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
+      FileUtils.remove_entry_secure tempdir if File.exist?(tempdir)
     end
 
 

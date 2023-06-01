@@ -33,22 +33,22 @@ module Docsplit
       directory = directory_for(size)
       pages     = @pages || '1-' + Docsplit.extract_length(pdf).to_s
       escaped_pdf = ESCAPE[pdf]
-      FileUtils.mkdir_p(directory) unless File.exists?(directory)
+      FileUtils.mkdir_p(directory) unless File.exist?(directory)
       common    = "#{MEMORY_ARGS} -density #{@density} #{resize_arg(size)} #{quality_arg(format)}"
       if previous
         FileUtils.cp(Dir[directory_for(previous) + '/*'], directory)
-        result = `MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
+        result = `MAGICK_TEMPORARY_PATH=#{tempdir} OMP_NUM_THREADS=2 gm mogrify #{common} -unsharp 0x0.5+0.75 \"#{directory}/*.#{format}\" 2>&1`.chomp
         raise ExtractionFailed, result if $? != 0
       else
         page_list(pages).each do |page|
           out_file  = ESCAPE[File.join(directory, "#{basename}_#{page}.#{format}")]
-          cmd = "MAGICK_TMPDIR=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
+          cmd = "MAGICK_TEMPORARY_PATH=#{tempdir} OMP_NUM_THREADS=2 gm convert +adjoin -define pdf:use-cropbox=true #{common} #{escaped_pdf}[#{page - 1}] #{out_file} 2>&1".chomp
           result = `#{cmd}`.chomp
           raise ExtractionFailed, result if $? != 0
         end
       end
     ensure
-      FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
+      FileUtils.remove_entry_secure tempdir if File.exist?(tempdir)
     end
 
 
