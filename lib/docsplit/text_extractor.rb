@@ -28,7 +28,7 @@ module Docsplit
     # Extract text from a list of PDFs.
     def extract(pdfs, opts)
       extract_options opts
-      FileUtils.mkdir_p @output unless File.exists?(@output)
+      FileUtils.mkdir_p @output unless File.exist?(@output)
       [pdfs].flatten.each do |pdf|
         @pdf_name = File.basename(pdf, File.extname(pdf))
         pages = (@pages == 'all') ? 1..Docsplit.extract_length(pdf) : @pages
@@ -80,7 +80,7 @@ module Docsplit
         clean_text(base_path + '.txt') if @clean_ocr
       end
     ensure
-      FileUtils.remove_entry_secure tempdir if File.exists?(tempdir)
+      FileUtils.remove_entry_secure tempdir if File.exist?(tempdir)
     end
 
 
