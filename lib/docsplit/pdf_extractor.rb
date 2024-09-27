@@ -56,6 +56,7 @@ module Docsplit
         search_paths = %w(
           /usr/lib/libreoffice
           /usr/lib64/libreoffice
+          /usr/bin/libreoffice
           /opt/libreoffice
           /usr/lib/openoffice
           /usr/lib64/openoffice
