@@ -7,7 +7,10 @@ module Docsplit
 
   VERSION       = '0.7.6' # Keep in sync with gemspec.
 
-  ESCAPE        = lambda {|x| Shellwords.shellescape(x) }
+  HOST_OS = (defined?("RbConfig") ? RbConfig : Config)::CONFIG['host_os']
+  IS_WIN = !!HOST_OS.match(/mswin|msys|mingw|cygwin|bccwin|wince|emc/i)
+  
+  ESCAPE        = IS_WIN ? lambda {|x| "\"#{x}\"" } : lambda {|x| Shellwords.shellescape(x) }
 
   ROOT          = File.expand_path(File.dirname(__FILE__) + '/..')
   ESCAPED_ROOT  = ESCAPE[ROOT]
